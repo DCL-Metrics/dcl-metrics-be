@@ -21,7 +21,7 @@ namespace :dcl do
     require './lib/main'
 
     raw_data = `curl https://peer.decentraland.org/comms/peers`
-    data = JSON.prase(raw_data)
+    data = JSON.parse(raw_data)
 
     Models::PeersDump.create(data_json: data['peers'].to_json) if data['ok']
   end
