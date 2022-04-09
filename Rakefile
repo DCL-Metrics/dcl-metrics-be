@@ -20,13 +20,12 @@ namespace :dcl do
   task :fetch_peers do
     require './lib/main'
 
-    10.times do |i|
-      p Time.now
+    4.times do |i|
       raw_data = `curl https://peer.decentraland.org/comms/peers`
       data = JSON.parse(raw_data)
 
       Models::PeersDump.create(data_json: data['peers'].to_json) if data['ok']
-      sleep 60
+      sleep 150 unless i == 3
     end
   end
 end
