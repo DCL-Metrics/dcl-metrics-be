@@ -9,3 +9,4 @@ Sequel::Model.plugin :update_or_create
 
 # require models
 require './lib/models/peers_dump.rb'
+require './lib/services/fetch_peer_data.rb'
