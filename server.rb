@@ -2,7 +2,6 @@ require 'sinatra'
 
 class Server < Sinatra::Application
   get '/' do
-    status 200
-    'ok'
+    "fetched #{Models::PeersDump.count} times"
   end
 end
