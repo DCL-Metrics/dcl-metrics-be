@@ -7,6 +7,9 @@ gem 'sinatra'
 gem 'sequel'
 gem 'pg'
 
+# background jobs
+gem 'sidekiq'
+
 group :production do
   gem 'puma'
 end
