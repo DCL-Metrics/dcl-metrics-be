@@ -2,7 +2,7 @@ module Jobs
   class ProcessSnapshot < Job
     def perform(snapshot_id)
       snapshot = Models::PeersDump[snapshot_id]
-      timestamp = data.created_at
+      timestamp = snapshot.created_at
 
       snapshot.data.each do |visit|
         Models::DataPoint.create(
