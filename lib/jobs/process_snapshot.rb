@@ -2,11 +2,10 @@ module Jobs
   class ProcessSnapshot < Job
     def perform(snapshot_id)
       snapshot = Models::PeersDump[snapshot_id]
-      data = JSON.parse(snapshot.data)
       timestamp = data.created_at
 
-      data.each do |visit|
-        DataPoint.create(
+      snapshot.data.each do |visit|
+        Models::DataPoint.create(
           address: visit['address'],
           coordinates: visit['parcel'],
           date: timestamp.to_date,

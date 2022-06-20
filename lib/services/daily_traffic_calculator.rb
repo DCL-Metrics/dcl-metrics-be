@@ -7,13 +7,13 @@ module Services
 
     def initialize(date)
       @snapshot_ids= DATABASE_CONNECTION[
-        "select ids from peers_dump where created_at :: date = '#{date}'"
+        "select id from peers_dump where created_at :: date = '#{date}'"
       ].all.flat_map(&:values)
     end
 
     def call
       snapshot_ids.each do |snapshot_id|
-        Jobs::ProcessSnapshot.perform_later(snapshot_id)
+        Jobs::ProcessSnapshot.perform_async(snapshot_id)
       end
     end
 
