@@ -5,12 +5,15 @@ module Jobs
       timestamp = snapshot.created_at
 
       snapshot.data.each do |visit|
+        coordinates = visit['parcel']&.join(',')
+        position = visit['position']&.map { |x| x.round(2) }&.join(',')
+
         Models::DataPoint.create(
           address: visit['address'],
-          coordinates: visit['parcel'],
+          coordinates: coordinates,
           date: timestamp.to_date,
           peer_id: visit['id'],
-          position: visit['position']&.map { |x| x.round(2) },
+          position: position,
           timestamp: timestamp
         )
       end
