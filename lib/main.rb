@@ -26,6 +26,7 @@ end
 
 # require models
 require './lib/models/peers_dump.rb'
+require './lib/models/data_point.rb'
 
 # require jobs
 require './lib/jobs/job.rb'
