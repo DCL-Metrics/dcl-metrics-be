@@ -8,7 +8,7 @@ module Services
     def initialize(date)
       @snapshot_ids= DATABASE_CONNECTION[
         "select id from peers_dump where created_at :: date = '#{date}'"
-      ].all.flat_map(&:values)
+      ].all.flat_map(&:values).compact
     end
 
     def call
