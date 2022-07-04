@@ -60,13 +60,17 @@ module Jobs
         prev_data_point = visit
       end
 
-      # last event is logout unless it's within 10 minutes of the end of the day
-      unless within_time_delta?(prev_data_point[:timestamp], end_of_day, 10)
-        create_event('logout', address, prev_data_point)
+      # skip if there was no previous datapoint for this address
+      # (how is that the case though..?)
+      unless prev_data_point.nil?
+        # last event is logout unless it's within 10 minutes of the end of the day
+        unless within_time_delta?(prev_data_point[:timestamp], end_of_day, 10)
+          create_event('logout', address, prev_data_point)
 
-        if afk
-          afk = false
-          create_event('afk_end', address, prev_data_point)
+          if afk
+            afk = false
+            create_event('afk_end', address, prev_data_point)
+          end
         end
       end
 
