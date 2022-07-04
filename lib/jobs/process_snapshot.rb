@@ -4,9 +4,15 @@ module Jobs
       snapshot = Models::PeersDump[snapshot_id]
       timestamp = snapshot.created_at
 
+      # TODO: if snapshot data were NDJ format
+      # snapshot.data_ndj.split("\n").each do |data|
+      #   visit = JSON.parse(data)
+      #   ...
+      # end
+
       snapshot.data.each do |visit|
         coordinates = visit['parcel']&.join(',')
-        position = visit['position']&.map { |x| x.round(2) }&.join(',')
+        position = visit['position']&.map(&:round)&.join(',')
 
         Models::DataPoint.create(
           address: visit['address'],
