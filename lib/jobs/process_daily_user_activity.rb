@@ -12,7 +12,7 @@ module Jobs
       # raw_data = JSON.parse(File.read('./user_activity_fixture.json'))
       # data = JSON.parse(raw_data)
 
-      date, _time, timezone = data.first['timestamp'].split
+      date, _time, timezone = data.first[:timestamp].split
       beginning_of_day = "#{date} 00:00:00 #{timezone}"
       end_of_day = "#{date} 23:59:59 #{timezone}"
 
@@ -21,11 +21,11 @@ module Jobs
 
       data.each do |visit|
         # sometimes coordinates are nil
-        next unless visit['coordinates']
+        next unless visit[:coordinates]
 
         if prev_data_point.nil?
           # are they in the middle of a session from the previous day?
-          if within_time_delta?(visit['timestamp'], beginning_of_day, 10)
+          if within_time_delta?(visit[:timestamp], beginning_of_day, 10)
             create_event('enter_parcel', address, visit)
           else
             create_event('login', address, visit)
@@ -33,13 +33,13 @@ module Jobs
           end
         else
           case
-          when prev_data_point['position'] == visit['position'] && !afk
+          when prev_data_point[:position] == visit[:position] && !afk
             afk = true
             create_event('afk_start', address, prev_data_point)
-          when prev_data_point['position'] != visit['position'] && afk
+          when prev_data_point[:position] != visit[:position] && afk
             afk = false
             create_event('afk_end', address, visit)
-          when !within_time_delta?(prev_data_point['timestamp'], visit['timestamp'], 10)
+          when !within_time_delta?(prev_data_point['timestamp'], visit[:timestamp], 10)
             create_event('logout', address, prev_data_point)
 
             if afk
@@ -48,7 +48,7 @@ module Jobs
             end
 
             create_event('login', address, visit)
-          when prev_data_point['coordinates'] != visit['coordinates']
+          when prev_data_point[:coordinates] != visit[:coordinates]
             create_event('enter_parcel', address, visit)
           # # NOTE: user can travel ~40 parcels / minute on foot and i'm taking a snapshot
           # # currently every 2.5 minutes so it's unreliable to try to calculate
@@ -61,7 +61,7 @@ module Jobs
       end
 
       # last event is logout unless it's within 10 minutes of the end of the day
-      unless within_time_delta?(prev_data_point['timestamp'], end_of_day, 10)
+      unless within_time_delta?(prev_data_point[:timestamp], end_of_day, 10)
         create_event('logout', address, prev_data_point)
 
         if afk
@@ -87,9 +87,9 @@ module Jobs
     def create_event(event_type, address, visit)
       Models::UserEvent.create(
         address: address,
-        coordinates: visit['coordinates'],
+        coordinates: visit[:coordinates],
         event: event_type,
-        timestamp: visit['timestamp']
+        timestamp: visit[:timestamp]
       )
     end
 
