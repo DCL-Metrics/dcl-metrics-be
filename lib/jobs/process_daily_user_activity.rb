@@ -12,9 +12,9 @@ module Jobs
       # raw_data = JSON.parse(File.read('./user_activity_fixture.json'))
       # data = JSON.parse(raw_data)
 
-      date, _time, timezone = data.first[:timestamp].split
-      beginning_of_day = "#{date} 00:00:00 #{timezone}"
-      end_of_day = "#{date} 23:59:59 #{timezone}"
+      date, _time, timezone = data.first[:timestamp].to_s.split
+      beginning_of_day = DateTime.parse("#{date} 00:00:00 #{timezone}").to_time
+      end_of_day = DateTime.parse("#{date} 23:59:59 #{timezone}").to_time
 
       prev_data_point = nil
       afk = false
@@ -39,7 +39,7 @@ module Jobs
           when prev_data_point[:position] != visit[:position] && afk
             afk = false
             create_event('afk_end', address, visit)
-          when !within_time_delta?(prev_data_point['timestamp'], visit[:timestamp], 10)
+          when !within_time_delta?(prev_data_point[:timestamp], visit[:timestamp], 10)
             create_event('logout', address, prev_data_point)
 
             if afk
@@ -94,7 +94,7 @@ module Jobs
     end
 
     def within_time_delta?(t1, t2, delta)
-      ( DateTime.parse(t1).to_time - DateTime.parse(t2).to_time ).abs < ( delta * 60 )
+      ( t1 - t2 ).abs < ( delta * 60 )
     end
 
     # def teleported?(visit_a, visit_b)
