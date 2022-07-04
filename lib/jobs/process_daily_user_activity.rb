@@ -12,7 +12,10 @@ module Jobs
       # raw_data = JSON.parse(File.read('./user_activity_fixture.json'))
       # data = JSON.parse(raw_data)
 
-      date, _time, timezone = data.first[:timestamp].to_s.split
+      timestamp = data.detect { |d| d[:timestamp] != nil }
+      return unless timestamp # TODO: ensure datapoint is not created without timestamp
+
+      date, _time, timezone = timestamp.to_s.split
       beginning_of_day = DateTime.parse("#{date} 00:00:00 #{timezone}").to_time
       end_of_day = DateTime.parse("#{date} 23:59:59 #{timezone}").to_time
 
