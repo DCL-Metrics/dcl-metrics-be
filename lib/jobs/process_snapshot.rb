@@ -11,6 +11,8 @@ module Jobs
       # end
 
       snapshot.data.each do |visit|
+        # NOTE: it seems like sometimes this has brackets around it
+        # but i can't reliably reproduce it
         coordinates = visit['parcel']&.join(',')
         position = visit['position']&.map(&:round)&.join(',')
 
