@@ -21,7 +21,12 @@ module Services
     def call
       SERVERS.flat_map do |host|
         raw_data = `curl -s #{host}/comms/peers`
-        data = JSON.parse(raw_data)
+
+        begin
+          data = JSON.parse(raw_data)
+        rescue JSON::ParserError
+          next
+        end
 
         data['peers'] if data['ok']
       end.compact.to_json
