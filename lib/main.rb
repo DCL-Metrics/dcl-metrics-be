@@ -31,10 +31,10 @@ require './lib/models/user_event.rb'
 
 # require jobs
 require './lib/jobs/job.rb'
+require './lib/jobs/fetch_peer_data.rb'
 require './lib/jobs/process_snapshot.rb'
 require './lib/jobs/process_daily_user_activity.rb'
 
 # require services
-require './lib/services/fetch_peer_data.rb'
 require './lib/services/daily_traffic_calculator.rb'
 require './lib/services/daily_user_activity_builder.rb'

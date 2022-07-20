@@ -1,5 +1,5 @@
-module Services
-  class FetchPeerData
+module Jobs
+  class FetchPeerData < Job
     SERVERS = %w[
       "https://peer-ec1.decentraland.org"
       "https://peer-ec2.decentraland.org"
@@ -14,12 +14,8 @@ module Services
       "https://peer.dclnodes.io"
     ]
 
-    def self.call
-      new.call
-    end
-
-    def call
-      SERVERS.flat_map do |host|
+    def perform
+      data = SERVERS.flat_map do |host|
         raw_data = `curl -s #{host}/comms/peers`
 
         begin
@@ -29,7 +25,9 @@ module Services
         end
 
         data['peers'] if data['ok']
-      end.compact.to_json
+      end.compact
+
+      Models::PeersDump.create(data_json: data.to_json)
     end
   end
 end
