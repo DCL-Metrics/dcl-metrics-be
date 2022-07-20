@@ -1,2 +1,4 @@
 .env
+.env.test
+*.rdb
 user_activity_fixture.json
