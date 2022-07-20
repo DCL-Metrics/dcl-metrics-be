@@ -82,14 +82,22 @@ module Jobs
       end
 
       # last event is logout unless it's within 10 minutes of the end of the day
-      unless within_time_delta?(prev_data_point[:timestamp], end_of_day, 10)
-        build_event('logout', prev_data_point)
-        build_event('exit_parcel', prev_data_point)
+      if prev_data_point
+        if prev_data_point[:timestamp]
+          unless within_time_delta?(prev_data_point[:timestamp], end_of_day, 10)
+            build_event('logout', prev_data_point)
+            build_event('exit_parcel', prev_data_point)
 
-        if afk
-          afk = false
-          build_event('afk_end', prev_data_point)
+            if afk
+              afk = false
+              build_event('afk_end', prev_data_point)
+            end
+          end
+        else
+          print "no timestamp for address #{address} on #{date}"
         end
+      else
+        print "no prev_data_point for address #{address} on #{date}"
       end
 
       create_user_activity('afk', 'afk_start', 'afk_end')
