@@ -28,6 +28,7 @@ end
 require './lib/models/peers_dump.rb'
 require './lib/models/data_point.rb'
 require './lib/models/user_event.rb'
+require './lib/models/user_activity.rb'
 
 # require jobs
 require './lib/jobs/job.rb'
