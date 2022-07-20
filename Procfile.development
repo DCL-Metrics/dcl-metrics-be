@@ -1,0 +1,3 @@
+web: bundle exec puma -R config.ru -p ${PORT:-3000} -e ${RACK_ENV:-development}
+redis: redis-server --port 6379
+worker: bundle exec sidekiq -r ./lib/main.rb -e ${RACK_ENV:-development} -c 5 -v

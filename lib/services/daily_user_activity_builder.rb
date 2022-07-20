@@ -1,5 +1,5 @@
 module Services
-  class DailyTrafficCalculator
+  class DailyUserActivityBuilder
     def self.call(date:)
       new(date).call
     end

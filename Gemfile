@@ -21,4 +21,11 @@ end
 
 group :development do
   gem 'rerun'
+  gem 'foreman'
 end
+
+group :test do
+  gem 'rack-test'
+  gem 'minitest'
+end
+

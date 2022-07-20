@@ -1,26 +1,31 @@
 module Jobs
   class ProcessDailyUserActivity < Job
     def perform(address, date)
+      @address = address
+
       data = DATABASE_CONNECTION[
         "select * from data_points
-        where address = '#{address}'
+        where address = '#{@address}'
         and date = '#{date}'
         order by timestamp"
       ]
 
-      # for local testing
-      # raw_data = JSON.parse(File.read('./user_activity_fixture.json'))
-      # data = JSON.parse(raw_data)
-
-      timestamp = data.detect { |d| d[:timestamp] != nil }
-      return unless timestamp # TODO: ensure datapoint is not created without timestamp
+      timestamp = data.detect { |d| d[:timestamp] != nil }[:timestamp]
+      return unless timestamp
 
       date, _time, timezone = timestamp.to_s.split
       beginning_of_day = DateTime.parse("#{date} 00:00:00 #{timezone}").to_time
       end_of_day = DateTime.parse("#{date} 23:59:59 #{timezone}").to_time
 
+      @events = []
       prev_data_point = nil
       afk = false
+
+      # pull any existing Models::UserEvent and add them to events array
+      Models::UserEvent.where(address: address).each do |e|
+        build_event(e.event, e.values)
+        e.delete # ensure user events don't accumulate over time
+      end
 
       data.each do |visit|
         # sometimes coordinates are nil
@@ -29,75 +34,128 @@ module Jobs
         if prev_data_point.nil?
           # are they in the middle of a session from the previous day?
           if within_time_delta?(visit[:timestamp], beginning_of_day, 10)
-            create_event('enter_parcel', address, visit)
+            # only build a login event around midnight if there is no existing
+            # login event carried over from the previous day
+            if @events.detect { |e| e[:event] == 'login' }.nil?
+              build_event('login', visit)
+              build_event('enter_parcel', visit)
+            end
+
+            recent_entrance = @events.detect { |e| e[:event] == 'enter_parcel' }
+            if recent_entrance && recent_entrance[:coordinates] != visit[:coordinates]
+              build_event('exit_parcel', recent_entrance)
+              build_event('enter_parcel', visit)
+            end
           else
-            create_event('login', address, visit)
-            create_event('enter_parcel', address, visit)
+            build_event('login', visit)
+            build_event('enter_parcel', visit)
           end
+
         else
           case
           when prev_data_point[:position] == visit[:position] && !afk
             afk = true
-            create_event('afk_start', address, prev_data_point)
+            build_event('afk_start', prev_data_point)
           when prev_data_point[:position] != visit[:position] && afk
             afk = false
-            create_event('afk_end', address, visit)
+            build_event('afk_end', visit)
           when !within_time_delta?(prev_data_point[:timestamp], visit[:timestamp], 10)
-            create_event('logout', address, prev_data_point)
+            build_event('logout', prev_data_point)
 
             if afk
               afk = false
-              create_event('afk_end', address, prev_data_point)
+              build_event('afk_end', prev_data_point)
             end
 
-            create_event('login', address, visit)
+            build_event('login', visit)
           when prev_data_point[:coordinates] != visit[:coordinates]
-            create_event('enter_parcel', address, visit)
+            build_event('exit_parcel', prev_data_point)
+            build_event('enter_parcel', visit)
           # # NOTE: user can travel ~40 parcels / minute on foot and i'm taking a snapshot
           # # currently every 2.5 minutes so it's unreliable to try to calculate
           # # teleports currently
-          #   create_event('teleport', address, visit) if teleported?(prev_data_point, visit)
+          #   build_event('teleport', visit) if teleported?(prev_data_point, visit)
           end
         end
 
         prev_data_point = visit
       end
 
-      # skip if there was no previous datapoint for this address
-      # (how is that the case though..?)
-      unless prev_data_point.nil?
-        # last event is logout unless it's within 10 minutes of the end of the day
-        unless within_time_delta?(prev_data_point[:timestamp], end_of_day, 10)
-          create_event('logout', address, prev_data_point)
+      # last event is logout unless it's within 10 minutes of the end of the day
+      unless within_time_delta?(prev_data_point[:timestamp], end_of_day, 10)
+        build_event('logout', prev_data_point)
+        build_event('exit_parcel', prev_data_point)
 
-          if afk
-            afk = false
-            create_event('afk_end', address, prev_data_point)
-          end
+        if afk
+          afk = false
+          build_event('afk_end', prev_data_point)
         end
       end
 
-      nil
+      create_user_activity('afk', 'afk_start', 'afk_end')
+      create_user_activity('session', 'login', 'logout')
+      create_user_activity('visit', 'enter_parcel', 'exit_parcel')
 
-      # create user activity:
-      # parcel enter_at exit_at duration user_id
+      # create UserEvent from any remaining events
+      # TODO: see how many are actually created and then figure out how to deal with them
+      @events.each do |e|
+        # if within_time_delta?(e[:timestamp], end_of_day, 10)
+        Models::UserEvent.create(
+          address: address,
+          coordinates: e[:coordinates],
+          event: e[:event],
+          position: e[:position],
+          timestamp: e[:timestamp]
+        )
+      end
 
       # TODO: separate job
       # create user tags (landowner, estateowner, golfcraft player, meta8balls player, etc)
 
       # TODO: separate job
       # create location tags (ex: "district", "vegas district", "chateau satoshi")
+      # use POI list
+
+      nil
     end
 
     private
 
-    def create_event(event_type, address, visit)
-      Models::UserEvent.create(
-        address: address,
+    # TODO: probably a more efficient way to do this
+    def create_user_activity(name, starting_event, ending_event)
+      ending_events   = @events.select { |e| e[:event] == ending_event }
+      starting_events = @events.select { |e| e[:event] == starting_event}
+      return unless ending_events.any? && starting_events.any?
+
+      ending_events.reverse.map do |e|
+        start = starting_events.pop
+        start_time = start[:timestamp]
+
+        Models::UserActivity.create(
+          name: name,
+          address: @address,
+          starting_coordinates: start[:coordinates],
+          starting_position: start[:position],
+          ending_coordinates: e[:coordinates],
+          ending_position: e[:position],
+          start_time: start_time,
+          end_time: e[:timestamp],
+          duration: e[:timestamp] - start_time
+        )
+
+
+        @events.delete(start)
+        @events.delete(e)
+      end
+    end
+
+    def build_event(event_type, visit)
+      @events << {
         coordinates: visit[:coordinates],
         event: event_type,
+        position: visit[:position],
         timestamp: visit[:timestamp]
-      )
+      }
     end
 
     def within_time_delta?(t1, t2, delta)
