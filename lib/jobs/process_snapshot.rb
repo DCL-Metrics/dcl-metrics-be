@@ -16,6 +16,9 @@ module Jobs
         coordinates = visit['parcel']&.join(',')
         position = visit['position']&.map(&:round)&.join(',')
 
+        next if coordinates.nil?
+        next if position.nil?
+
         Models::DataPoint.create(
           address: visit['address'],
           coordinates: coordinates,

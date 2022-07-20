@@ -13,6 +13,8 @@ module Services
 
     def call
       addresses.each do |address|
+        next if address.nil?
+
         Jobs::ProcessDailyUserActivity.perform_async(address, date)
       end
     end
