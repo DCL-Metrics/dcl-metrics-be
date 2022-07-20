@@ -3,6 +3,7 @@
 # String  :address,     null: false
 # String  :coordinates, null: false
 # String  :event,       null: false
+# String  :position,    null: false
 # Time    :timestamp,   null: false
 #
 # Time    :created_at,  null: false
