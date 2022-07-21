@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'csv'
 
-class DataProcessingSpec < BaseSpec
+class UserActivitySpec < BaseSpec
   before do
     # insert known data into db
     Dir.glob('./spec/fixtures/data_points/*.csv') do |filename|
@@ -80,8 +80,4 @@ class DataProcessingSpec < BaseSpec
     assert_equal 5, user_two_activities.count
     assert_equal ['session', 'visit'], user_two_activities.map(&:name).uniq.sort
   end
-
-  # process user tags
-
-  # process location tags
 end
