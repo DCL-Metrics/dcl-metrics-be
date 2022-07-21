@@ -1,0 +1,114 @@
+# Users
+
++ DAO stuff (vp, voting history, etc)
+
+https://peer.decentraland.org/lambdas/profiles/0x..
+
+{
+  "avatars": [
+    {
+      "userId": "0x22480812a9a0669783c06d359182a583bd1d9fc2",
+      "email": "",
+      "name": "cestfini#9fc2",
+      "hasClaimedName": false,
+      "description": "",
+      "ethAddress": "0x22480812a9a0669783c06d359182a583bd1d9fc2",
+      "version": 2,
+      "avatar": {
+        "bodyShape": "urn:decentraland:off-chain:base-avatars:BaseMale",
+        "snapshots": {
+          "face": "https://peer.decentraland.org/content/contents/QmeBEgsxrxTAEs9kFxgwyfJN8vUtqw8WJ4bthwhti3S9aL",
+          "face128": "https://peer.decentraland.org/content/contents/QmVGRZxYmWL6z6JhkQtzo1KkWqdeZfxt6gzuCPY6nvbmhb",
+          "face256": "https://peer.decentraland.org/content/contents/Qma7zpPZkwFDyCe1gj62nBYsYTmD2ZSSvxcQXZDmR1FTnC",
+          "body": "https://peer.decentraland.org/content/contents/QmeqDMMK3KYSzuboKnPPtjG94bHCYtfCmHEeYRhpSBRuhn"
+        },
+        "eyes": {},
+        "hair": {},
+        "skin": {},
+        "wearables": []
+      },
+      "tutorialStep": 384,
+      "interests": [ ],
+      "unclaimedName": "cestfini"
+    }
+  ]
+}
+
+https://nft-api.decentraland.org/v1/nfts?owner=0x..
+
+
+# Locations
+
+https://api.decentraland.org/v2/tiles
+
+{
+  "id":"-150,150",
+  "x":-150,
+  "y":150,
+  "updatedAt":1543335084,
+  "type":"district",
+  "estateId":"1186",
+  "owner":"0xa65be351527ebcf8c1707d1e444dac38b41a5faf",
+  "tokenId":"115792089237316195423570985008687907802227629627499794519951392893147897921686"
+}
+
+https://peer.decentraland.org/lambdas/contracts/pois
+
+[
+  "-29,55",
+  "-108,-30",
+  "144,-34",
+  "-10,58",
+  "-79,-54",
+  "111,-23",
+  "25,74",
+  "26,9",
+  "-143,-125",
+  "-25,25",
+  "-119,133",
+  "-48,-110",
+  "23,-123",
+  "38,103",
+  "82,-149",
+  "52,83",
+  "10,52",
+  "19,-120",
+  "-67,-114",
+  "22,-118",
+  "46,-52",
+  "-96,110",
+  "-108,129",
+  "-119,125",
+  "96,-30",
+  "-1,-135",
+  "-23,69",
+  "-116,-49",
+  "95,-7"
+]
+
+https://peer.decentraland.org/content/entities/scene?pointer=29,-88
+
+version "v3"
+id  "bafkreidb4zxdjyk5he3qxkb…jmsdfpxdvhfn2jyhndmxzr4"
+type  "scene"
+timestamp 1658311264415
+pointers
+  0 "29,-88"
+content […]
+metadata
+  display
+  title "McKenna's Grotto"
+  description "Visit the bard McKenna in the Metaverse"
+owner ""
+contact
+  name  "dax"
+  email "dax.dcl@gmail.com"
+main  "bin/game.js"
+tags  []
+spawnPoints […]
+scene
+  parcels […]
+  base  "29,-88"
+communications  {…}
+policy  {…}
+source  {…}
