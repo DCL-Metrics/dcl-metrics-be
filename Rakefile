@@ -1,11 +1,15 @@
-require 'rake/testtask'
-
 # load environment files if running locally
 if ENV['RACK_ENV'] == 'test' || ENV['RACK_ENV'] == 'development'
   require 'dotenv'
   Dotenv.load(
     File.expand_path("../.env.#{ENV['RACK_ENV']}", __FILE__),
     File.expand_path('../.env', __FILE__),)
+end
+
+task :default => :test
+task :test do
+  require './spec/spec_helper'
+  Dir.glob('./spec/*_spec.rb').each { |file| require file}
 end
 
 namespace :heroku do
