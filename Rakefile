@@ -8,15 +8,6 @@ if ENV['RACK_ENV'] == 'test' || ENV['RACK_ENV'] == 'development'
     File.expand_path('../.env', __FILE__),)
 end
 
-task :default => :test
-
-Rake::TestTask.new do |t|
-  t.libs << "spec"
-  t.test_files = FileList['spec/**/*_spec.rb']
-  t.verbose = false
-  t.warning = false
-end
-
 namespace :heroku do
   desc "run tasks on application release"
   task :release do
@@ -93,7 +84,7 @@ namespace :db do
 
   desc "Drop, create and migrate DB"
   task :reset do
-    return unless ENV['RACK_ENV'] == 'development'
+    return unless %w[development test].include?(ENV['RACK_ENV'])
 
     Rake::Task["db:drop"].invoke
     Rake::Task["db:create"].invoke
