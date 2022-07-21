@@ -1,6 +1,3 @@
-require 'spec_helper'
-require 'csv'
-
 class UserActivitySpec < BaseSpec
   before do
     # insert known data into db

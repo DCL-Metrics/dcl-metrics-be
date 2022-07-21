@@ -1,6 +1,3 @@
-require 'spec_helper'
-require 'csv'
-
 class DailyStatsSpec < BaseSpec
   before do
     # insert known data into db

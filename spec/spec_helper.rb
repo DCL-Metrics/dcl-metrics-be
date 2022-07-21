@@ -13,6 +13,10 @@ require 'rack/test'
 require 'minitest/autorun'
 require 'pry'
 
+# require csv and json for fixtures
+require 'json'
+require 'csv'
+
 # run sidekiq jobs immediately (skip the queue)
 require "sidekiq/testing"
 Sidekiq::Testing.inline!
