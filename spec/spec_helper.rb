@@ -1,3 +1,4 @@
+ENV['DATABASE_ENV'] = 'test'
 ENV['RACK_ENV'] = 'test'
 ENV['APP_ENV'] = 'test'
 
