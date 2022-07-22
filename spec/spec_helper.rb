@@ -32,6 +32,23 @@ class BaseSpec < Minitest::Spec
     end
   end
 
+  def create_data_points
+    Dir.glob('./spec/fixtures/data_points/*.csv') do |filename|
+      data = CSV.parse(File.read(filename), headers: true)
+
+      data.each do |row|
+        Models::DataPoint.create(
+          address: row['address'],
+          coordinates: row['coordinates'],
+          date: row['date'],
+          peer_id: row['peer_id'],
+          position: row['position'],
+          timestamp: Time.parse(row['timestamp'])
+        )
+      end
+    end
+  end
+
   def expand_path(path)
     File.expand_path(path, __FILE__)
   end
