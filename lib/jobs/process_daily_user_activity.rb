@@ -105,7 +105,6 @@ module Jobs
       create_user_activity('visit', 'enter_parcel', 'exit_parcel')
 
       # create UserEvent from any remaining events
-      # TODO: see how many are actually created and then figure out how to deal with them
       @events.each do |e|
         # if within_time_delta?(e[:timestamp], end_of_day, 10)
         Models::UserEvent.create(
