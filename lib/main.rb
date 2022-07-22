@@ -6,6 +6,7 @@ require 'sequel'
 DATABASE_CONNECTION = Sequel.connect(ENV['DATABASE_URL'])
 Sequel::Model.plugin :timestamps, update_on_create: true
 Sequel::Model.plugin :update_or_create
+Sequel::Model.plugin :validation_helpers
 
 require 'sidekiq'
 Sidekiq.configure_client do |config|

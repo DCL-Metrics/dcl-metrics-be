@@ -19,5 +19,9 @@
 
 module Models
   class UserActivity < Sequel::Model
+    def validate
+      super
+      validates_unique([:name, :address, :start_time, :end_time])
+    end
   end
 end
