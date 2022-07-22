@@ -43,7 +43,7 @@ module Jobs
 
             recent_entrance = @events.detect { |e| e[:event] == 'enter_parcel' }
             if recent_entrance && recent_entrance[:coordinates] != visit[:coordinates]
-              build_event('exit_parcel', recent_entrance)
+              build_event('exit_parcel', visit)
               build_event('enter_parcel', visit)
             end
           else
@@ -69,7 +69,7 @@ module Jobs
 
             build_event('login', visit)
           when prev_data_point[:coordinates] != visit[:coordinates]
-            build_event('exit_parcel', prev_data_point)
+            build_event('exit_parcel', visit)
             build_event('enter_parcel', visit)
           # # NOTE: user can travel ~40 parcels / minute on foot and i'm taking a snapshot
           # # currently every 2.5 minutes so it's unreliable to try to calculate
@@ -130,26 +130,39 @@ module Jobs
 
     # TODO: probably a more efficient way to do this
     def create_user_activity(name, starting_event, ending_event)
-      ending_events   = @events.select { |e| e[:event] == ending_event }
-      starting_events = @events.select { |e| e[:event] == starting_event}
-      return unless ending_events.any? && starting_events.any?
+      ending_events = @events.
+        select  { |e| e[:event] == ending_event }.
+        sort_by { |e| e[:timestamp] }.
+        uniq
+
+      starting_events = @events.
+        select { |e| e[:event] == starting_event}.
+        sort_by { |e| e[:timestamp] }.
+        uniq
+
+      return unless starting_events.any?
 
       ending_events.reverse.map do |e|
-        start = starting_events.pop
+        start = starting_events.select { |se| se[:timestamp] < e[:timestamp] }.pop
+        next unless start
+
         start_time = start[:timestamp]
 
-        Models::UserActivity.create(
+        query = {
           name: name,
           address: @address,
+          date: start_time.to_date,
+          start_time: start_time,
           starting_coordinates: start[:coordinates],
           starting_position: start[:position],
-          ending_coordinates: e[:coordinates],
-          ending_position: e[:position],
-          start_time: start_time,
-          end_time: e[:timestamp],
-          duration: e[:timestamp] - start_time
-        )
+        }
 
+        Models::UserActivity.update_or_create(query) do |ua|
+          ua.ending_coordinates = e[:coordinates]
+          ua.ending_position = e[:position]
+          ua.end_time = e[:timestamp]
+          ua.duration = e[:timestamp] - start_time
+        end
 
         @events.delete(start)
         @events.delete(e)

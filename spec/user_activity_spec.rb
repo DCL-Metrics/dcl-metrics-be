@@ -32,15 +32,40 @@ class UserActivitySpec < BaseSpec
     assert_equal '120,-25', afk.starting_coordinates
     assert_equal '120,-25', afk.ending_coordinates
 
+    visit = user_one_activities.detect { |a| a.name == 'visit' }
+    assert_equal 720, afk.duration
+    assert_equal '120,-25', afk.starting_coordinates
+    assert_equal '120,-25', afk.ending_coordinates
+
     user_two_activities = Models::UserActivity.where(address: address_two)
     assert_equal 2, user_two_activities.count
-    assert_equal ['visit'], user_two_activities.map(&:name).uniq
+    assert_equal ['visit', 'visit'], user_two_activities.map(&:name)
+
+    visits = user_two_activities.
+      all.
+      select { |a| a.name == 'visit' }.
+      sort_by(&:start_time)
+
+    assert_equal 180, visits[0].duration
+    expected_start = Time.parse('2022-04-10 23:48:41 +0000')
+    expected_end = Time.parse('2022-04-10 23:51:41 +0000')
+    assert_equal expected_start, visits[0].start_time
+    assert_equal expected_end, visits[0].end_time
+    assert_equal '20,23', visits[0].starting_coordinates
+    assert_equal '20,24', visits[0].ending_coordinates
+
+    assert_equal 120, visits[1].duration
+    expected_start = Time.parse('2022-04-10 23:51:41 +0000')
+    expected_end = Time.parse('2022-04-10 23:53:41 +0000')
+    assert_equal expected_start, visits[1].start_time
+    assert_equal expected_end, visits[1].end_time
+    assert_equal '20,24', visits[1].starting_coordinates
+    assert_equal '20,25', visits[1].ending_coordinates
 
     # process user activity on day two
     # print "\n\nDay two\n\n"
     Services::DailyUserActivityBuilder.call(date: day_two)
-
-    assert_equal 11, Models::UserActivity.count
+    assert_equal 10, Models::UserActivity.count
 
     user_one_activities = Models::UserActivity.where(address: address_one)
     assert_equal 6, user_one_activities.count
@@ -56,8 +81,44 @@ class UserActivitySpec < BaseSpec
     assert_equal '12,-5', afk.starting_coordinates
     assert_equal '12,-5', afk.ending_coordinates
 
+    visits = user_one_activities.all.select { |a| a.name == 'visit' }
+
+    assert_equal 720, visits[0].duration
+    assert_equal '120,-25', visits[0].starting_coordinates
+    assert_equal '120,-25', visits[0].ending_coordinates
+
+    assert_equal 900, visits[1].duration
+    assert_equal '12,-5', visits[1].starting_coordinates
+    assert_equal '12,-5', visits[1].ending_coordinates
+
     user_two_activities = Models::UserActivity.where(address: address_two)
-    assert_equal 5, user_two_activities.count
-    assert_equal ['session', 'visit'], user_two_activities.map(&:name).uniq.sort
+    assert_equal 4, user_two_activities.count
+    assert_equal ['session', 'visit'], user_two_activities.map(&:name).sort.uniq
+
+    session = user_two_activities.detect { |a| a.name == 'session' }
+    assert_equal 740, session.duration
+    assert_equal '20,23', session.starting_coordinates
+    assert_equal '22,25', session.ending_coordinates
+
+    visits = user_two_activities.
+      all.
+      select { |a| a.name == 'visit' }.
+      sort_by(&:start_time)
+
+    assert_equal 180, visits[0].duration
+    assert_equal '20,23', visits[0].starting_coordinates
+    assert_equal '20,24', visits[0].ending_coordinates
+
+    assert_equal 120, visits[1].duration
+    assert_equal '20,24', visits[1].starting_coordinates
+    assert_equal '20,25', visits[1].ending_coordinates
+
+    assert_equal 440, visits[2].duration
+    assert_equal '20,25', visits[2].starting_coordinates
+    assert_equal '22,25', visits[2].ending_coordinates
+
+    # TODO: there should be one more event here but it doesn't show up
+    # cause there's only one datapoint when the user shows up on the land.
+    # not sure actually how that *should* be handled
   end
 end
