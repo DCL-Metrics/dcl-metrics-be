@@ -73,8 +73,6 @@ class DailyUserStatsSpec < BaseSpec
 
     assert_equal 2, top_visits.count
 
-    # TODO: this should have two entries
-    # but overnight sessions are not counted correctly
     top_time_spent = Models::DailyUserStats.
       where(date: day_two).
       exclude(time_spent: nil).
@@ -84,5 +82,35 @@ class DailyUserStatsSpec < BaseSpec
     assert_equal 1, top_time_spent.count
     assert_equal address_one, top_time_spent[0].address
     assert_equal 900, top_time_spent[0].time_spent
+
+
+    # process daily stats for day one again
+    # they should be updated since there are more user activities
+    Services::DailyUserStatsBuilder.call(date: day_one)
+
+    # an additional stat is present
+    assert_equal 7, Models::DailyUserStats.count
+
+    top_visits = Models::DailyUserStats.
+      where(date: day_one).
+      exclude(parcels_visited: nil).
+      order(Sequel.desc(:parcels_visited)).
+      all
+
+    assert_equal 2, top_visits.count
+    assert_equal address_two, top_visits[0].address
+    assert_equal 3, top_visits[0].parcels_visited
+
+    top_time_spent = Models::DailyUserStats.
+      where(date: day_one).
+      exclude(time_spent: nil).
+      order(Sequel.desc(:time_spent)).
+      all
+
+    # now both sessions are present and
+    # address two actually had a longer session
+    assert_equal 2, top_time_spent.count
+    assert_equal address_two, top_time_spent[0].address
+    assert_equal 740, top_time_spent[0].time_spent
   end
 end

@@ -9,6 +9,7 @@ module Services
     end
 
     def call
+      Models::DailyUserStats.where(date: date).delete
       Jobs::ProcessDailyUserStats.perform_async(date)
     end
 

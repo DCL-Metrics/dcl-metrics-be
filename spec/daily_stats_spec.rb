@@ -50,5 +50,11 @@ class DailyStatsSpec < BaseSpec
     day_two_stats = Models::DailyStats.last
     assert_equal 2, day_two_stats.unique_users
     assert_equal 2, day_two_stats.total_active_parcels
+
+    # LOW-PRIORITY TODO
+    # process daily stats for day one again
+    # they can be updated since there are more user activities
+    # in this case not cause i didn't add that data but...
+    # Services::DailyUserActivityBuilder.call(date: day_one)
   end
 end
