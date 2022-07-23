@@ -1,5 +1,5 @@
-:concurrency: 5
-:queues:
+concurrency: 5
+queues:
   - ["scraping", 6]
   - ["processing", 2]
   - ["low", 1]
