@@ -26,6 +26,7 @@ namespace :compute do
     require './lib/main'
 
     date = args[:date] || (Date.today - 1).to_s
+    previous_date = (Date.parse(date) - 1).to_s
 
     # create data points from peers dump
     Services::DailyTrafficCalculator.call(date: date)
@@ -35,7 +36,6 @@ namespace :compute do
     Jobs::ProcessUserActivities.perform_in(420, date) # 7 minutes
 
     # rebuild all user activities for previous day
-    previous_date = (Date.parse(date) - 1).to_s
     Jobs::ProcessUserActivities.perform_in(720, previous_date) # 12 minutes
 
     # process all daily stats for given date
