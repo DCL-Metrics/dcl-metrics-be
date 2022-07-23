@@ -33,6 +33,7 @@ require './lib/models/user_event.rb'
 require './lib/models/user_activity.rb'
 require './lib/models/daily_stats.rb'
 require './lib/models/daily_user_stats.rb'
+require './lib/models/daily_parcel_stats.rb'
 
 # require jobs
 require './lib/jobs/job.rb'
@@ -41,9 +42,11 @@ require './lib/jobs/process_snapshot.rb'
 require './lib/jobs/process_daily_user_activity.rb'
 require './lib/jobs/process_daily_stats.rb'
 require './lib/jobs/process_daily_user_stats.rb'
+require './lib/jobs/process_daily_parcel_stats.rb'
 
 # require services
 require './lib/services/daily_traffic_calculator.rb'
 require './lib/services/daily_user_activity_builder.rb'
 require './lib/services/daily_stats_builder.rb'
 require './lib/services/daily_user_stats_builder.rb'
+require './lib/services/daily_parcel_stats_builder.rb'
