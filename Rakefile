@@ -42,10 +42,10 @@ namespace :compute do
     Jobs::ProcessAllDailyStats.perform_in(960, date) # 16 minutes
 
     # process all daily stats for previous day
-    Jobs::ProcessAllDailyStats.perform_in(1200, previous_date) # 20 minutes
+    Jobs::ProcessAllDailyStats.perform_in(1080, previous_date) # 18 minutes
 
     # clean up database
-    Jobs::CleanUpTransitoryData.perform_in(1500) # 25 minutes
+    Jobs::CleanUpTransitoryData.perform_in(1200) # 20 minutes
   end
 
 end
