@@ -19,6 +19,7 @@ namespace :heroku do
   end
 end
 
+# ex: rake compute:all_daily['2022-07-20']
 namespace :compute do
   desc "compute all daily stats for date and recalculate for the day previous"
   task :all_daily, [:date] do |task, args|
@@ -28,22 +29,23 @@ namespace :compute do
 
     # create data points from peers dump
     Services::DailyTrafficCalculator.call(date: date)
+    Services::DailyTrafficCalculator.call(date: previous_date)
 
     # process all user activities for given date
-    Jobs::ProcessUserActivities.perform_in(900, date) # 15 minutes
+    Jobs::ProcessUserActivities.perform_in(420, date) # 7 minutes
 
     # rebuild all user activities for previous day
     previous_date = (Date.parse(date) - 1).to_s
-    Jobs::ProcessUserActivities.perform_in(1500, previous_date) # 25 minutes
+    Jobs::ProcessUserActivities.perform_in(720, previous_date) # 12 minutes
 
     # process all daily stats for given date
-    Jobs::ProcessAllDailyStats.perform_in(1800, date) # 30 minutes
+    Jobs::ProcessAllDailyStats.perform_in(960, date) # 16 minutes
 
     # process all daily stats for previous day
-    Jobs::ProcessAllDailyStats.perform_in(2400, date) # 40 minutes
+    Jobs::ProcessAllDailyStats.perform_in(1200, previous_date) # 20 minutes
 
     # clean up database
-    Jobs::CleanUpTransitoryData.perform_in(3600) # 60 minutes
+    Jobs::CleanUpTransitoryData.perform_in(1500) # 25 minutes
   end
 
 end
