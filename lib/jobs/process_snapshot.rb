@@ -1,5 +1,7 @@
 module Jobs
   class ProcessSnapshot < Job
+    sidekiq_options queue: 'processing'
+
     def perform(snapshot_id)
       snapshot = Models::PeersDump[snapshot_id]
       timestamp = snapshot.created_at

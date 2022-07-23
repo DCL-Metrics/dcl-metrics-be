@@ -1,5 +1,7 @@
 module Jobs
   class ProcessDailyStats < Job
+    sidekiq_options queue: 'processing'
+
     def perform(date)
       unique_users = DATABASE_CONNECTION[
         "select distinct address from data_points where date = '#{date}'"

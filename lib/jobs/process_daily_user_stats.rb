@@ -1,5 +1,7 @@
 module Jobs
   class ProcessDailyUserStats < Job
+    sidekiq_options queue: 'processing'
+
     def perform(date)
       # TODO: figure out how to filter users who are more than x% AFK
       time_spent = DATABASE_CONNECTION[

@@ -1,5 +1,7 @@
 module Jobs
   class FetchPeerData < Job
+    sidekiq_options queue: 'scraping'
+
     SERVERS = %w[
       "https://peer-ec1.decentraland.org"
       "https://peer-ec2.decentraland.org"

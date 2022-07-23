@@ -1,5 +1,7 @@
 module Jobs
   class ProcessDailyUserActivity < Job
+    sidekiq_options queue: 'processing'
+
     def perform(address, date)
       @address = address
 

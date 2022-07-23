@@ -1,5 +1,7 @@
 module Jobs
   class ProcessDailyParcelStats < Job
+    sidekiq_options queue: 'processing'
+
     def perform(date)
       time_spent = DATABASE_CONNECTION[
         "select
