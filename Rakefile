@@ -19,6 +19,35 @@ namespace :heroku do
   end
 end
 
+namespace :compute do
+  desc "compute all daily stats for date and recalculate for the day previous"
+  task :all_daily, [:date] do |task, args|
+    require './lib/main'
+
+    date = args[:date] || (Date.today - 1).to_s
+
+    # create data points from peers dump
+    Services::DailyTrafficCalculator.call(date: date)
+
+    # process all user activities for given date
+    Jobs::ProcessUserActivities.perform_in(900, date) # 15 minutes
+
+    # rebuild all user activities for previous day
+    previous_date = (Date.parse(date) - 1).to_s
+    Jobs::ProcessUserActivities.perform_in(1500, previous_date) # 25 minutes
+
+    # process all daily stats for given date
+    Jobs::ProcessAllDailyStats.perform_in(1800, date) # 30 minutes
+
+    # process all daily stats for previous day
+    Jobs::ProcessAllDailyStats.perform_in(2400, date) # 40 minutes
+
+    # clean up database
+    Jobs::CleanUpTransitoryData.perform_in(3600) # 60 minutes
+  end
+
+end
+
 namespace :dcl do
   desc "fetch peers"
   task :fetch_peers do

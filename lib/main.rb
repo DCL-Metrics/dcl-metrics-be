@@ -39,10 +39,13 @@ require './lib/models/daily_parcel_stats.rb'
 require './lib/jobs/job.rb'
 require './lib/jobs/fetch_peer_data.rb'
 require './lib/jobs/process_snapshot.rb'
+require './lib/jobs/process_user_activities.rb'
+require './lib/jobs/process_all_daily_stats.rb'
 require './lib/jobs/process_daily_user_activity.rb'
 require './lib/jobs/process_daily_stats.rb'
 require './lib/jobs/process_daily_user_stats.rb'
 require './lib/jobs/process_daily_parcel_stats.rb'
+require './lib/jobs/clean_up_transitory_data.rb'
 
 # require services
 require './lib/services/daily_traffic_calculator.rb'
