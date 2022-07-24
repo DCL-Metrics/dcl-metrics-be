@@ -46,7 +46,7 @@ class Server < Sinatra::Application
     end
   end
 
-  get '/api/parcel_stats/:attribute' do
+  get '/api/parcel_stats/:attribute/:sort' do
     unless %w[time_spent visitors logins logouts].include?(params[:attribute])
       status 400
       return { msg: "'#{params[:attribute]}' is not valid." }.to_json
@@ -54,16 +54,33 @@ class Server < Sinatra::Application
 
     attribute = map_parcel_attribute(params[:attribute])
 
-    Models::DailyParcelStats.
-      recent.
-      exclude(attribute => nil).
-      reverse_order(attribute).
-      all.
-      group_by { |stats| stats.date.to_s }.
-      sort_by(&:first).
-      to_h.
-      transform_values! { |v| v.map(&:serialize) }.
-      to_json
+    case params[:sort]
+    when 'daily'
+      Models::DailyParcelStats.
+        recent.
+        exclude(attribute => nil).
+        reverse_order(attribute).
+        all.
+        group_by { |stats| stats.date.to_s }.
+        sort_by(&:first).
+        to_h.
+        transform_values! { |v| v.map(&:serialize) }.
+        to_json
+    when 'top'
+      result = {}
+
+      Models::DailyParcelStats.
+        recent.
+        exclude(attribute => nil).
+        all.
+        group_by(&:coordinates).
+        each { |c, data| result[c] = sum_parcel_attributes(data, attribute) }
+
+      result.sort_by { |k,v| v.send(attribute) }.reverse.to_h.to_json
+    else
+      status 400
+      return { msg: "Sort parameter '#{params[:sort]}' is not valid." }.to_json
+    end
   end
 
   private
@@ -73,5 +90,13 @@ class Server < Sinatra::Application
     return :unique_visitors if attribute == 'visitors'
 
     attribute.to_sym
+  end
+
+  def sum_parcel_attributes(data, attribute)
+    attributes = %i[avg_time_spent avg_time_spent_afk unique_visitors logins logouts]
+    result = {}
+
+    attributes.each { |a| result[a] = data.sum(&a) }
+    result
   end
 end
