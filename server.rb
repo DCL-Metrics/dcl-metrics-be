@@ -9,12 +9,20 @@ class Server < Sinatra::Application
     Models::DailyStats.recent.map(&:serialize).to_json
   end
 
-  get '/api/user_stats' do
+  get '/api/user_stats/:attribute' do
+    unless %w[time_spent parcels_visited].include?(params[:attribute])
+      status 400
+      return { msg: "#{params[:attribute]} is not valid." }.to_json
+    end
+
     Models::DailyUserStats.
       recent.
+      order(params[:attribute].to_sym).
       all.
       group_by { |stats| stats.date.to_s }.
-      transform_values! { |v| v.map(&:serialize) }.
+      transform_values! do |v|
+        v.sort_by { |s| s.send(params[:attribute]) }.map(&:serialize)
+      end.
       to_json
   end
 
