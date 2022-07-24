@@ -35,7 +35,10 @@ class Server < Sinatra::Application
         exclude(attribute => nil).
         all.
         group_by(&:address).
-        map { |address, data| { address: address, time_spent: data.sum(&:time_spent) } }.
+        map { |address, data| address => data.sum(&:time_spent) }.
+        sort_by(&:last).
+        reverse.
+        to_h.
         to_json
     else
       status 400
