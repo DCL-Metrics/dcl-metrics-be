@@ -24,6 +24,7 @@ class Server < Sinatra::Application
       all.
       group_by { |stats| stats.date.to_s }.
       sort_by(&:first).
+      to_h.
       transform_values! { |v| v.map(&:serialize) }.
       to_json
   end
