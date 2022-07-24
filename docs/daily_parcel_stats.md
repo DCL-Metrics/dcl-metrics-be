@@ -12,7 +12,7 @@ Parcel based stats computed each day
 [
   {
     'date': '2022-07-20',
-    'coordinates': '0xea5a43a3251230ed1cc877b463a32cc3ab2986db',
+    'coordinates': '23,-77',
     'avg_time_spent': 7000, // seconds
     'avg_time_spent_afk': 5400, // seconds
     'unique_visitors': 3,
