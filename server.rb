@@ -76,7 +76,7 @@ class Server < Sinatra::Application
         group_by(&:coordinates).
         each { |c, data| result[c] = sum_parcel_attributes(data, attribute) }
 
-      result.sort_by { |k,v| v.send(attribute) }.reverse.to_h.to_json
+      result.sort_by { |k,v| v[attribute] }.reverse.to_h.to_json
     else
       status 400
       return { msg: "Sort parameter '#{params[:sort]}' is not valid." }.to_json
