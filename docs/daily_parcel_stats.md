@@ -4,7 +4,14 @@ Parcel based stats computed each day
 
 ## API ENDPOINT
 
-`https://dclund.herokuapp.com/api/parcel_stats`
+`https://dclund.herokuapp.com/api/parcel_stats/:attribute`
+
+where `attribute` is the attribute to sort by. Accepted attributes are:
+
+ * `time_spent`
+ * `visitors`
+ * `logins`
+ * `logouts`
 
 ## SAMPLE DATA
 
