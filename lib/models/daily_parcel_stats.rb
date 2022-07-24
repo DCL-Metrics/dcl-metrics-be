@@ -21,7 +21,6 @@ module Models
 
     def serialize
       {
-        date: date.to_s,
         coordinates: coordinates,
         avg_time_spent: avg_time_spent,
         avg_time_spent_afk: avg_time_spent_afk,

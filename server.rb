@@ -10,10 +10,20 @@ class Server < Sinatra::Application
   end
 
   get '/api/user_stats' do
-    Models::DailyUserStats.recent.map(&:serialize).to_json
+    Models::DailyUserStats.
+      recent.
+      all.
+      group_by { |stats| stats.date.to_s }.
+      transform_values! { |v| v.map(&:serialize) }.
+      to_json
   end
 
   get '/api/parcel_stats' do
-    Models::DailyParcelStats.recent.map(&:serialize).to_json
+    Models::DailyParcelStats.
+      recent.
+      all.
+      group_by { |stats| stats.date.to_s }.
+      transform_values! { |v| v.map(&:serialize) }.
+      to_json
   end
 end
