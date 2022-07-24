@@ -37,7 +37,7 @@ class Server < Sinatra::Application
         exclude(attribute => nil).
         all.
         group_by(&:address).
-        each { |address, data| result[address] = data.sum(&:time_spent) }
+        each { |address, data| result[address] = data.sum(&attribute) }
 
       result.sort_by(&:last).reverse.to_h.to_json
     else
