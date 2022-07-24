@@ -30,12 +30,12 @@ class Server < Sinatra::Application
   end
 
   get '/api/parcel_stats/:attribute' do
-    attribute = map_parcel_attribute(params[:attribute])
-
-    unless %w[avg_time_spent unique_visitors logins logouts].include?(attribute)
+    unless %w[time_spent visitors logins logouts].include?(params[:attribute])
       status 400
-      return { msg: "#{attribute.to_s} is not valid." }.to_json
+      return { msg: "#{params[:attribute]} is not valid." }.to_json
     end
+
+    attribute = map_parcel_attribute(params[:attribute])
 
     Models::DailyParcelStats.
       recent.
