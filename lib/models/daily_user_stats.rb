@@ -19,7 +19,7 @@ module Models
     def serialize
       {
         date: date.to_s,
-        address: unique_users,
+        address: address,
         time_spent: time_spent,
         parcels_visited: parcels_visited
       }
