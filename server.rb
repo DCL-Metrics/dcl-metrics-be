@@ -20,9 +20,7 @@ class Server < Sinatra::Application
       order(params[:attribute].to_sym).
       all.
       group_by { |stats| stats.date.to_s }.
-      transform_values! do |v|
-        v.sort_by { |s| s.send(params[:attribute].to_sym) }.map(&:serialize)
-      end.
+      transform_values! { |v| v.map(&:serialize) }.
       to_json
   end
 
