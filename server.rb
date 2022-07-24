@@ -30,16 +30,16 @@ class Server < Sinatra::Application
         transform_values! { |v| v.map(&:serialize) }.
         to_json
     when 'top'
+      result = {}
+
       Models::DailyUserStats.
         recent.
         exclude(attribute => nil).
         all.
         group_by(&:address).
-        map { |address, data| address => data.sum(&:time_spent) }.
-        sort_by(&:last).
-        reverse.
-        to_h.
-        to_json
+        each { |address, data| result[address] = data.sum(&:time_spent) }
+
+      result.sort_by(&:last).reverse.to_h.to_json
     else
       status 400
       return { msg: "Sort parameter '#{params[:sort]}' is not valid." }.to_json
