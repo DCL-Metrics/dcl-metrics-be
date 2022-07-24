@@ -96,7 +96,7 @@ class Server < Sinatra::Application
     attributes = %i[avg_time_spent avg_time_spent_afk unique_visitors logins logouts]
     result = {}
 
-    attributes.each { |a| result[a] = data.sum(&a) }
+    attributes.each { |a| result[a] = data.sum { |d| d[a].to_i } }
     result
   end
 end
