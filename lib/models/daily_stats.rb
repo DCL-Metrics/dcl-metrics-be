@@ -10,5 +10,16 @@
 
 module Models
   class DailyStats < Sequel::Model
+    def self.recent
+      where { date >= Date.today - 7 }.order(:date)
+    end
+
+    def serialize
+      {
+        date: date.to_s,
+        unique_users: unique_users,
+        active_parcels: total_active_parcels
+      }
+    end
   end
 end
