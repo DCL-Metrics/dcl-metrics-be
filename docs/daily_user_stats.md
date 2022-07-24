@@ -4,7 +4,12 @@ User based stats computed each day
 
 ## API ENDPOINT
 
-`https://dclund.herokuapp.com/api/user_stats`
+`https://dclund.herokuapp.com/api/user_stats/:attribute`
+
+where `attribute` is the attribute to sort by. Accepted attributes are:
+
+ * `time_spent`
+ * `parcels_visited`
 
 ## SAMPLE DATA
 
