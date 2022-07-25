@@ -3,6 +3,7 @@
 Global stats computed each day
 
 ## API ENDPOINT
+https://dclund.herokuapp.com/api/stats
 
 ## EXAMPLE CALL
 
