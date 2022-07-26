@@ -23,6 +23,9 @@ module Services
         # get data from url
         scene_data = JSON.parse(`curl #{URL+c}`)[0]
 
+        # skip if there is no scene at these cooridinates
+        next if scene_data.empty?
+
         # add scene to scenes
         scenes << {
           name: scene_data['metadata']['display']['title'],
