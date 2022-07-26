@@ -21,10 +21,10 @@ module Services
         next if scenes.any? { |s| s[:parcels].include?(c) }
 
         # get data from url
-        scene_data = JSON.parse(`curl #{URL}#{c}`)[0]
+        scene_data = JSON.parse(`curl -s #{URL}#{c}`)[0]
 
         # skip if there is no scene at these cooridinates
-        next if scene_data.empty?
+        next if scene_data.nil? || scene_data.empty?
 
         # add scene to scenes
         scenes << {
