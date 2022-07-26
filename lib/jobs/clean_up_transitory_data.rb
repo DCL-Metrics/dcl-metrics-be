@@ -3,7 +3,8 @@ module Jobs
     sidekiq_options queue: 'low'
 
     def perform
-      DATABASE_CONNECTION[:data_points].truncate
+      # NOTE: don't remove data points for now. let's see
+      # DATABASE_CONNECTION[:data_points].truncate
       DATABASE_CONNECTION[:user_activities].truncate
 
       nil
