@@ -30,22 +30,28 @@ namespace :compute do
 
     # create data points from peers dump
     Services::DailyTrafficCalculator.call(date: date)
-    Services::DailyTrafficCalculator.call(date: previous_date)
+
+    if Models::DataPoint.where(date: previous_date).count.zero?
+      Services::DailyTrafficCalculator.call(date: previous_date)
+    end
+
+    # build scenes list for date
+    Jobs::CreateScenes.perform_in(420, date) # 7 minutes
 
     # process all user activities for given date
-    Jobs::ProcessUserActivities.perform_in(420, date) # 7 minutes
+    Jobs::ProcessUserActivities.perform_in(720, date) # 12 minutes
 
     # rebuild all user activities for previous day
-    Jobs::ProcessUserActivities.perform_in(720, previous_date) # 12 minutes
+    Jobs::ProcessUserActivities.perform_in(960, previous_date) # 16 minutes
 
     # process all daily stats for given date
-    Jobs::ProcessAllDailyStats.perform_in(960, date) # 16 minutes
+    Jobs::ProcessAllDailyStats.perform_in(1080, date) # 18 minutes
 
     # process all daily stats for previous day
-    Jobs::ProcessAllDailyStats.perform_in(1080, previous_date) # 18 minutes
+    Jobs::ProcessAllDailyStats.perform_in(1200, previous_date) # 20 minutes
 
     # clean up database
-    Jobs::CleanUpTransitoryData.perform_in(1200) # 20 minutes
+    Jobs::CleanUpTransitoryData.perform_in(1320) # 22 minutes
   end
 
 end
