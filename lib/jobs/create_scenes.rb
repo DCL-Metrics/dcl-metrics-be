@@ -1,5 +1,5 @@
 module Jobs
-  class ProcessAllDailyStats < Job
+  class CreateScenes < Job
     sidekiq_options queue: 'processing'
 
     def perform(date)
