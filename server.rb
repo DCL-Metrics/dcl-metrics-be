@@ -3,10 +3,6 @@ require 'sinatra'
 class Server < Sinatra::Application
   ALLOWED_ENDPOINTS = %w[/ /about]
 
-  before do
-    print "calling #{request.path_info} from #{request.ip}\n"
-  end
-
   get '/' do
     "fetched #{Models::PeersDump.count} times"
   end
@@ -14,7 +10,6 @@ class Server < Sinatra::Application
   post '/internal_metrics' do
     request.body.rewind
     data = JSON.parse(request.body.read)
-    date = Date.today.to_s
     endpoint = data.delete('endpoint')
 
     unless ALLOWED_ENDPOINTS.include?(endpoint)
@@ -22,10 +17,24 @@ class Server < Sinatra::Application
       return { msg: "Invalid parameters specified" }.to_json
     end
 
+    date = Date.today.to_s
+    timestamp = Time.now.utc.to_i
+    # NOTE: later need to parse like Time.at(timestamp).utc
+
     # creates potential for RIM Job naming
     Models::RawInternalMetrics.update_or_create(date: date, endpoint: endpoint) do |m|
       existing_metrics = m.metrics_json.nil? ? [] : JSON.parse(m.metrics_json)
-      m.metrics_json = existing_metrics.push(data).to_json
+
+      duplicated_metric = existing_metrics.any? && existing_metrics.detect do |em|
+        # data is the same and not within a 3s time delta
+        em.except('timestamp') == data && (timestamp - 3) < em['timestamp']
+      end
+
+      unless duplicated_metric
+        m.metrics_json = existing_metrics.
+          push(data.merge(timestamp: timestamp)).
+          to_json
+      end
     end
 
     status 201
