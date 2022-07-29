@@ -7,3 +7,4 @@
  * pull and calculate data for ALL address and ALL parcels (subject to grant)
  * anonymize wallet addresses (pay to have them de-anonymized)
  * ~~add endpoint to collect metrics from FE~~
+ * run some blame for db to make sure there's nothing taking up super crazy resources
