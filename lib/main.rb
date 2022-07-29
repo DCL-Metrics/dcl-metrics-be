@@ -28,6 +28,7 @@ end
 
 # require models
 require './lib/models/peers_dump.rb'
+require './lib/models/raw_internal_metrics.rb'
 require './lib/models/data_point.rb'
 require './lib/models/user_event.rb'
 require './lib/models/user_activity.rb'

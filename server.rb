@@ -1,8 +1,39 @@
 require 'sinatra'
 
 class Server < Sinatra::Application
+  ALLOWED_ENDPOINTS = %w[/ /about]
+
   get '/' do
     "fetched #{Models::PeersDump.count} times"
+  end
+
+  post '/metrics' do
+    request.body.rewind
+    data = JSON.parse(request.body.read)
+    date = Date.today.to_s
+    endpoint = data['endpoint']
+
+    unless ALLOWED_ENDPOINTS.include?(endpoint)
+      status 400
+      return { msg: "'#{attribute.to_s}' is not valid." }.to_json
+    end
+
+    # creates potential for RIM Job naming
+    Models::RawInternalMetrics.update_or_create(date: date, endpoint: endpoint) do |m|
+      metrics = {
+        fingerprint: data['hash'],
+        ip_address: data['ip_address'],
+        language: data['language'],
+        query_params: data['query_parms'],
+        user_agent: data['user_agent']
+      }
+
+      existing_metrics = m.metrics_json.nil? ? [] : JSON.parse(m.metrics_json)
+      m.metrics_json = existing_metrics.push(metrics).to_json
+    end
+
+    status 201
+    {}.to_json
   end
 
   get '/api/stats' do
