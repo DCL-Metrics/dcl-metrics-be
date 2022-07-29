@@ -15,7 +15,7 @@ class Server < Sinatra::Application
 
     unless ALLOWED_ENDPOINTS.include?(endpoint)
       status 400
-      return { msg: "'#{attribute.to_s}' is not valid." }.to_json
+      return { msg: "Invalid parameters specified" }.to_json
     end
 
     # creates potential for RIM Job naming
