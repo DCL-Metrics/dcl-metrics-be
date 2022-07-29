@@ -7,7 +7,7 @@ class Server < Sinatra::Application
     "fetched #{Models::PeersDump.count} times"
   end
 
-  post '/metrics' do
+  post '/api/internal_metrics' do
     request.body.rewind
     data = JSON.parse(request.body.read)
     date = Date.today.to_s
@@ -21,7 +21,7 @@ class Server < Sinatra::Application
     # creates potential for RIM Job naming
     Models::RawInternalMetrics.update_or_create(date: date, endpoint: endpoint) do |m|
       existing_metrics = m.metrics_json.nil? ? [] : JSON.parse(m.metrics_json)
-      m.metrics_json = existing_metrics.push(metrics).to_json
+      m.metrics_json = existing_metrics.push(data).to_json
     end
 
     status 201
