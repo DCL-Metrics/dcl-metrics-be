@@ -7,7 +7,7 @@ class Server < Sinatra::Application
     "fetched #{Models::PeersDump.count} times"
   end
 
-  post '/api/internal_metrics' do
+  post '/internal_metrics' do
     request.body.rewind
     data = JSON.parse(request.body.read)
     date = Date.today.to_s
@@ -28,11 +28,11 @@ class Server < Sinatra::Application
     {}.to_json
   end
 
-  get '/api/stats' do
+  get '/stats' do
     Models::DailyStats.recent.map(&:serialize).to_json
   end
 
-  get '/api/user_stats/:attribute/:sort' do
+  get '/user_stats/:attribute/:sort' do
     attribute = params[:attribute].to_sym
 
     unless %i[time_spent parcels_visited].include?(attribute)
@@ -69,7 +69,7 @@ class Server < Sinatra::Application
     end
   end
 
-  get '/api/parcel_stats/:attribute/:sort' do
+  get '/parcel_stats/:attribute/:sort' do
     unless %w[time_spent visitors logins logouts].include?(params[:attribute])
       status 400
       return { msg: "'#{params[:attribute]}' is not valid." }.to_json
