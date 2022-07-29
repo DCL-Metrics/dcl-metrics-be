@@ -3,6 +3,10 @@ require 'sinatra'
 class Server < Sinatra::Application
   ALLOWED_ENDPOINTS = %w[/ /about]
 
+  before do
+    print "calling #{request.path_info} from #{request.ip}\n"
+  end
+
   get '/' do
     "fetched #{Models::PeersDump.count} times"
   end
