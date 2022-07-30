@@ -28,6 +28,7 @@ module Services
 
         # add scene to scenes
         scenes << {
+          id: scene_data['id'],
           name: scene_data['metadata']['display']['title'],
           owner: scene_data['metadata']['owner'],
           parcels: scene_data['pointers']
