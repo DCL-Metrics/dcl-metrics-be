@@ -36,6 +36,7 @@ require './lib/models/daily_stats.rb'
 require './lib/models/daily_user_stats.rb'
 require './lib/models/daily_parcel_stats.rb'
 require './lib/models/scene_list.rb'
+require './lib/models/scene.rb'
 
 # require jobs
 require './lib/jobs/job.rb'

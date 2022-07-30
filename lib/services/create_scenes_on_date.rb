@@ -15,11 +15,13 @@ module Services
 
       scenes = Services::FetchSceneData.call(coordinates: coordinates)
 
-      # create scene list
-      Models::SceneList.create(
-        date: date,
-        scenes_json: scenes.to_json
-      )
+      scenes.each do |scene|
+        Models::Scene.find_or_create(cid: scene[:id]) do |s|
+          s.name    = scene[:name]
+          s.owner   = scene[:owner]
+          s.parcels = scene[:parcels]
+        end
+      end
     end
 
     private
