@@ -29,10 +29,10 @@ namespace :compute do
     previous_date = (Date.parse(date) - 1).to_s
 
     # create data points from peers dump
-    Services::DailyTrafficCalculator.call(date: date)
+    Services::ProcessSnapshots.call(date: date)
 
     if Models::DataPoint.where(date: previous_date).count.zero?
-      Services::DailyTrafficCalculator.call(date: previous_date)
+      Services::ProcessSnapshots.call(date: previous_date)
     end
 
     # build scenes list for date

@@ -1,6 +1,6 @@
 ###  NOTE: data starts on 10 april 2022
 module Services
-  class DailyTrafficCalculator
+  class ProcessSnapshots
     def self.call(date:)
       new(date).call
     end

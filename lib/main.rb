@@ -51,7 +51,7 @@ require './lib/jobs/clean_up_transitory_data.rb'
 require './lib/jobs/create_scenes.rb'
 
 # require services
-require './lib/services/daily_traffic_calculator.rb'
+require './lib/services/process_snapshots.rb'
 require './lib/services/daily_user_activity_builder.rb'
 require './lib/services/daily_stats_builder.rb'
 require './lib/services/daily_user_stats_builder.rb'
