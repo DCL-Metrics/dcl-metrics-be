@@ -1,6 +1,5 @@
-
 module Services
-  class CreateScenesOnDate
+  class FetchSceneData
     URL = 'https://peer.decentraland.org/content/entities/scene'
 
     def self.call(coordinates:)
