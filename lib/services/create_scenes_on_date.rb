@@ -19,7 +19,7 @@ module Services
         Models::Scene.find_or_create(cid: scene[:id]) do |s|
           s.name    = scene[:name]
           s.owner   = scene[:owner]
-          s.parcels = scene[:parcels]
+          s.parcels = scene[:parcels].to_json
         end
       end
     end
