@@ -10,6 +10,7 @@ class Server < Sinatra::Application
   post '/internal_metrics' do
     request.body.rewind
     data = JSON.parse(request.body.read)
+    p data
     endpoint = data.delete('endpoint')
 
     unless ALLOWED_ENDPOINTS.include?(endpoint)
