@@ -53,7 +53,6 @@ namespace :compute do
     # clean up database
     Jobs::CleanUpTransitoryData.perform_in(1320) # 22 minutes
   end
-
 end
 
 namespace :dcl do

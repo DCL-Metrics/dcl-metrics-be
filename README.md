@@ -1,5 +1,6 @@
 ## TODOs:
 
+ * create miro board for FE/BE
  * fix SSL redirect on www.x.com to have https everywhere
  * run some blame for db to make sure there's nothing taking up super crazy resources
  * create a single `/global_stats` endpoint that returns a long json rather than FE calling multiple stats endpoints
