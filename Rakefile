@@ -35,7 +35,8 @@ namespace :compute do
       Services::ProcessSnapshots.call(date: previous_date)
     end
 
-    # build scenes list for date
+    # build scenes for date
+    # this can be removed after scene creation happens in peers dump job
     Jobs::CreateScenes.perform_in(420, date) # 7 minutes
 
     # process all user activities for given date
