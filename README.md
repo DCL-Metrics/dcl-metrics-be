@@ -6,8 +6,16 @@
  * create a single `/global_stats` endpoint that returns a long json rather than FE calling multiple stats endpoints
  --- that JSON should be generated as part of the job and replaced per run
  * make staging app && remove existing internal metrics
- * parse internal metrics and expose to FE
  * ensure addresses are always saved downcase
+
+### Internal dashboard
+ * parse internal metrics and expose endpoint
+ * create repo that reads and displays this
+ * attach to admin.dcl-metrics.com // internal.dcl-metrics.com
+ * add obsidian (at least readonly?)
+
+### Just weird ideas
+
  * maybe can make up missing visit/duration from the difference between session duration and sum(visit) duration?
  * anonymize wallet addresses (pay to have them de-anonymized)
 
