@@ -44,6 +44,19 @@ class Server < Sinatra::Application
     {}.to_json
   end
 
+  get '/global' do
+    daily   = Models::DailyStats.recent.map(&:serialize)
+    parcels =  Serializers::Global::Parcels.serialize
+    scenes  = {}
+    users   = Serializers::Global::Users.serialize
+
+    daily.merge({
+      parcels: parcels,
+      scenes: scenes,
+      users: users
+    }).to_json
+  end
+
   get '/stats' do
     Models::DailyStats.recent.map(&:serialize).to_json
   end

@@ -59,3 +59,7 @@ require './lib/services/daily_user_stats_builder.rb'
 require './lib/services/daily_parcel_stats_builder.rb'
 require './lib/services/fetch_scene_data.rb'
 require './lib/services/create_scenes_on_date.rb'
+
+# require serializers
+require './lib/serializers/global/parcels.rb'
+require './lib/serializers/global/users.rb'
