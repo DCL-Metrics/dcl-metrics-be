@@ -10,14 +10,14 @@ module Serializers
           daily: {
             logins:  calculate_daily(:logins),
             logouts: calculate_daily(:logouts),
-            time_spent: calculate_daily(:time_spent),
-            visitors: calculate_daily(:visitors)
+            time_spent: calculate_daily(:avg_time_spent),
+            visitors: calculate_daily(:unique_visitors)
           },
           top: {
             logins: calculate_top(:logins),
             logouts: calculate_top(:logouts),
-            time_spent: calculate_top(:time_spent),
-            visitors: calculate_top(:visitors)
+            time_spent: calculate_top(:avg_time_spent),
+            visitors: calculate_top(:unique_visitors)
           }
         }
       end
@@ -43,10 +43,18 @@ module Serializers
           recent.
           exclude(attribute => nil).
           all.
-          group_by(&:address).
-          each { |address, data| result[address] = data.sum(&attribute) }
+          group_by(&:coordinates).
+          each { |c, data| result[c] = sum_parcel_attributes(data) }
 
-        result.sort_by(&:last).reverse.to_h
+        result.sort_by { |k,v| v[attribute] }.reverse.to_h.to_json
+      end
+
+      def sum_parcel_attributes(data)
+        attributes = %i[avg_time_spent avg_time_spent_afk unique_visitors logins logouts]
+        result = {}
+
+        attributes.each { |a| result[a] = data.sum { |d| d[a].to_i } }
+        result
       end
     end
   end
