@@ -2,10 +2,9 @@
 
  * fix SSL redirect on www.x.com to have https everywhere
  * run some blame for db to make sure there's nothing taking up super crazy resources
- * create a single `/global_stats` endpoint that returns a long json rather than FE calling multiple stats endpoints
- --- that JSON should be generated as part of the job and replaced per run
  * make staging app && remove existing internal metrics
  * ensure addresses are always saved downcase
+ * generate data for global stats endpoint as single JSON and replaced per run
 
 ### Internal dashboard
  * parse internal metrics and expose endpoint
@@ -30,3 +29,4 @@
  * ~~add endpoint to collect metrics from FE~~
  * ~~check that times are being created consistently as UTC in prod~~
  * ~~create miro board for FE/BE~~
+ * ~~create a single `/global_stats` endpoint that returns a long json rather than FE calling multiple stats endpoints~~
