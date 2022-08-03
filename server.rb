@@ -50,11 +50,12 @@ class Server < Sinatra::Application
     scenes  = {}
     users   = Serializers::Global::Users.serialize
 
-    daily.merge({
+    {
+      global: daily,
       parcels: parcels,
       scenes: scenes,
       users: users
-    }).to_json
+    }.to_json
   end
 
   get '/stats' do
