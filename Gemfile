@@ -10,6 +10,9 @@ gem 'pg'
 # background jobs
 gem 'sidekiq'
 
+# http
+gem 'faraday'
+
 group :production do
   gem 'puma'
 end

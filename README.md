@@ -7,10 +7,12 @@
  * generate data for global stats endpoint as single JSON and replaced per run
 
 ### Internal dashboard
+
  * parse internal metrics and expose endpoint
  * create repo that reads and displays this
  * attach to admin.dcl-metrics.com // internal.dcl-metrics.com
  * add obsidian (at least readonly?)
+ * add api documentation
 
 ### Just weird ideas
 
@@ -30,3 +32,4 @@
  * ~~check that times are being created consistently as UTC in prod~~
  * ~~create miro board for FE/BE~~
  * ~~create a single `/global_stats` endpoint that returns a long json rather than FE calling multiple stats endpoints~~
+ * ~~add telegram notification service~~

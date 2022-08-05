@@ -38,6 +38,10 @@ require './lib/models/daily_parcel_stats.rb'
 require './lib/models/scene_list.rb'
 require './lib/models/scene.rb'
 
+# require adapters
+require 'faraday'
+require './lib/adapters/telegram.rb'
+
 # require jobs
 require './lib/jobs/job.rb'
 require './lib/jobs/fetch_peer_data.rb'
@@ -52,6 +56,7 @@ require './lib/jobs/clean_up_transitory_data.rb'
 require './lib/jobs/create_scenes.rb'
 
 # require services
+require './lib/services/telegram_operator.rb'
 require './lib/services/process_snapshots.rb'
 require './lib/services/daily_user_activity_builder.rb'
 require './lib/services/daily_stats_builder.rb'
