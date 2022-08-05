@@ -2,18 +2,14 @@ module Adapters
   class Telegram
     URI = 'https://dcl-metrics-bot-server.herokuapp.com/telegram/internal'
 
-    def self.send_message(text)
-      # TODO: when stable
-      # return unless ENV['RACK_ENV'] == 'production'
-      unless ENV['RACK_ENV'] == 'production'
-        text.prepend("---sent from #{ENV['RACK_ENV']} environment---\n\n")
-      end
+    def self.send_message(level, message, payload)
+      return unless ENV['RACK_ENV'] == 'production'
 
-      new(text).send
+      new(level, message, payload).send
     end
 
-    def initialize(text)
-      @msg = { text: text }.to_json
+    def initialize(level, message, payload)
+      @msg = { level: level, message: message, payload: payload }.to_json
     end
 
     def send
