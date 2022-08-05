@@ -8,8 +8,6 @@ module Services
       end
 
       Adapters::Telegram.send_message(level, message, payload)
-      # text = "#{level.upcase}:\n#{msg}\n\n"
-      # payload.each { |k,v| text += "#{k}: #{v}\n" }
     end
   end
 end
