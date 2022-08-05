@@ -10,14 +10,14 @@ class Server < Sinatra::Application
   post '/internal_metrics' do
     request.body.rewind
     data = JSON.parse(request.body.read)
-    p data
-    p headers: headers
-    p full_request: request
     endpoint = data.delete('endpoint')
 
     unless ALLOWED_ENDPOINTS.include?(endpoint)
-      status 400
-      return { msg: "Invalid parameters specified" }.to_json
+      Services::TelegramOperator.notify(
+        level: :info,
+        message: "Unexpected endpoint '#{endpoint}' accessed",
+        payload: data
+      )
     end
 
     date = Date.today.to_s
