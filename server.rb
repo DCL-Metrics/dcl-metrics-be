@@ -8,6 +8,10 @@ class Server < Sinatra::Application
   end
 
   post '/internal_metrics' do
+    p '##################################################'
+    p request
+    p '##################################################'
+
     request.body.rewind
     data = JSON.parse(request.body.read)
     endpoint = data.delete('endpoint')
