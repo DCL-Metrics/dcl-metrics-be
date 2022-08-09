@@ -46,7 +46,7 @@ module Serializers
           group_by(&:coordinates).
           each { |c, data| result[c] = sum_parcel_attributes(data) }
 
-        result.sort_by { |k,v| v[attribute] }.reverse.to_h.to_json
+        result.sort_by { |k,v| v[attribute] }.reverse.to_h
       end
 
       def sum_parcel_attributes(data)
