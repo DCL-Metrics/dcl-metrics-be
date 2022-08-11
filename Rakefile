@@ -56,6 +56,16 @@ namespace :compute do
   end
 end
 
+namespace :data_preservation do
+  desc "save enriched peers dump data per day by parcel"
+  task :daily_parcel_traffic, [:date] do |task, args|
+    require './lib/main'
+
+    date = args[:date] || (Date.today - 1).to_s
+    Jobs::CreateDailyParcelTraffic.perform_async(date)
+  end
+end
+
 namespace :dcl do
   desc "fetch peers"
   task :fetch_peers do
@@ -69,6 +79,14 @@ end
 
 namespace :db do
   APP_NAME = 'dclund'
+
+  desc "Remove DataPoints on given date"
+  task :delete_data_points, [:date] do |task, args|
+    require './lib/main'
+
+    date = args[:date] || (Date.today - 1).to_s
+    Models::DataPoint.where(date: date).delete
+  end
 
   desc "Drop database for environment in DATABASE_ENV for DATABASE_USER"
   task :drop do
