@@ -2,7 +2,7 @@
 #
 # String  :coordinates, null: false
 # Date    :date,        null: false
-# Jsonb   :data_json,   null: false
+# Text    :data_ndj,    null: false
 # Jsonb   :scene_cids_json
 # Jsonb   :addresses_json
 # Jsonb   :histogram_json
