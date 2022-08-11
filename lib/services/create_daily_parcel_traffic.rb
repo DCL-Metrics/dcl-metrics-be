@@ -14,7 +14,7 @@ module Services
         coordinates: coordinates,
         date: date,
         data_ndj: data_ndj,
-        scene_cid: data.first[:scene_cid],
+        scene_cids_json: scene_cids_json,
         addresses_ndj: addresses_ndj,
         histogram_json: histogram_json
       )
@@ -29,6 +29,15 @@ module Services
         where coordinates='#{coordinates}'
         and date='#{date}'"
       ].all.map(&:to_json).join("\n")
+    end
+
+    def scene_cids_json
+      DATABASE_CONNECTION[
+        "select * from data_points
+        where coordinates='#{coordinates}'
+        and date='#{date}'"
+      ].all.flat_map(&:values).to_json
+
     end
 
     def addresses_ndj
