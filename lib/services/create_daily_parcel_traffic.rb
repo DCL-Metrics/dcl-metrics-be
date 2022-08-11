@@ -15,7 +15,7 @@ module Services
         date: date,
         data_ndj: data_ndj,
         scene_cids_json: scene_cids_json,
-        addresses_ndj: addresses_ndj,
+        addresses_json: addresses_json,
         histogram_json: histogram_json
       )
     end
@@ -40,7 +40,7 @@ module Services
 
     end
 
-    def addresses_ndj
+    def addresses_json
       DATABASE_CONNECTION[
         "select distinct(address) from data_points
         where coordinates='#{coordinates}'
