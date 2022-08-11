@@ -45,7 +45,7 @@ module Services
         "select distinct(address) from data_points
         where coordinates='#{coordinates}'
         and date='#{date}'"
-      ].all.map(&:to_json).join("\n")
+      ].all.flat_map(&:values).to_json
     end
 
     def histogram_json
