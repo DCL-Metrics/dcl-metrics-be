@@ -57,7 +57,7 @@ module Services
         and date = '#{date}'
         group by hour
         order by 1"
-      ].to_json
+      ].all.to_json
     end
   end
 end
