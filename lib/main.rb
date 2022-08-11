@@ -55,6 +55,7 @@ require './lib/jobs/process_daily_user_stats.rb'
 require './lib/jobs/process_daily_parcel_stats.rb'
 require './lib/jobs/clean_up_transitory_data.rb'
 require './lib/jobs/create_scenes.rb'
+require './lib/jobs/create_daily_parcel_traffic.rb'
 
 # require services
 require './lib/services/telegram_operator.rb'
@@ -65,6 +66,7 @@ require './lib/services/daily_user_stats_builder.rb'
 require './lib/services/daily_parcel_stats_builder.rb'
 require './lib/services/fetch_scene_data.rb'
 require './lib/services/create_scenes_on_date.rb'
+require './lib/services/create_daily_parcel_traffic.rb'
 
 # require serializers
 require './lib/serializers/global/parcels.rb'
