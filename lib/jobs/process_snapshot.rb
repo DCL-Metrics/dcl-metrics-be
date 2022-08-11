@@ -27,6 +27,7 @@ module Jobs
           date: timestamp.to_date,
           peer_id: visit['id'],
           position: position,
+          scene_cid: visit['scene_cid'],
           timestamp: timestamp
         )
       end
