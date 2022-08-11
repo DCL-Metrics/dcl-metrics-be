@@ -37,6 +37,7 @@ require './lib/models/daily_user_stats.rb'
 require './lib/models/daily_parcel_stats.rb'
 require './lib/models/scene_list.rb'
 require './lib/models/scene.rb'
+require './lib/models/parcel_traffic.rb'
 
 # require adapters
 require 'faraday'

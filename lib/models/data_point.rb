@@ -5,6 +5,7 @@
 # Date    :date,        null: false
 # String  :peer_id
 # String  :position
+# String  :scene_cid
 # Time    :timestamp,   null: false
 #
 # Time    :created_at,  null: false
