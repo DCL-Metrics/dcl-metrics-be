@@ -33,11 +33,10 @@ module Services
 
     def scene_cids_json
       DATABASE_CONNECTION[
-        "select * from data_points
+        "select distinct(scene_cid) from data_points
         where coordinates='#{coordinates}'
         and date='#{date}'"
       ].all.flat_map(&:values).to_json
-
     end
 
     def addresses_json
@@ -51,7 +50,7 @@ module Services
     def histogram_json
       DATABASE_CONNECTION[
         "select DATE_TRUNC('hour', timestamp) as hour,
-        count(id)
+        count(distinct address)
         from data_points
         where coordinates='#{coordinates}'
         and date = '#{date}'

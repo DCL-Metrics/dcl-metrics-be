@@ -62,7 +62,13 @@ namespace :data_preservation do
     require './lib/main'
 
     date = args[:date] || (Date.today - 1).to_s
-    Jobs::CreateDailyParcelTraffic.perform_async(date)
+    coordinates = DATABASE_CONNECTION[
+      "select distinct coordinates from data_points where date = '#{date}'"
+    ].flat_map(&:values)
+
+    coordinates.each do |c|
+      Jobs::CreateDailyParcelTraffic.perform_async(c, date)
+    end
   end
 end
 
