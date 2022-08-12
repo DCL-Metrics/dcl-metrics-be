@@ -21,8 +21,8 @@ end
 
 # ex: rake compute:all_daily['2022-07-20']
 namespace :compute do
-  desc "compute all daily stats for date and recalculate for the day previous"
-  task :all_daily, [:date] do |task, args|
+  desc "process snapshots into datapoints for date"
+  task :process_snapshots, [:date] do |task, args|
     require './lib/main'
 
     date = args[:date] || (Date.today - 1).to_s
@@ -34,25 +34,29 @@ namespace :compute do
     if Models::DataPoint.where(date: previous_date).count.zero?
       Services::ProcessSnapshots.call(date: previous_date)
     end
+  end
 
-    # build scenes for date
-    # this can be removed after scene creation happens in peers dump job
-    Jobs::CreateScenes.perform_in(420, date) # 7 minutes
+  desc "compute all daily stats for date and recalculate for the day previous"
+  task :all_daily, [:date] do |task, args|
+    require './lib/main'
+
+    date = args[:date] || (Date.today - 1).to_s
+    previous_date = (Date.parse(date) - 1).to_s
 
     # process all user activities for given date
-    Jobs::ProcessUserActivities.perform_in(720, date) # 12 minutes
+    Jobs::ProcessUserActivities.perform_async(date)
 
     # rebuild all user activities for previous day
-    Jobs::ProcessUserActivities.perform_in(960, previous_date) # 16 minutes
+    Jobs::ProcessUserActivities.perform_in(300, previous_date) # 5 minutes
 
     # process all daily stats for given date
-    Jobs::ProcessAllDailyStats.perform_in(1080, date) # 18 minutes
+    Jobs::ProcessAllDailyStats.perform_in(600, date) # 10 minutes
 
     # process all daily stats for previous day
-    Jobs::ProcessAllDailyStats.perform_in(1200, previous_date) # 20 minutes
+    Jobs::ProcessAllDailyStats.perform_in(900, previous_date) # 15 minutes
 
     # clean up database
-    Jobs::CleanUpTransitoryData.perform_in(1320) # 22 minutes
+    Jobs::CleanUpTransitoryData.perform_in(1200) # 20 minutes
   end
 end
 
