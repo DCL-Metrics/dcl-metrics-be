@@ -5,7 +5,7 @@ class Server < Sinatra::Application
   ALLOWED_ACCESS_IP = %w[99.80.183.117 99.81.135.32]
 
   before do
-    requesting_ip = request.env["REMOTE_ADDR"]
+    requesting_ip = request.env["HTTP_X_FORWARDED_FOR"]
 
     unless ALLOWED_ACCESS_IP.include?(requesting_ip)
       status 401
