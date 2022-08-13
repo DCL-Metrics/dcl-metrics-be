@@ -5,11 +5,10 @@ class Server < Sinatra::Application
   ALLOWED_ACCESS_IP = %w[99.80.183.117 99.81.135.32]
 
   before do
-    requesting_ip = request.env["HTTP_X_FORWARDED_FOR"]
+    requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR']
 
     unless ALLOWED_ACCESS_IP.include?(requesting_ip)
-      status 401
-      return { msg: "I'm afraid I can't let you do that, #{requesting_ip}" }.to_json
+      halt 401, { msg: "I'm afraid I can't let you do that, #{requesting_ip}" }.to_json
     end
   end
 
