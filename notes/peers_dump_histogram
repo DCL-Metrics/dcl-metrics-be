@@ -1,0 +1,7 @@
+dump_histo = DATABASE_CONNECTION[
+  "select DATE_TRUNC('day', created_at) as day,
+  count(id)
+  from peers_dump
+  group by day
+  order by 1"
+]
