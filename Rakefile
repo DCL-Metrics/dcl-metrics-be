@@ -94,7 +94,7 @@ namespace :db do
   task :delete_data_points, [:date] do |task, args|
     require './lib/main'
 
-    date = args[:date] || (Date.today - 1).to_s
+    date = args[:date] || (Date.today - 2).to_s
     Models::DataPoint.where(date: date).delete
   end
 
