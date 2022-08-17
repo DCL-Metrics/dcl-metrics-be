@@ -20,7 +20,9 @@ namespace :heroku do
 
   desc "invalidate FE cache for global stats"
   task :invalidate_global_stats_cache do
-    curl -s ENV['FE_GLOBAL_STATS_CACHE_REVALIDATION_URL']
+    url = ENV['FE_GLOBAL_STATS_CACHE_REVALIDATION_URL']
+
+    `curl -s #{url}` unless url.nil?
   end
 end
 
