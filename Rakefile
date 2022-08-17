@@ -17,6 +17,11 @@ namespace :heroku do
   task :release do
     `bundle exec rake db:migrate`
   end
+
+  desc "invalidate FE cache for global stats"
+  task :invalidate_global_stats_cache do
+    curl -s ENV['FE_GLOBAL_STATS_CACHE_REVALIDATION_URL']
+  end
 end
 
 # ex: rake compute:all_daily['2022-07-20']
