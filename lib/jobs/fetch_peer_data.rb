@@ -26,8 +26,8 @@ module Jobs
           next
         end
 
+        next if data.class == Array
         data['peers'] if data['ok'] if data.class == Hash
-        data if data.class == Array
       end.compact
 
       first_seen_at = Time.now.utc
