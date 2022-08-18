@@ -70,21 +70,3 @@ require './lib/services/create_daily_parcel_traffic.rb'
 # require serializers
 require './lib/serializers/global/parcels.rb'
 require './lib/serializers/global/users.rb'
-
-require 'sentry'
-if ENV['SENTRY_DSN']
-  Sentry.init do |config|
-    config.dsn = ENV['SENTRY_DSN']
-
-    config.before_send = lambda do |event, hint|
-      p event: event
-      p hint: hint
-
-      # Services::TelegramOperator.notify(
-      #   level: :error,
-      #   message: "Sentry caught an error",
-      #   payload: hint
-      # )
-    end
-  end
-end

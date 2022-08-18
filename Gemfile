@@ -16,6 +16,7 @@ gem 'faraday'
 
 # bug-tracking and performance monitoring
 gem "sentry-ruby"
+gem "sentry-sidekiq"
 
 group :production do
   gem 'puma'
