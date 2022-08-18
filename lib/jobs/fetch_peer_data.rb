@@ -26,6 +26,7 @@ module Jobs
           next
         end
 
+        p data: data
         data['peers'] if data['ok']
       end.compact
 
