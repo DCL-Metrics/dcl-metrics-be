@@ -23,11 +23,18 @@ module Jobs
         begin
           data = JSON.parse(raw_data)
         rescue JSON::ParserError
+          p "parser error. skipping data from host: #{host}"
           next
         end
 
-        next if data.class == Array
-        data['peers'] if data['ok'] if data.class == Hash
+        if data.class == Array
+          p "data error. skipping data from host: #{host}"
+          next
+        end
+
+        if data.class == Hash
+          data['peers'] if data['ok']
+        end
       end.compact
 
       first_seen_at = Time.now.utc
