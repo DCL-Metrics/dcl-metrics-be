@@ -7,6 +7,8 @@ class Server < Sinatra::Application
     requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR']
 
     unless ALLOWED_ACCESS_IP.include?(requesting_ip)
+      Sentry.capture_message('test message')
+
       Services::TelegramOperator.notify(
         level: :info,
         message: "Unexpected API Access by IP '#{requesting_ip}'"

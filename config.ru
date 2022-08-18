@@ -36,8 +36,4 @@ if ENV['SENTRY_DSN']
 end
 
 use Sentry::Rack::CaptureExceptions
-
-
-Sentry.capture_message("test message")
-
 run Server
