@@ -14,6 +14,9 @@ gem 'sidekiq'
 # http
 gem 'faraday'
 
+# bug-tracking and performance monitoring
+gem "sentry-ruby"
+
 group :production do
   gem 'puma'
 end
