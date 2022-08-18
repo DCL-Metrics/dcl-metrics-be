@@ -26,11 +26,13 @@ module Jobs
           next
         end
 
-        if data.keys.include?('ok')
-          data['peers'] if data['ok']
-        else
-          data
-        end
+        p host: host
+        p keys: data.keys
+        # if data.keys.include?('ok')
+        #   data['peers'] if data['ok']
+        # else
+        #   data
+        # end
       end.compact
 
       first_seen_at = Time.now.utc
