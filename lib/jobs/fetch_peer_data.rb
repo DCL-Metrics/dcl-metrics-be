@@ -22,7 +22,9 @@ module Jobs
 
         begin
           data = JSON.parse(raw_data)
-        rescue JSON::ParserError
+        rescue JSON::ParserError => e
+          Sentry.capture_exception(e)
+
           p "parser error. skipping data from host: #{host}"
           next
         end

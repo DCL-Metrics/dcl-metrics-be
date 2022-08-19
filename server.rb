@@ -20,6 +20,8 @@ class Server < Sinatra::Application
   # Send all exceptions to sentry
   error Exception do
     Sentry.capture_exception(env['sinatra.error'])
+
+    { msg: 'Something went wrong' }.to_json
   end
 
   get '/' do
