@@ -33,7 +33,7 @@ if ENV['SENTRY_DSN']
     end
   end
 
-  use Sentry::Rack::CaptureExceptions
+  # use Sentry::Rack::CaptureExceptions
 end
 
 run Server
