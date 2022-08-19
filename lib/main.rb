@@ -93,5 +93,3 @@ if ENV['SENTRY_DSN']
     end
   end
 end
-
-use Sentry::Rack::CaptureExceptions

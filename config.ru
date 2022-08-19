@@ -14,4 +14,5 @@ Bundler.require
 require './lib/main'
 require './server'
 
+# use Sentry::Rack::CaptureExceptions
 run Server
