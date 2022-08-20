@@ -95,10 +95,10 @@ namespace :data_preservation do
     Jobs::ProcessSnapshots.perform_async(date)
 
     # process daily parcel traffic
-    Jobs::ProcessDailyParcelTraffic.perform_in(750, date) # 12.5 minutes
+    Jobs::ProcessDailyParcelTraffic.perform_in(500, date)
 
     # clean up
-    Jobs::DeleteDataPoints.perform_in(1500, date) # 25 minutes
+    Jobs::DeleteDataPoints.perform_in(1000, date)
   end
 end
 
