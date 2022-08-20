@@ -36,10 +36,10 @@ namespace :compute do
     previous_date = (Date.parse(date) - 1).to_s
 
     # create data points from peers dump
-    Services::ProcessSnapshots.call(date: date)
+    Jobs::ProcessSnapshots.perform_async(date)
 
     if Models::DataPoint.where(date: previous_date).count.zero?
-      Services::ProcessSnapshots.call(date: previous_date)
+      Jobs::ProcessSnapshots.perform_async(previous_date)
     end
   end
 
@@ -73,13 +73,22 @@ namespace :data_preservation do
     require './lib/main'
 
     date = args[:date] || (Date.today - 1).to_s
-    coordinates = DATABASE_CONNECTION[
-      "select distinct coordinates from data_points where date = '#{date}'"
-    ].flat_map(&:values)
+    Jobs::ProcessDailyParcelTraffic.perform_async(date)
+  end
 
-    coordinates.each do |c|
-      Jobs::CreateDailyParcelTraffic.perform_async(c, date)
-    end
+  # temporary job
+  desc "recompile parcel_traffic data in date range"
+  task :recompile_parcel_traffic, [:start_date, :end_date] do |task, args|
+
+    # for each day in the range, spawn a single job that
+    # 1. processes snapshots for the given date
+    # 2. creates daily parcel traffic data
+    # 3. deletes the snapshots on that date
+
+    # create data points from peers dump
+    Jobs::ProcessSnapshots.perform_async(date)
+    Jobs::ProcessDailyParcelTraffic.perform_in(600, date) # 10 minutes
+    Jobs::DeleteDataPoints.perform_in(1200, date) # 20 minutes
   end
 end
 
@@ -102,7 +111,7 @@ namespace :db do
     require './lib/main'
 
     date = args[:date] || (Date.today - 2).to_s
-    Models::DataPoint.where(date: date).delete
+    Jobs::DeleteDataPoints.perform_async(date)
   end
 
   desc "Drop database for environment in DATABASE_ENV for DATABASE_USER"
