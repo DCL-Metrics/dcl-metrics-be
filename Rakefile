@@ -77,18 +77,25 @@ namespace :data_preservation do
   end
 
   # temporary job
-  desc "recompile parcel_traffic data in date range"
-  task :recompile_parcel_traffic, [:start_date, :end_date] do |task, args|
+  desc "recompile parcel_traffic data for date"
+  task :recompile_parcel_traffic, [:date] do |task, args|
+    require './lib/main'
 
-    # for each day in the range, spawn a single job that
+    # for given date:
     # 1. processes snapshots for the given date
     # 2. creates daily parcel traffic data
     # 3. deletes the snapshots on that date
 
+    date = args[:date]
+
     # create data points from peers dump
     Jobs::ProcessSnapshots.perform_async(date)
+
+    # process daily parcel traffic
     Jobs::ProcessDailyParcelTraffic.perform_in(600, date) # 10 minutes
-    Jobs::DeleteDataPoints.perform_in(1200, date) # 20 minutes
+
+    # clean up
+    Jobs::DeleteDataPoints.perform_in(900, date) # 15 minutes
   end
 end
 
