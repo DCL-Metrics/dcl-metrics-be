@@ -26,8 +26,8 @@ namespace :heroku do
   end
 end
 
-# ex: rake compute:all_daily['2022-07-20']
 namespace :compute do
+  # ex: rake compute:process_snapshots['2022-07-20']
   desc "process snapshots into datapoints for date"
   task :process_snapshots, [:date] do |task, args|
     require './lib/main'
@@ -43,6 +43,7 @@ namespace :compute do
     end
   end
 
+  # ex: rake compute:all_daily['2022-07-20']
   desc "compute all daily stats for date and recalculate for the day previous"
   task :all_daily, [:date] do |task, args|
     require './lib/main'
@@ -68,6 +69,7 @@ namespace :compute do
 end
 
 namespace :data_preservation do
+  # ex: rake data_preservation:daily_parcel_traffic['2022-07-20']
   desc "save enriched peers dump data per day by parcel"
   task :daily_parcel_traffic, [:date] do |task, args|
     require './lib/main'
@@ -77,6 +79,7 @@ namespace :data_preservation do
   end
 
   # temporary job
+  # ex: rake data_preservation:recompile_parcel_traffic['2022-07-20']
   desc "recompile parcel_traffic data for date"
   task :recompile_parcel_traffic, [:date] do |task, args|
     require './lib/main'
@@ -92,10 +95,10 @@ namespace :data_preservation do
     Jobs::ProcessSnapshots.perform_async(date)
 
     # process daily parcel traffic
-    Jobs::ProcessDailyParcelTraffic.perform_in(600, date) # 10 minutes
+    Jobs::ProcessDailyParcelTraffic.perform_in(750, date) # 12.5 minutes
 
     # clean up
-    Jobs::DeleteDataPoints.perform_in(900, date) # 15 minutes
+    Jobs::DeleteDataPoints.perform_in(1500, date) # 25 minutes
   end
 end
 
