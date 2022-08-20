@@ -3,7 +3,8 @@ print "Using DATABASE:  #{ENV['DATABASE_URL']}\n\n"
 print "##############################\n"
 
 require 'sequel'
-DATABASE_CONNECTION = Sequel.connect(ENV['DATABASE_URL'])
+DATABASE_CONNECTION = Sequel.
+  connect(ENV['DATABASE_URL'], pool_timeout: ENV['DATABASE_POOL_TIMEOUT'].to_i)
 Sequel.default_timezone = :utc
 Sequel::Model.plugin :timestamps, update_on_create: true
 Sequel::Model.plugin :update_or_create
