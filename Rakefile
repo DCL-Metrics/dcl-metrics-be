@@ -107,8 +107,12 @@ namespace :dcl do
   task :fetch_peers do
     require './lib/main'
 
-    6.times do |i|
-      Jobs::FetchPeerData.perform_in(i * 100)
+    job_iteration = 600 # time in seconds
+    times_to_run  = 5
+
+    times_to_run.times do |i|
+      delay = (job_iteration / times_to_run) * i
+      Jobs::FetchPeerData.perform_in(delay)
     end
   end
 end
