@@ -18,7 +18,7 @@ module Jobs
 
     def perform
       data = SERVERS.flat_map do |host|
-        raw_data = `curl -s #{host}/comms/peers`
+        raw_data = `curl -s -x #{ENV['QUOTAGUARD_URL']} "#{host}/comms/peers"`
 
         begin
           data = JSON.parse(raw_data)
