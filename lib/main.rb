@@ -87,11 +87,7 @@ if ENV['SENTRY_DSN']
       Services::TelegramOperator.notify(
         level: :error,
         message: "Sentry caught an error",
-        payload: {
-          location: event[:module],
-          exception: event[:type],
-          message: event[:value]
-        }
+        payload: event.values
       )
 
       event
