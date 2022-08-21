@@ -87,7 +87,7 @@ if ENV['SENTRY_DSN']
       Services::TelegramOperator.notify(
         level: :error,
         message: "Sentry caught an error",
-        payload: event.values
+        payload: event.to_hash
       )
 
       event
