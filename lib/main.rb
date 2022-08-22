@@ -46,6 +46,7 @@ require './lib/adapters/telegram.rb'
 # require jobs
 require './lib/jobs/job.rb'
 require './lib/jobs/fetch_peer_data.rb'
+require './lib/jobs/fetch_parcel_stats.rb'
 require './lib/jobs/process_snapshots.rb'
 require './lib/jobs/process_snapshot.rb'
 require './lib/jobs/process_user_activities.rb'
