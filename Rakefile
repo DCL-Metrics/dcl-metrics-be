@@ -116,8 +116,8 @@ namespace :dcl do
     end
   end
 
-  desc "fetch parcel stats"
-  task :fetch_parcel_stats do
+  desc "fetch peer stats"
+  task :fetch_peer_stats do
     require './lib/main'
 
     job_iteration = 600 # time in seconds
@@ -125,7 +125,7 @@ namespace :dcl do
 
     times_to_run.times do |i|
       delay = (job_iteration / times_to_run) * i
-      Jobs::FetchParcelStats.perform_in(delay)
+      Jobs::FetchPeerStats.perform_in(delay)
     end
   end
 end
