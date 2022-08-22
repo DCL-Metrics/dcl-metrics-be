@@ -115,6 +115,19 @@ namespace :dcl do
       Jobs::FetchPeerData.perform_in(delay)
     end
   end
+
+  desc "fetch parcel stats"
+  task :fetch_parcel_stats do
+    require './lib/main'
+
+    job_iteration = 600 # time in seconds
+    times_to_run  = 10
+
+    times_to_run.times do |i|
+      delay = (job_iteration / times_to_run) * i
+      Jobs::FetchParcelStats.perform_in(delay)
+    end
+  end
 end
 
 namespace :db do
