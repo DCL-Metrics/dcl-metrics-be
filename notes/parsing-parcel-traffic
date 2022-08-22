@@ -1,0 +1,23 @@
+cid = "bafkreide7udj3ttlqhhmyb3p7v2cjgyfbcsrvemmd6gtviimugymcogbem"
+scene = Models::Scene.find(cid: cid)
+
+# unique visits
+query = Models::ParcelTraffic.where(coordinates: JSON.parse(scene.parcels)).select(:histogram_json)
+
+data = query.all.flat_map { |d| JSON.parse(d[:histogram_json]) }
+
+sorted = data.
+  group_by { |d| d['hour'] }.
+  sort_by(&:first).to_h
+
+result ={}
+sorted.each do |time, data|
+  result[time] = data.map { |d| d['count'] }.max
+end
+
+total_unique_visitors = result.values.sum
+
+# total visits
+query = Models::ParcelTraffic.where(coordinates: JSON.parse(scene.parcels)).select(:addresses_json, :coordinates, :date)
+
+data = query.all.map { |d| [d.date.to_s, d.coordinates, JSON.parse(d.addresses_json).count] }
