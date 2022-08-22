@@ -40,7 +40,7 @@ module Jobs
       end.compact.group_by { |d| d['parcel'] }
 
       current_time = Time.now.utc
-      coordinates = data.keys
+      coordinates = data.keys.map { |key| "#{key['x']},#{key['y']}" }
       scenes = Services::FetchSceneData.call(coordinates: coordinates)
 
       # enrich data with scene cid
