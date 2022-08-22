@@ -17,6 +17,9 @@ module Jobs
     ]
 
     def perform
+      date = Date.today.to_s
+      current_time = Time.now.utc
+
       data = SERVERS.flat_map do |host|
         raw_data = `curl -s -x #{ENV['QUOTAGUARD_URL']} "#{host}/stats/parcels"`
 
@@ -39,26 +42,30 @@ module Jobs
         end
       end.compact.group_by { |d| d['parcel'] }
 
-      current_time = Time.now.utc
-      coordinates = data.keys.map { |key| "#{key['x']},#{key['y']}" }
+      # format data
+      formatted_data = {}
+      data.each do |coordinates_hash, data|
+        coordinates = "#{coordinates_hash['x']},#{coordinates_hash['y']}"
+        formatted_data[coordinates] = {
+          'count' => data.sum { |d| d['peersCount'] },
+          'scene_cid' => nil
+        }
+      end
+
+      # grab scenes
+      coordinates = formatted_data.keys
       scenes = Services::FetchSceneData.call(coordinates: coordinates)
 
       # enrich data with scene cid
-      data.each do |coordinates_hash, data|
-        coordinates = "#{coordinates_hash['x']},#{coordinates_hash['y']}"
+      formatted_data.each do |coordinates, data|
         scene = scenes.detect { |s| s[:parcels].include?(coordinates) }
         next if scene.nil? # empty parcel
 
         data['scene_cid'] = scene[:id]
       end
 
-      # create peers dump
-      date = Date.today.to_s
-
-      p data: data
-
-      data.each do |coordinates_hash, data|
-        coordinates = "#{coordinates_hash['x']},#{coordinates_hash['y']}"
+      # create model
+      formatted_data.each do |coordinates, data|
         query = {
           coordinates: coordinates,
           date: date,
@@ -66,8 +73,10 @@ module Jobs
         }
 
         Models::PeerStats.update_or_create(query) do |ps|
-          parcel_data = ps.data ? JSON.parse(ps.data_json) : {}
-          ps.data_json[current_time] =  data.sum { |d| d['peersCount'] }
+          parcel_data = ps.data_json ? JSON.parse(ps.data_json) : {}
+          parcel_data[current_time.to_i] =  data['count']
+
+          ps.data_json = parcel_data.to_json
         end
       end
 
