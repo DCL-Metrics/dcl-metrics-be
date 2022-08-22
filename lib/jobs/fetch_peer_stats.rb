@@ -1,5 +1,5 @@
 module Jobs
-  class FetchParcelStats < Job
+  class FetchPeerStats < Job
     sidekiq_options queue: 'scraping'
 
     SERVERS = %w[
