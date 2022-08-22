@@ -35,7 +35,7 @@ module Jobs
         end
 
         if data.class == Hash
-          data['parcels'] if data['ok']
+          data['parcels']
         end
       end.compact.group_by { |d| d['parcel'] }
 
