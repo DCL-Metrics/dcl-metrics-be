@@ -55,6 +55,8 @@ module Jobs
       # create peers dump
       date = Date.today.to_s
 
+      p data: data
+
       data.each do |coordinates_hash, data|
         coordinates = "#{coordinates_hash['x']},#{coordinates_hash['y']}"
         query = {
