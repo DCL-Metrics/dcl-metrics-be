@@ -1,4 +1,8 @@
-cid = "bafkreide7udj3ttlqhhmyb3p7v2cjgyfbcsrvemmd6gtviimugymcogbem"
+# seans scene
+# cid = "bafkreide7udj3ttlqhhmyb3p7v2cjgyfbcsrvemmd6gtviimugymcogbem"
+
+# edifice
+# cid = "bafkreifixh6rirjm6vlsnjaln4gr42l46lqg2vinrtqhfmr75tpct2fbdi"
 scene = Models::Scene.find(cid: cid)
 
 # unique visits
