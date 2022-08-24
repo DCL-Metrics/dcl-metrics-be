@@ -16,6 +16,15 @@
 
 module Models
   class DataPoint < Sequel::Model
+    def self.histogram
+      DATABASE_CONNECTION[
+        "select DATE_TRUNC('day', date) as day,
+        count(id)
+        from data_points
+        group by day
+        order by 1"
+      ].all
+    end
   end
 end
 
