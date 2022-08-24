@@ -21,7 +21,11 @@ module Jobs
       current_time = Time.now.utc
 
       data = SERVERS.flat_map do |host|
-        raw_data = `curl -s -x #{ENV['QUOTAGUARD_URL']} "#{host}/stats/parcels"`
+        # with proxy
+        # raw_data = `curl -s -x #{ENV['QUOTAGUARD_URL']} "#{host}/stats/parcels"`
+
+        # without proxy
+        raw_data = `curl -s "#{host}/stats/parcels"`
 
         begin
           data = JSON.parse(raw_data)
