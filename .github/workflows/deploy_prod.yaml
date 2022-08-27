@@ -12,10 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: akhileshns/heroku-deploy@v3.12.12
+        id: deploy
         with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "dcl-metrics-be"
-          heroku_email: ${{secrets.HEROKU_EMAIL}}
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
 
       - name: Notify deployment
         uses: appleboy/telegram-action@master
@@ -26,7 +27,7 @@ jobs:
           disable_web_page_preview: true
           format: html
           message: |
-            Prod deployment ${{ job.status == 'success' && 'succeeded' || 'failed' }}
-            Repo: ${{ github.repository }}/${{ github.ref_name }}
+            Prod deployment ${{ steps.deploy.outcome == 'success' && 'succeeded' || 'failed' }}
+            Repo: ${{ github.repository }}
             Author: ${{ github.actor }}
             Commit: <a href="${{ github.event.head_commit.url }}">${{ github.event.head_commit.message }}</a>
