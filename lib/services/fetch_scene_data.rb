@@ -8,11 +8,10 @@ module Services
 
     def initialize(coordinates)
       @coordinates = coordinates
+      @scenes = []
     end
 
     def call
-      scenes = []
-
       coordinates.sort.each_slice(20) do |batch|
         # check if coordinates are part of an existing scene
         c = batch - scenes.flat_map { |s| s[:parcels] }
@@ -49,5 +48,6 @@ module Services
 
     private
     attr_reader :coordinates
+    attr_accessor :scenes
   end
 end
