@@ -11,6 +11,7 @@ Bundler.require
 # require testing components
 require 'rack/test'
 require 'minitest/autorun'
+require 'timecop'
 require 'pry'
 
 # require csv and json for fixtures
@@ -46,6 +47,13 @@ class BaseSpec < Minitest::Spec
           timestamp: Time.parse(row['timestamp'])
         )
       end
+    end
+  end
+
+  def create_daily_user_stats(data)
+    data.each do |row|
+      Models::DailyUserStats.
+        create(row.except('id', 'created_at').transform_keys(&:to_sym))
     end
   end
 
