@@ -16,12 +16,30 @@ module Models
       where { date >= Date.today - 7 }.order(:date)
     end
 
+    def self.yesterday
+      previous_x_days(1)
+    end
+
+    def self.last_week
+      previous_x_days(7)
+    end
+
+    def self.last_month
+      previous_x_days(30)
+    end
+
     def serialize
       {
         address: address,
         time_spent: time_spent,
         parcels_visited: parcels_visited
       }
+    end
+
+    private
+
+    def self.previous_x_days(x)
+      where { date >= Date.today - x }
     end
   end
 end
