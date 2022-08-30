@@ -27,6 +27,9 @@ Sidekiq.configure_server do |config|
   }
 end
 
+# require monkey patches
+require './lib/monkey_patches.rb'
+
 # require models
 require './lib/models/peers_dump.rb'
 require './lib/models/peer_stats.rb'
