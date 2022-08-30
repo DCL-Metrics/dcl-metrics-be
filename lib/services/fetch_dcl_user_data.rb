@@ -11,12 +11,17 @@ module Services
       @users = []
     end
 
+    # TODO: this probably makes more sense as a job that runs once an hour or so
+    # and calls update_or_create on all users in the last hour - but users need
+    # to be created before that happens
     def call
-      fetch_data(addresses)
+      # TODO: after users have been added
+      # find_known_users
+      create_users_from_unknown_addresses
       return users if all_data_fetched?
 
       # give it another try for good measure
-      remaining_addresses.each { |address| fetch_data([address]) }
+      remaining_addresses.each { |address| create_users_from_unknown_addresses([address]) }
       users
     end
 
@@ -32,8 +37,20 @@ module Services
       addresses - users.map { |u| u[:address] }
     end
 
-    def fetch_data(addresses)
-      addresses.each_slice(40) do |batch|
+    # def find_known_users
+    #   Models::Users.where(address: remaining_addresses).each do |user|
+    #     users.push({
+    #       address: user.address,
+    #       avatar_url: user.avatar_url,
+    #       guest_user: user.guest_user?,
+    #       name: user.name,
+    #       verified_user: user.verified_user?
+    #     })
+    #   end
+    # end
+
+    def create_users_from_unknown_addresses
+      remaining_addresses.each_slice(40) do |batch|
         # TODO: move to adapater
         # get data from url
         # if there is only one element in the array the request needs
