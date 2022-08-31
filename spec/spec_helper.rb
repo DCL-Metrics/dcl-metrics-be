@@ -53,7 +53,14 @@ class BaseSpec < Minitest::Spec
   def create_daily_user_stats(data)
     data.each do |row|
       Models::DailyUserStats.
-        create(row.except('id', 'created_at').transform_keys(&:to_sym))
+        create(row.except('id', 'created_at').symbolize_keys)
+    end
+  end
+
+  def create_daily_parcel_stats(data)
+    data.each do |row|
+      Models::DailyParcelStats.
+        create(row.except('id', 'created_at').symbolize_keys)
     end
   end
 
