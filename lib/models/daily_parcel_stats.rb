@@ -15,8 +15,16 @@
 
 module Models
   class DailyParcelStats < Sequel::Model
-    def self.recent
-      where { date >= Date.today - 7 }.order(:date)
+    def self.yesterday
+      previous_x_days(1)
+    end
+
+    def self.last_week
+      previous_x_days(7)
+    end
+
+    def self.last_month
+      previous_x_days(30)
     end
 
     def serialize
@@ -28,6 +36,12 @@ module Models
         logins: logins,
         logouts: logouts
       }
+    end
+
+    private
+
+    def self.previous_x_days(x)
+      where { date >= Date.today - x }
     end
   end
 end
