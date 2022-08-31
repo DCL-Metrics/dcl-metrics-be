@@ -50,6 +50,13 @@ class BaseSpec < Minitest::Spec
     end
   end
 
+  def create_daily_stats(data)
+    data.each do |row|
+      Models::DailyStats.
+        create(row.except('id', 'created_at').symbolize_keys)
+    end
+  end
+
   def create_daily_user_stats(data)
     data.each do |row|
       Models::DailyUserStats.

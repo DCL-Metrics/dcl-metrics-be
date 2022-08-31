@@ -78,6 +78,7 @@ require './lib/services/create_scenes_on_date.rb'
 require './lib/services/create_daily_parcel_traffic.rb'
 
 # require serializers
+require './lib/serializers/global/daily_stats.rb'
 require './lib/serializers/global/parcels.rb'
 require './lib/serializers/global/users.rb'
 
