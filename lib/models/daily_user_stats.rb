@@ -12,10 +12,6 @@
 
 module Models
   class DailyUserStats < Sequel::Model
-    def self.recent
-      where { date >= Date.today - 7 }.order(:date)
-    end
-
     def self.yesterday
       previous_x_days(1)
     end
