@@ -29,7 +29,7 @@ class Server < Sinatra::Application
   end
 
   get '/global' do
-    daily   = Models::DailyStats.recent.map(&:serialize)
+    daily   = Serializers::Global::DailyStats.serialize
     parcels = Serializers::Global::Parcels.serialize
     scenes  = {}
     users   = Serializers::Global::Users.serialize

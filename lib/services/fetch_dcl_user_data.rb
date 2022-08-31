@@ -49,8 +49,10 @@ module Services
     #   end
     # end
 
-    def create_users_from_unknown_addresses
-      remaining_addresses.each_slice(40) do |batch|
+    def create_users_from_unknown_addresses(specified_addresses = [])
+      to_fetch = specified_addresses.empty? ? remaining_addresses : specified_addresses
+
+      to_fetch.each_slice(40) do |batch|
         # TODO: move to adapater
         # get data from url
         # if there is only one element in the array the request needs
