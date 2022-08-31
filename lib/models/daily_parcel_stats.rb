@@ -27,17 +27,6 @@ module Models
       previous_x_days(30)
     end
 
-    def serialize
-      {
-        coordinates: coordinates,
-        avg_time_spent: avg_time_spent,
-        avg_time_spent_afk: avg_time_spent_afk,
-        unique_visitors: unique_visitors,
-        logins: logins,
-        logouts: logouts
-      }
-    end
-
     private
 
     def self.previous_x_days(x)

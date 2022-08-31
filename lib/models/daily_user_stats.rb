@@ -24,14 +24,6 @@ module Models
       previous_x_days(30)
     end
 
-    def serialize
-      {
-        address: address,
-        time_spent: time_spent,
-        parcels_visited: parcels_visited
-      }
-    end
-
     private
 
     def self.previous_x_days(x)
