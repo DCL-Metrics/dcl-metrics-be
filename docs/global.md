@@ -12,12 +12,12 @@ The expected response, as json:
 
 ``` json
 {
-  'global': { // see "global" below
+  "global": { // see "global" below
     "2022-08-01": {"unique_users":9392,"active_parcels":5130},
     "2022-08-02": {"unique_users":9722,"active_parcels":4890},
     // ...
   },
-  'parcels': { // see "parcels" below
+  "parcels": { // see "parcels" below
     "yesterday": {
       "logins": {
         "1,0": 1061,
@@ -47,8 +47,8 @@ The expected response, as json:
     "last_week": {}, // format as above
     "last_month": {} // format as above
   },
-  'scenes': {}, // NOT YET IMPLEMENTED
-  'users': { // see "users" below
+  "scenes": {}, // NOT YET IMPLEMENTED
+  "users": { // see "users" below
     "yesterday": {
       "parcels_visited": [
         {
@@ -79,6 +79,6 @@ The expected response, as json:
 }
 ```
 
-[global](../spec/fixtures/expectations/serializers/global_daily_stats.json)
-[parcels](../spec/fixtures/expectations/serializers/global_parcels.json)
-[users](../spec/fixtures/expectations/serializers/global_users.json)
+* [global](../spec/fixtures/expectations/serializers/global_daily_stats.json)
+* [parcels](../spec/fixtures/expectations/serializers/global_parcels.json)
+* [users](../spec/fixtures/expectations/serializers/global_users.json)
