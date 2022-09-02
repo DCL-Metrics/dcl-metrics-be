@@ -5,6 +5,7 @@ class Server < Sinatra::Application
 
   # Ensure all requests come from a fixed IP
   before do
+    return unless ENV['RACK_ENV'] == 'production'
     requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR']
 
     unless ALLOWED_ACCESS_IP.include?(requesting_ip)
