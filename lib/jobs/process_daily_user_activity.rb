@@ -108,14 +108,15 @@ module Jobs
 
       # create UserEvent from any remaining events
       @events.each do |e|
-        # if within_time_delta?(e[:timestamp], end_of_day, 10)
-        Models::UserEvent.create(
-          address: address,
-          coordinates: e[:coordinates],
-          event: e[:event],
-          position: e[:position],
-          timestamp: e[:timestamp]
-        )
+        if within_time_delta?(e[:timestamp], end_of_day, 30)
+          Models::UserEvent.create(
+            address: address,
+            coordinates: e[:coordinates],
+            event: e[:event],
+            position: e[:position],
+            timestamp: e[:timestamp]
+          )
+        end
       end
 
       # TODO: separate job
