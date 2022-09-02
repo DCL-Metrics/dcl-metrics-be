@@ -1,7 +1,10 @@
-name: Deploy Production
+name: Deploy Staging
 on:
-  push:
-    branches: [master]
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to push to staging'
+        required: true
 
 jobs:
   # TODO: test:
@@ -11,11 +14,14 @@ jobs:
     # needs: [test]
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ inputs.branch }}
+
       - uses: akhileshns/heroku-deploy@v3.12.12
         id: deploy
         with:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          heroku_app_name: ${{ secrets.HEROKU_STAGING_APP_NAME }}
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
 
       - name: Notify deployment
@@ -27,7 +33,7 @@ jobs:
           disable_web_page_preview: true
           format: html
           message: |
-            Prod deployment ${{ steps.deploy.outcome == 'success' && 'succeeded ✅' || 'failed ❌' }}
+            Staging deployment ${{ steps.deploy.outcome == 'success' && 'succeeded ✅' || 'failed ❌' }}
             Repo: ${{ github.repository }}
             Author: ${{ github.actor }}
-            Commit: <a href="${{ github.event.head_commit.url }}">${{ github.event.head_commit.message }}</a>
+            Branch: ${{ inputs.branch }}
