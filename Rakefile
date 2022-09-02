@@ -100,6 +100,15 @@ namespace :data_preservation do
     # clean up
     Jobs::DeleteDataPoints.perform_in(1000, date)
   end
+
+  desc "export recent stats to staging db"
+  task :export_recent_stats_to_staging_db do
+    require './lib/main'
+
+    Jobs::ExportDataToStagingDb.perform_async('daily_stats', 30)
+    Jobs::ExportDataToStagingDb.perform_async('daily_parcel_stats', 30)
+    Jobs::ExportDataToStagingDb.perform_async('daily_user_stats', 30)
+  end
 end
 
 namespace :dcl do
