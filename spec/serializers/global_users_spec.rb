@@ -38,9 +38,10 @@ class GlobalUsersSpec < BaseSpec
       assert_equal expected.keys, result.keys
 
       # ensure the nodes come out as expected
-      assert_equal expected[:yesterday],  result[:yesterday]
-      assert_equal expected[:last_week],  result[:last_week]
+      assert_equal expected[:yesterday], result[:yesterday]
+      assert_equal expected[:last_week], result[:last_week]
       assert_equal expected[:last_month], result[:last_week] # there's only 7d of data
+      assert_equal expected[:last_quarter], result[:last_week] # there's only 7d of data
 
       # ensure the format is as expected
       yesterday = result[:yesterday]

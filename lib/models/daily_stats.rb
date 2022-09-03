@@ -14,6 +14,10 @@ module Models
       previous_x_days(30)
     end
 
+    def self.last_quarter
+      previous_x_days(90)
+    end
+
     def serialize
       {
         unique_users: unique_users,

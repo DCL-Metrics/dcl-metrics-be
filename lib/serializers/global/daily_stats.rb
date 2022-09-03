@@ -6,7 +6,7 @@ module Serializers
       end
 
       def call
-        Models::DailyStats.last_month.order(:date).all.inject({}) do |result, row|
+        Models::DailyStats.last_quarter.order(:date).all.inject({}) do |result, row|
           result[row.date.to_s] = row.serialize
           result
         end

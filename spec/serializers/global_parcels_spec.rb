@@ -27,8 +27,10 @@ class GlobalParcelsSpec < BaseSpec
     # ensure the nodes come out as expected
     assert_equal expected[:yesterday].transform_keys(&:to_sym),  result[:yesterday]
     assert_equal expected[:last_week].transform_keys(&:to_sym),  result[:last_week]
+
     # there's only 7d of data
-    assert_equal expected[:last_month].transform_keys(&:to_sym), result[:last_week]
+    assert_equal expected[:last_month].transform_keys(&:to_sym),   result[:last_week]
+    assert_equal expected[:last_quarter].transform_keys(&:to_sym), result[:last_week]
 
     # ensure the format is as expected
     yesterday = result[:yesterday].transform_keys(&:to_sym)

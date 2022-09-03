@@ -27,6 +27,13 @@ module Serializers
             time_spent: calculate_top(:avg_time_spent, :last_month),
             time_spent_afk: calculate_top(:avg_time_spent_afk, :last_month),
             visitors: calculate_top(:unique_visitors, :last_month)
+          },
+          last_quarter: {
+            logins: calculate_top(:logins, :last_quarter),
+            logouts: calculate_top(:logouts, :last_quarter),
+            time_spent: calculate_top(:avg_time_spent, :last_quarter),
+            time_spent_afk: calculate_top(:avg_time_spent_afk, :last_quarter),
+            visitors: calculate_top(:unique_visitors, :last_quarter)
           }
         }
       end
@@ -49,7 +56,8 @@ module Serializers
         {
           yesterday: Models::DailyParcelStats.yesterday,
           last_week: Models::DailyParcelStats.last_week,
-          last_month: Models::DailyParcelStats.last_month
+          last_month: Models::DailyParcelStats.last_month,
+          last_quarter: Models::DailyParcelStats.last_quarter
         }
       end
     end

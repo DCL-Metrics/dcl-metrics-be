@@ -15,6 +15,9 @@ module Serializers
         @top_parcels_last_month = calculate_top(:parcels_visited, :last_month)
         @top_time_last_month = calculate_top(:time_spent, :last_month)
 
+        @top_parcels_last_quarter = calculate_top(:parcels_visited, :last_quarter)
+        @top_time_last_quarter = calculate_top(:time_spent, :last_quarter)
+
         {
           yesterday: {
             parcels_visited: enrich_with_api_data(top_parcels_yesterday, user_data),
@@ -27,6 +30,10 @@ module Serializers
           last_month: {
             parcels_visited: enrich_with_api_data(top_parcels_last_month, user_data),
             time_spent: enrich_with_api_data(top_time_last_month, user_data)
+          },
+          last_quarter: {
+            parcels_visited: enrich_with_api_data(top_parcels_last_quarter, user_data),
+            time_spent: enrich_with_api_data(top_time_last_quarter, user_data)
           }
         }
       end
@@ -37,7 +44,9 @@ module Serializers
                   :top_parcels_last_week,
                   :top_time_last_week,
                   :top_parcels_last_month,
-                  :top_time_last_month
+                  :top_time_last_month,
+                  :top_parcels_last_quarter,
+                  :top_time_last_quarter
 
       def calculate_top(attribute, period)
         result = []
@@ -71,7 +80,9 @@ module Serializers
           top_parcels_last_week +
           top_time_last_week +
           top_parcels_last_month +
-          top_time_last_month
+          top_time_last_month +
+          top_parcels_last_quarter +
+          top_time_last_quarter
         ).map { |row| row[:address] }.uniq
       end
 
@@ -98,7 +109,8 @@ module Serializers
         {
           yesterday: Models::DailyUserStats.yesterday,
           last_week: Models::DailyUserStats.last_week,
-          last_month: Models::DailyUserStats.last_month
+          last_month: Models::DailyUserStats.last_month,
+          last_quarter: Models::DailyUserStats.last_quarter
         }
       end
     end
