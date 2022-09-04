@@ -15,8 +15,9 @@ module Services
         date: date,
         data_ndj: data_ndj,
         scene_cids_json: scene_cids_json,
-        addresses_json: addresses_json,
-        histogram_json: histogram_json
+        addresses_json: addresses.to_json,
+        histogram_json: histogram_json,
+        unique_addresses: addresses.count
       )
     end
 
@@ -39,12 +40,12 @@ module Services
       ].all.flat_map(&:values).to_json
     end
 
-    def addresses_json
+    def addresses
       DATABASE_CONNECTION[
         "select distinct(address) from data_points
         where coordinates='#{coordinates}'
         and date='#{date}'"
-      ].all.flat_map(&:values).to_json
+      ].all.flat_map(&:values)
     end
 
     def histogram_json
