@@ -1,4 +1,4 @@
-dump_histo = DATABASE_CONNECTION[
+dump_history = DATABASE_CONNECTION[
   "select DATE_TRUNC('day', created_at) as day,
   count(id)
   from peers_dump

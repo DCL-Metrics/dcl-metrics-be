@@ -1,0 +1,32 @@
+date = '2022-09-03'
+cids = Models::ParcelTraffic.
+  where(date: date).
+  flat_map { |pt| JSON.parse(pt.scene_cids_json) }.
+  compact.
+  uniq
+
+# scenes.count is DailyStats#total_active_scenes
+scenes = Models::Scene.where(cid: cids).uniq { |s| [s.name, s.parcels] }
+
+scenes.each do |scene|
+  next if scene_is_a_public_road? # compare to tiles.json parcel type?
+
+  stats = JSON.parse(scene.parcels).map do |coordinates|
+    traffic = Models::ParcelTraffic.find(coordinates: coordinates, date: date)
+
+    # number of unique addresses per parcel
+    # histogram per parcel (maybe better to also switch this to using peer_stats)
+  end
+
+  # histogram overall (highest count per hour over the whole scene)
+  # number of unique addresses overall
+  # maybe can map all of the datapoints in this scene and create
+  # * logins
+  # * logouts
+  # * total_time_spent
+  # * avg_time_spent
+  # * avg_time_spent_afk
+
+end
+
+
