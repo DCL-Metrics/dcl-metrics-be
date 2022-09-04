@@ -49,7 +49,7 @@ module Serializers
           group_by(&:coordinates).
           each { |c, data| result[c] = data.sum { |d| d[attribute].to_i } }
 
-        result.sort_by { |k,v| v }.reverse.last(5).to_h
+        result.sort_by { |k,v| v }.last(5).reverse.to_h
       end
 
       def data

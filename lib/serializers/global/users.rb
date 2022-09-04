@@ -66,7 +66,7 @@ module Serializers
               })
             end
 
-        result.sort_by { |row| row[attribute] }.reverse.last(10)
+        result.sort_by { |row| row[attribute] }.last(10).reverse
       end
 
       def user_data
