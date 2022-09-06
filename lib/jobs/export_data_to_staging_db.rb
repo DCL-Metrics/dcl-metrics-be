@@ -14,7 +14,7 @@ module Jobs
         map { |d| d.values.except(:id).values }
 
       # staging db
-      Sequel.connect(ENV['HEROKU_POSTGRESQL_ONYX']) do |db|
+      Sequel.connect(ENV['HEROKU_POSTGRESQL_ONYX_URL']) do |db|
         db[model_name.to_sym].truncate
         db[model_name.to_sym].import(columns, data)
       end
