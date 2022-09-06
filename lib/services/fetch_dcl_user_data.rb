@@ -70,14 +70,15 @@ module Services
           next if data.nil?
           next if data.empty?
           user = data['avatars'][0]
+          verified_user = user['hasClaimedName']
 
           # NOTE: guest user has a triple bang - force boolean and then invert it
           users.push({
             address: user['userId'],
             avatar_url: user['avatar']['snapshots']['face256'],
-            guest_user: !!!user['hasConnectedWeb3'],
+            guest_user: verified_user ? false : !!!user['hasConnectedWeb3'],
             name: user['name'],
-            verified_user: user['hasClaimedName']
+            verified_user: verified_user
           })
         end
       end
