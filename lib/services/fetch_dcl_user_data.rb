@@ -71,10 +71,11 @@ module Services
           next if data.empty?
           user = data['avatars'][0]
 
+          # NOTE: guest user has a triple bang - force boolean and then invert it
           users.push({
             address: user['userId'],
             avatar_url: user['avatar']['snapshots']['face256'],
-            guest_user: !user['hasConnectedWeb3'],
+            guest_user: !!!user['hasConnectedWeb3'],
             name: user['name'],
             verified_user: user['hasClaimedName']
           })
