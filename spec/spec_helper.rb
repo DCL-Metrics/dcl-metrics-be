@@ -32,6 +32,16 @@ class BaseSpec < Minitest::Spec
     end
   end
 
+  def create_peer_stats_on_date(date, count = 5)
+    count.times do |i|
+      Models::PeerStats.create(
+        date: date,
+        data_json: {}.to_json,
+        coordinates: "#{Random.rand(150)},#{Random.rand(150)}"
+      )
+    end
+  end
+
   def create_data_points
     Dir.glob('./spec/fixtures/data_points/*.csv') do |filename|
       data = CSV.parse(File.read(filename), headers: true)

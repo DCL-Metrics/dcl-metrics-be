@@ -1,5 +1,9 @@
 class DailyStatsSpec < BaseSpec
-  before { create_data_points }
+  before do
+    create_peer_stats_on_date(day_one, 6) # for total active parcels count
+    create_peer_stats_on_date(day_two, 3) # for total active parcels count
+    create_data_points                    # for unique users count
+  end
 
   # two fully afk sessions - one on day one, one on day two
   let(:address_one) { '0x1d22d0041d6d9e7ec6865ca06292af8d5fb050b0' }
@@ -22,7 +26,7 @@ class DailyStatsSpec < BaseSpec
 
     day_one_stats = Models::DailyStats.first
     assert_equal 2, day_one_stats.unique_users
-    assert_equal 4, day_one_stats.total_active_parcels
+    assert_equal 6, day_one_stats.total_active_parcels
 
     # process user activity on day two
     Services::DailyUserActivityBuilder.call(date: day_two)
@@ -32,7 +36,7 @@ class DailyStatsSpec < BaseSpec
 
     day_two_stats = Models::DailyStats.last
     assert_equal 2, day_two_stats.unique_users
-    assert_equal 2, day_two_stats.total_active_parcels
+    assert_equal 3, day_two_stats.total_active_parcels
 
     # LOW-PRIORITY TODO
     # process daily stats for day one again
