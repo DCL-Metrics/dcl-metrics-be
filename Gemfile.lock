@@ -5,6 +5,11 @@ GEM
     concurrent-ruby (1.1.10)
     connection_pool (2.2.5)
     dotenv (2.7.6)
+    dry-core (0.8.1)
+      concurrent-ruby (~> 1.0)
+    dry-monads (1.4.0)
+      concurrent-ruby (~> 1.0)
+      dry-core (~> 0.7)
     faraday (2.4.0)
       faraday-net_http (~> 2.0)
       ruby2_keywords (>= 0.0.4)
@@ -61,6 +66,7 @@ PLATFORMS
 
 DEPENDENCIES
   dotenv
+  dry-monads
   faraday
   foreman
   minitest
