@@ -7,54 +7,58 @@ module Serializers
 
       def call
         {
-          daily: {
-            logins:  calculate_daily(:logins),
-            logouts: calculate_daily(:logouts),
-            time_spent: calculate_daily(:avg_time_spent),
-            visitors: calculate_daily(:unique_visitors)
+          yesterday: {
+            logins: calculate_top(:logins, :yesterday),
+            logouts: calculate_top(:logouts, :yesterday),
+            time_spent: calculate_top(:avg_time_spent, :yesterday),
+            time_spent_afk: calculate_top(:avg_time_spent_afk, :yesterday),
+            visitors: calculate_top(:unique_visitors, :yesterday)
           },
-          top: {
-            logins: calculate_top(:logins),
-            logouts: calculate_top(:logouts),
-            time_spent: calculate_top(:avg_time_spent),
-            visitors: calculate_top(:unique_visitors)
+          last_week: {
+            logins: calculate_top(:logins, :last_week),
+            logouts: calculate_top(:logouts, :last_week),
+            time_spent: calculate_top(:avg_time_spent, :last_week),
+            time_spent_afk: calculate_top(:avg_time_spent_afk, :last_week),
+            visitors: calculate_top(:unique_visitors, :last_week)
+          },
+          last_month: {
+            logins: calculate_top(:logins, :last_month),
+            logouts: calculate_top(:logouts, :last_month),
+            time_spent: calculate_top(:avg_time_spent, :last_month),
+            time_spent_afk: calculate_top(:avg_time_spent_afk, :last_month),
+            visitors: calculate_top(:unique_visitors, :last_month)
+          },
+          last_quarter: {
+            logins: calculate_top(:logins, :last_quarter),
+            logouts: calculate_top(:logouts, :last_quarter),
+            time_spent: calculate_top(:avg_time_spent, :last_quarter),
+            time_spent_afk: calculate_top(:avg_time_spent_afk, :last_quarter),
+            visitors: calculate_top(:unique_visitors, :last_quarter)
           }
         }
       end
 
       private
 
-      def calculate_daily(attribute)
-        Models::DailyParcelStats.
-          recent.
-          exclude(attribute => nil).
-          reverse_order(attribute).
-          all.
-          group_by { |stats| stats.date.to_s }.
-          sort_by(&:first).
-          to_h.
-          transform_values! { |v| v.map(&:serialize) }
-      end
-
-      def calculate_top(attribute)
+      def calculate_top(attribute, period)
         result = {}
 
-        Models::DailyParcelStats.
-          recent.
+        data[period].
           exclude(attribute => nil).
           all.
           group_by(&:coordinates).
-          each { |c, data| result[c] = sum_parcel_attributes(data) }
+          each { |c, data| result[c] = data.sum { |d| d[attribute].to_i } }
 
-        result.sort_by { |k,v| v[attribute] }.reverse.to_h
+        result.sort_by { |k,v| v }.last(5).reverse.to_h
       end
 
-      def sum_parcel_attributes(data)
-        attributes = %i[avg_time_spent avg_time_spent_afk unique_visitors logins logouts]
-        result = {}
-
-        attributes.each { |a| result[a] = data.sum { |d| d[a].to_i } }
-        result
+      def data
+        {
+          yesterday: Models::DailyParcelStats.yesterday,
+          last_week: Models::DailyParcelStats.last_week,
+          last_month: Models::DailyParcelStats.last_month,
+          last_quarter: Models::DailyParcelStats.last_quarter
+        }
       end
     end
   end

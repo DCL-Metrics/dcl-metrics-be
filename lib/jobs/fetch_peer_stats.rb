@@ -2,53 +2,14 @@ module Jobs
   class FetchPeerStats < Job
     sidekiq_options queue: 'scraping'
 
-    SERVERS = %w[
-      "https://peer-ec1.decentraland.org"
-      "https://peer-ec2.decentraland.org"
-      "https://peer-wc1.decentraland.org"
-      "https://peer-eu1.decentraland.org"
-      "https://peer-ap1.decentraland.org"
-      "https://interconnected.online"
-      "https://peer.decentral.io"
-      "https://peer.melonwave.com"
-      "https://peer.kyllian.me"
-      "https://peer.uadevops.com"
-      "https://peer.dclnodes.io"
-    ]
-
     def perform
+      data = Adapters::Dcl::Peers.fetch_stats
       date = Date.today.to_s
       current_time = Time.now.utc
 
-      data = SERVERS.flat_map do |host|
-        # with proxy
-        # raw_data = `curl -s -x #{ENV['QUOTAGUARD_URL']} "#{host}/stats/parcels"`
-
-        # without proxy
-        raw_data = `curl -s "#{host}/stats/parcels"`
-
-        begin
-          data = JSON.parse(raw_data)
-        rescue JSON::ParserError => e
-          Sentry.capture_exception(e)
-
-          p "parser error. skipping data from host: #{host}"
-          next
-        end
-
-        if data.class == Array
-          p "data error. skipping data from host: #{host}"
-          next
-        end
-
-        if data.class == Hash
-          data['parcels']
-        end
-      end.compact.group_by { |d| d['parcel'] }
-
       # format data
       formatted_data = {}
-      data.each do |coordinates_hash, data|
+      data.group_by { |d| d['parcel'] }.each do |coordinates_hash, data|
         coordinates = "#{coordinates_hash['x']},#{coordinates_hash['y']}"
         formatted_data[coordinates] = {
           'count' => data.sum { |d| d['peersCount'] },

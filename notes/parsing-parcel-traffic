@@ -24,4 +24,17 @@ total_unique_visitors = result.values.sum
 # total visits
 query = Models::ParcelTraffic.where(coordinates: JSON.parse(scene.parcels)).select(:addresses_json, :coordinates, :date)
 
-data = query.all.map { |d| [d.date.to_s, d.coordinates, JSON.parse(d.addresses_json).count] }
+# daily histogram by parcel
+data = query.all.map do |d|
+  {
+    date: d.date.to_s,
+    coordinates: d.coordinates,
+    count: JSON.parse(d.addresses_json).count
+  }
+end
+
+# daily histogram
+data = query.all.group_by(&:date).map do |date, d|
+  counts = d.flat_map { |dd| JSON.parse(dd.addresses_json).uniq }.count
+  { date.to_s => counts }
+end

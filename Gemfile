@@ -15,8 +15,11 @@ gem 'sidekiq'
 gem 'faraday'
 
 # bug-tracking and performance monitoring
-gem "sentry-ruby"
-gem "sentry-sidekiq"
+gem 'sentry-ruby'
+gem 'sentry-sidekiq'
+
+# monads
+gem 'dry-monads'
 
 group :production do
   gem 'puma'
@@ -35,5 +38,6 @@ end
 group :test do
   gem 'rack-test'
   gem 'minitest'
+  gem 'timecop'
 end
 

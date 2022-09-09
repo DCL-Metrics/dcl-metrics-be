@@ -27,6 +27,11 @@ Sidekiq.configure_server do |config|
   }
 end
 
+
+# misc
+require 'dry/monads'
+require './lib/monkey_patches.rb'
+
 # require models
 require './lib/models/peers_dump.rb'
 require './lib/models/peer_stats.rb'
@@ -42,6 +47,10 @@ require './lib/models/parcel_traffic.rb'
 
 # require adapters
 require 'faraday'
+require './lib/adapters/base.rb'
+require './lib/adapters/dcl/peers.rb'
+require './lib/adapters/dcl/scenes.rb'
+require './lib/adapters/dcl/user_profiles.rb'
 require './lib/adapters/telegram.rb'
 
 # require jobs
@@ -70,11 +79,13 @@ require './lib/services/daily_user_activity_builder.rb'
 require './lib/services/daily_stats_builder.rb'
 require './lib/services/daily_user_stats_builder.rb'
 require './lib/services/daily_parcel_stats_builder.rb'
+require './lib/services/fetch_dcl_user_data.rb'
 require './lib/services/fetch_scene_data.rb'
 require './lib/services/create_scenes_on_date.rb'
 require './lib/services/create_daily_parcel_traffic.rb'
 
 # require serializers
+require './lib/serializers/global/daily_stats.rb'
 require './lib/serializers/global/parcels.rb'
 require './lib/serializers/global/users.rb'
 

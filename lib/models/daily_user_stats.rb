@@ -12,16 +12,26 @@
 
 module Models
   class DailyUserStats < Sequel::Model
-    def self.recent
-      where { date >= Date.today - 7 }.order(:date)
+    def self.yesterday
+      previous_x_days(1)
     end
 
-    def serialize
-      {
-        address: address,
-        time_spent: time_spent,
-        parcels_visited: parcels_visited
-      }
+    def self.last_week
+      previous_x_days(7)
+    end
+
+    def self.last_month
+      previous_x_days(30)
+    end
+
+    def self.last_quarter
+      previous_x_days(90)
+    end
+
+    private
+
+    def self.previous_x_days(x)
+      where { date >= Date.today - x }
     end
   end
 end
