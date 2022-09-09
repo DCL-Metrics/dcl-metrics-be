@@ -7,7 +7,7 @@ module Services
     end
 
     def initialize(coordinates)
-      @coordinates = coordinates
+      @coordinates = coordinates.uniq
       @scenes = []
     end
 
