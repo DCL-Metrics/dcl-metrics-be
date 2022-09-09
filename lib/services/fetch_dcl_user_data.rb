@@ -1,7 +1,5 @@
 module Services
   class FetchDclUserData
-    URL = 'https://peer-ec1.decentraland.org/lambdas/profiles'
-
     def self.call(addresses:)
       new(addresses).call
     end
