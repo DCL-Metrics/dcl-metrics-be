@@ -27,7 +27,9 @@ Sidekiq.configure_server do |config|
   }
 end
 
-# require monkey patches
+
+# misc
+require 'dry/monads'
 require './lib/monkey_patches.rb'
 
 # require models
@@ -45,6 +47,10 @@ require './lib/models/parcel_traffic.rb'
 
 # require adapters
 require 'faraday'
+require './lib/adapters/base.rb'
+require './lib/adapters/dcl/peers.rb'
+require './lib/adapters/dcl/scenes.rb'
+require './lib/adapters/dcl/user_profiles.rb'
 require './lib/adapters/telegram.rb'
 
 # require jobs

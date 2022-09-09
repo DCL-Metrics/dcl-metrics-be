@@ -21,6 +21,7 @@ module Services
       return users if all_data_fetched?
 
       # give it another try for good measure
+      # NOTE: wow this is janky af
       remaining_addresses.each { |address| create_users_from_unknown_addresses([address]) }
       users
     end
@@ -53,18 +54,7 @@ module Services
       to_fetch = specified_addresses.empty? ? remaining_addresses : specified_addresses
 
       to_fetch.each_slice(40) do |batch|
-        # TODO: move to adapater
-        # get data from url
-        # if there is only one element in the array the request needs
-        # to be in a different format for whatever reason :shrug:
-        if batch.count == 1
-          request = `curl -s "#{URL}?id=#{batch[0]}"`
-        else
-          ids = batch.map { |x| "id=#{x}" }.join('&')
-          request = `curl -s -G #{URL} -d "query=#{ids}"`
-        end
-
-        user_data = JSON.parse(request).compact
+        user_data = Adapters::Dcl::UserProfiles.call(addresses: batch)
 
         user_data.each do |data|
           next if data.nil?

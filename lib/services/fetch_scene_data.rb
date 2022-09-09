@@ -14,22 +14,10 @@ module Services
     def call
       coordinates.sort.each_slice(20) do |batch|
         # check if coordinates are part of an existing scene
-        c = batch - scenes.flat_map { |s| s[:parcels] }
-        next if c.empty?
+        coordinates_to_fetch = batch - scenes.flat_map { |s| s[:parcels] }
+        next if coordinates_to_fetch.empty?
 
-        # get data from url
-        # if there is only one element in the array the request needs
-        # to be in a different format for whatever reason :shrug:
-        if c.count == 1
-          request = `curl -s "#{URL}?pointer=#{c.join(',')}"`
-        else
-          pointers = c.map { |x| "pointer=#{x}" }.join('&')
-          request = `curl -s -G #{URL} -d "query=#{pointers}"`
-        end
-
-        scene_data = JSON.parse(request).compact
-
-        scene_data.each do |scene|
+        Adapters::Dcl::Scenes.call(coordinates: coordinates_to_fetch).each do |scene|
           next if scene.nil?
           next if scene.empty?
           next if scenes.detect { |s| s['id'] == scene['id'] }
