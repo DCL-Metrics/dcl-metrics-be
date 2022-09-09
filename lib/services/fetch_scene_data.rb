@@ -12,7 +12,7 @@ module Services
     end
 
     def call
-      coordinates.sort.each_slice(20) do |batch|
+      coordinates.sort.each_slice(40) do |batch|
         # check if coordinates are part of an existing scene
         coordinates_to_fetch = batch - scenes.flat_map { |s| s[:parcels] }
         next if coordinates_to_fetch.empty?
