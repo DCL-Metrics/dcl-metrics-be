@@ -8,7 +8,7 @@ module Jobs
       ].count
 
       parcels_visited = DATABASE_CONNECTION[
-        "select distinct coordinates from data_points where date = '#{date}'"
+        "select distinct coordinates from peer_stats where date = '#{date}'"
       ].count
 
       Models::DailyStats.create(

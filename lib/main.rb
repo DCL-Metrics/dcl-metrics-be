@@ -70,6 +70,7 @@ require './lib/jobs/clean_up_transitory_data.rb'
 require './lib/jobs/delete_data_points.rb'
 require './lib/jobs/create_scenes.rb'
 require './lib/jobs/create_daily_parcel_traffic.rb'
+require './lib/jobs/export_data_to_staging_db.rb'
 
 # require services
 require './lib/services/telegram_operator.rb'
