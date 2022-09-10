@@ -5,6 +5,8 @@
 # cid = "bafkreifixh6rirjm6vlsnjaln4gr42l46lqg2vinrtqhfmr75tpct2fbdi"
 scene = Models::Scene.find(cid: cid)
 
+scenes = Models::Scene.where(name: scene.name, parcels: scene.parcels)
+
 # unique visits
 query = Models::ParcelTraffic.where(coordinates: JSON.parse(scene.parcels)).select(:histogram_json)
 
@@ -34,7 +36,7 @@ data = query.all.map do |d|
 end
 
 # daily histogram
-data = query.all.group_by(&:date).map do |date, d|
-  counts = d.flat_map { |dd| JSON.parse(dd.addresses_json).uniq }.count
+data = query.all.group_by(&:date).sort.map do |date, d|
+  counts = d.flat_map { |dd| JSON.parse(dd.addresses_json) }.uniq.count
   { date.to_s => counts }
 end

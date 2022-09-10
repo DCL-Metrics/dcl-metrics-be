@@ -1,14 +1,22 @@
 date = '2022-09-03'
-cids = Models::ParcelTraffic.
-  where(date: date).
-  flat_map { |pt| JSON.parse(pt.scene_cids_json) }.
-  compact.
-  uniq
+
+# NOTE: the following two querys should just be one join query
+cids = DATABASE_CONNECTION[
+  "select distinct scene_cid
+  from peer_stats
+  where date = '#{date}'"
+].all.flat_map(&:values)
 
 # scenes.count is DailyStats#total_active_scenes
 scenes = Models::Scene.where(cid: cids).uniq { |s| [s.name, s.parcels] }
+# should also remove public roads from here for better count
 
-scenes.each do |scene|
+###################################
+cids_by_scene = scenes.
+  group_by { |s| [s.name, s.parcels] }.
+  map { |group, data| [group.first, JSON.parse(group.last), data.flat_map(&:cid)] }
+
+cids_by_scene.each do |name, parcels, cids|
   next if scene_is_a_public_road? # compare to tiles.json parcel type?
 
   stats = JSON.parse(scene.parcels).map do |coordinates|
@@ -29,4 +37,12 @@ scenes.each do |scene|
 
 end
 
+
+
+# scenes / visitors:
+parcel_traffic = Models::ParcelTraffic.where(coordinates: cids_by_scene[1])
+parcel_traffic.map(&:unique_addresses).max
+
+# maybe better to sort by unique addresses per day and then find the scenes that
+# they belong to for "top scenes by visitor"
 
