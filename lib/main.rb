@@ -44,6 +44,7 @@ require './lib/models/daily_parcel_stats.rb'
 require './lib/models/scene_list.rb'
 require './lib/models/scene.rb'
 require './lib/models/parcel_traffic.rb'
+require './lib/models/api_response_status.rb'
 
 # require adapters
 require 'faraday'
@@ -83,6 +84,7 @@ require './lib/services/fetch_dcl_user_data.rb'
 require './lib/services/fetch_scene_data.rb'
 require './lib/services/create_scenes_on_date.rb'
 require './lib/services/create_daily_parcel_traffic.rb'
+require './lib/services/request_logger.rb'
 
 # require serializers
 require './lib/serializers/global/daily_stats.rb'

@@ -14,8 +14,7 @@ module Adapters
     def get
       response = Faraday.get(url, params)
 
-      print "[#{response.status}] '#{url}'\n"
-      # TODO: save response codes per day per url
+      Services::RequestLogger.call(status: response.status, url: url, params: params)
       return Failure('request was not successful') unless response.status == 200
 
       begin
@@ -24,7 +23,6 @@ module Adapters
         Sentry.capture_exception(e) if defined?(Sentry)
 
         print "parser error when fetching from '#{url}'\n"
-        # TODO: tally parser errors per day per url
         return Failure('malformed json response')
       end
 
