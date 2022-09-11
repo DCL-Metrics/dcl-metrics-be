@@ -14,7 +14,7 @@ module Adapters
     def get
       response = Faraday.get(url, params)
 
-      Services::RequestLogger.call(status: response.status, url: url, params: params)
+      log_response(response.status)
       return Failure('request was not successful') unless response.status == 200
 
       begin
@@ -31,5 +31,25 @@ module Adapters
 
     private
     attr_reader :url, :params
+
+    # this should be it's own service
+    def log_response(status)
+      query = { date: Date.today.to_s, url: url }
+      success = status == 200 ? true : false
+
+      Models::ApiResponseStatus.update_or_create(query) do |model|
+        responses = model.responses_json ? JSON.parse(m.responses_json) : new_response
+        responses[:statuses][status] += 1
+        responses[:params][status].push(params).uniq
+        model.responses_json = responses.to_json
+
+        p model
+        success ? model.success_count.to_i += 1 : model.failure_count.to_i += 1
+      end
+    end
+
+    def new_response
+      { statuses: Hash.new(0), params: Hash.new([]) }
+    end
   end
 end
