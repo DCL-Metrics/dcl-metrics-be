@@ -14,7 +14,6 @@ module Services
 
     def call
       query = { date: Date.today.to_s, url: url }
-      success = SUCCESS_RESPONSES.include?(status) ? true : false
 
       Models::ApiResponseStatus.update_or_create(query) do |model|
         responses = build_response(model, status)
@@ -23,8 +22,8 @@ module Services
         model.success_count ||= 0
         model.failure_count ||= 0
 
-        model.success_count += 1 if success
-        model.failure_count += 1 if !success
+        model.success_count += 1 if success?
+        model.failure_count += 1 if !success?
       end
     end
 
@@ -37,9 +36,11 @@ module Services
       data['statuses'][status.to_s] ||= 0
       data['statuses'][status.to_s] += 1
 
-      data['params'][status.to_s] ||= []
-      data['params'][status.to_s].push(params.transform_keys(&:to_s))
-      data['params'][status.to_s].uniq!
+      unless success?
+        data['params'][status.to_s] ||= []
+        data['params'][status.to_s].push(params.transform_keys(&:to_s))
+        data['params'][status.to_s].uniq!
+      end
 
       data
     end
@@ -47,6 +48,10 @@ module Services
     def new_response
       # when it's parsed the keys are stringified so just make them strings to start
       { 'statuses' => Hash.new(0), 'params' => Hash.new([]) }
+    end
+
+    def success?
+      @success ||= SUCCESS_RESPONSES.include?(status) ? true : false
     end
   end
 end
