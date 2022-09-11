@@ -31,7 +31,6 @@ module Services
     private
     attr_reader :status, :url, :params
 
-    require 'pry'
     def build_response(model, status)
       data = model.responses_json ? JSON.parse(model.responses_json) : new_response
 
