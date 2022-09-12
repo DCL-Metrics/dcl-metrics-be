@@ -13,8 +13,8 @@ The expected response, as json:
 ``` json
 {
   "global": { // see "global" below
-    "2022-08-01": {"unique_users":9392,"active_parcels":5130},
-    "2022-08-02": {"unique_users":9722,"active_parcels":4890},
+    "2022-08-01": {"unique_users":9392,"active_parcels":5130, "degraded": false},
+    "2022-08-02": {"unique_users":9722,"active_parcels":4890, "degraded": true},
     // ...
   },
   "parcels": { // see "parcels" below

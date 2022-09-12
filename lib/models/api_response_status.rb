@@ -14,8 +14,16 @@
 
 module Models
   class ApiResponseStatus < Sequel::Model(:api_response_statuses)
+    def self.daily_failure_rate(date)
+      where(date: date).
+        all.
+        select(&:catalyst_stats?).
+        map(&:failure_rate).
+        any? { |rate| rate >= 5 }
+    end
+
     def failure_rate
-      failure_count / total_count.to_f
+      (failure_count / total_count.to_f) * 100
     end
 
     def total_count
@@ -24,6 +32,14 @@ module Models
 
     def host
       url.sub('https://','').split('/').first
+    end
+
+    def endpoint
+      url.split('/').last(2).join('/')
+    end
+
+    def catalyst_stats?
+      ['stats/parcels', 'comms/peers'].include?(endpoint)
     end
   end
 end

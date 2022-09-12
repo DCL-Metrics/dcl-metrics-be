@@ -85,6 +85,7 @@ require './lib/services/fetch_scene_data.rb'
 require './lib/services/create_scenes_on_date.rb'
 require './lib/services/create_daily_parcel_traffic.rb'
 require './lib/services/request_logger.rb'
+require './lib/services/daily_data_assessor.rb'
 
 # require serializers
 require './lib/serializers/global/daily_stats.rb'

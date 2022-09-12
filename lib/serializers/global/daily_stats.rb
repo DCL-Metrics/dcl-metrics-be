@@ -7,9 +7,16 @@ module Serializers
 
       def call
         Models::DailyStats.last_quarter.order(:date).all.inject({}) do |result, row|
-          result[row.date.to_s] = row.serialize
+          data = row.serialize.merge(degraded: degraded?(row.date))
+          result[row.date.to_s] = data
           result
         end
+      end
+
+      private
+
+      def degraded?(date)
+        Services::DailyDataAssessor.call(date)
       end
     end
   end
