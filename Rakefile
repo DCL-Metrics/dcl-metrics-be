@@ -67,6 +67,36 @@ namespace :compute do
     # clean up database
     Jobs::CleanUpTransitoryData.perform_in(1200) # 20 minutes
   end
+
+  desc "results of api response status yesterday"
+  task :display_yesterdays_api_responses do
+    require './lib/main'
+
+    result = "API responses yesterday"
+    responses = Models::ApiResponseStatus.
+      where(date: Date.today - 1).
+      all.
+      group_by { |response| response.url.split('/').last }
+
+    responses.each do |group, group_responses|
+      result += "#{group}\n\n"
+
+      group_responses.each do |r|
+        emoji = "\xf0\x9f\x9f\xa2" # green circle
+        emoji = "\xf0\x9f\x9f\xa1" if r.failure_rate > 2 # yellow circle
+        emoji = "\xF0\x9F\x94\xB4" if r.failure_rate > 10 # red circle
+
+        result += "#{emoji} #{r.host} | #{r.success_count} / #{r.failure_count}\n"
+      end
+
+      result += "\n"
+    end
+
+    Services::TelegramOperator.notify(
+      level: :info,
+      message: result
+    )
+  end
 end
 
 namespace :data_preservation do

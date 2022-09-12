@@ -14,5 +14,12 @@
 
 module Models
   class ApiResponseStatus < Sequel::Model(:api_response_statuses)
+    def failure_rate
+      failure_count / (success_count + failure_count).to_f
+    end
+
+    def host
+      url.sub('https://','').split('/').first
+    end
   end
 end
