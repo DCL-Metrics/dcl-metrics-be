@@ -15,7 +15,11 @@
 module Models
   class ApiResponseStatus < Sequel::Model(:api_response_statuses)
     def failure_rate
-      failure_count / (success_count + failure_count).to_f
+      failure_count / total_count.to_f
+    end
+
+    def total_count
+      success_count + failure_count
     end
 
     def host
