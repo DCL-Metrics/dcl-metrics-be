@@ -20,7 +20,7 @@ module Serializers
       end
 
       def no_stats?(row)
-        !!row[:unique_users].zero? && !!row[:active_parcels].zero?
+        !!row[:unique_users]&.zero? && !!row[:active_parcels]&.zero?
       end
     end
   end
