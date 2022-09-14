@@ -8,7 +8,7 @@ module Serializers
       def call
         Models::DailyStats.last_quarter.order(:date).all.inject({}) do |result, row|
           data = row.serialize.merge(degraded: degraded?(row.date))
-          result[row.date.to_s] = data unless no_stats?(row)
+          result[row.date.to_s] = data unless no_stats?(data)
           result
         end
       end
