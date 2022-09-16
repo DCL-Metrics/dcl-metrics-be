@@ -1,4 +1,4 @@
-date = '2022-09-03'
+date = '2022-09-15'
 
 # NOTE: the following two querys should just be one join query
 cids = DATABASE_CONNECTION[
@@ -12,37 +12,90 @@ scenes = Models::Scene.where(cid: cids).uniq { |s| [s.name, s.parcels] }
 # should also remove public roads from here for better count
 
 ###################################
+
+public_roads = JSON.parse(File.read('./lib/static/roads.json'))
+total_unique_users = Models::DailyStats.find(date: date).unique_users
+
 cids_by_scene = scenes.
+  reject { |s| s.parcels.any? { |parcel| public_roads.include?(parcel) } }.
   group_by { |s| [s.name, s.parcels] }.
-  map { |group, data| [group.first, JSON.parse(group.last), data.flat_map(&:cid)] }
+  map { |group, data| [group.first, group.last, data.flat_map(&:cid)] }
+  # the contents of map should be a job request so this gets parsed quickly
 
 cids_by_scene.each do |name, parcels, cids|
-  next if scene_is_a_public_road? # compare to tiles.json parcel type?
+  # TODO: wrapper / presenter class for scene traffic
+  scene_traffic =  Models::ParcelTraffic.where(coordinates: parcels, date: date)
+  scene_activities = Models::UserActivity.where(
+    date: date,
+    starting_coordinates: scene.parcels,
+    ending_coordinates: scene.parcels
+  )
 
-  stats = JSON.parse(scene.parcels).map do |coordinates|
-    traffic = Models::ParcelTraffic.find(coordinates: coordinates, date: date)
+  # total_visits (this should be used for calculations)
+  # NOTE: this is actually wrong, it's all visits within the scene. so if i jump
+  # back and forth between parcels 10 times that counts as ten visits but the
+  # borders should be if someone exits the scene as a whole
+  scene_total_users = scene_activities.where(name: 'visit').count
+  # total unique visits
+  scene_unique_users = scene_activities.where(name: 'visit').distinct(:address).count
 
-    # number of unique addresses per parcel
-    # histogram per parcel (maybe better to also switch this to using peer_stats)
-  end
 
+  # PER PARCEL
+  # number of unique addresses per parcel (in parcel traffic)
+  # histogram per parcel (in parcel traffic)
+
+  # PER SCENE
   # histogram overall (highest count per hour over the whole scene)
-  # number of unique addresses overall
-  # maybe can map all of the datapoints in this scene and create
-  # * logins
-  # * logouts
-  # * total_time_spent
-  # * avg_time_spent
-  # * avg_time_spent_afk
 
+  # number of total unique addresses:
+  # see note below - maybe it's better to use scene_unique_users here
+  scene_traffic.flat_map { |t| JSON.parse(t.addresses_json) }.uniq.count
+
+  # share of daily dcl visitors (wording..?):
+  # # "x% of users that visited dcl today visited this scene"
+  scene_unique_users / total_unique_users.to_f
+
+  # avg_time_spent
+  total_visit_duration_seconds = scene_activities.where(name: 'visit').sum(:duration)
+  (total_visit_duration_seconds / 60) / total_visits.to_f
+
+  # avg_time_spent_afk
+  total_afk_duration_seconds = scene_activities.where(name: 'afk').sum(:duration)
+  (total_afk_duration_seconds / 60) / total_visits.to_f
+
+  # users with longest session
+  visits_by_address = scene_activities.where(name: 'visit').all.group_by(&:address)
+  visitors_by_duration = visits_by_address.
+    map { |address, visits| [address, visits.map(&:duration).sum / 60] }.
+    sort_by(&:last)
+
+  marathon_users = visitors_by_duration.last(10)
+  user_visit_histogram = visitors_by_duration.
+    group_by { |address, duration| (duration / 60.to_f).floor }.
+    map { |k, v| [k, v.size] }
+
+  # * % of afk users
+
+  # total logins:
+  Models::UserActivity.where(date: date, starting_coordinates: parcels, name: 'session').count
+  # unique logins:
+  Models::UserActivity.where(date: date, starting_coordinates: parcels, name: 'session').distinct(:address).count
+
+  # total logouts:
+  Models::UserActivity.where(date: date, ending_coordinates: parcels, name: 'session').count
+  # unique logouts:
+  Models::UserActivity.where(date: date, ending_coordinates: parcels, name: 'session').distinct(:address).count
+
+  # complete sessions (user logged in and logged out from this scene - not unique):
+  scene_activities.where(name: 'session').count
+
+  # NOTE:
+  # weirdly there is a discrepency between data points and the user activities
+  # scene_traffic should be used to show the total visits, user activity should
+  # be used for calculations. my guess is that the discrepency is due to users
+  # blipping in and not having enough data to make a full visit activity
+  # Models::UserActivity.where(date: date, starting_coordinates: scene.parcels, name: 'visit').distinct(:address).count
+  # => 3432
+  # scene_traffic.flat_map { |t| JSON.parse(t.addresses_json) }.uniq.count
+  # => 3674
 end
-
-
-
-# scenes / visitors:
-parcel_traffic = Models::ParcelTraffic.where(coordinates: cids_by_scene[1])
-parcel_traffic.map(&:unique_addresses).max
-
-# maybe better to sort by unique addresses per day and then find the scenes that
-# they belong to for "top scenes by visitor"
-
