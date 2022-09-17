@@ -3,10 +3,17 @@ module Middleware
     def call(worker, job, queue)
       begin
         yield
-      rescue => error
+      rescue => e
         Services::TelegramOperator.notify(
           level: :error,
-          message: error.inspect
+          message: 'Error in sidekiq job',
+          payload: {
+            error_class: error.class,
+            error_msg: error.message,
+            job: job,
+            queue: queue,
+            worker: worker
+          }
         )
 
         # raising tells sidekiq to mark this job as failed
