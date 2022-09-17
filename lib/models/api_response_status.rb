@@ -14,12 +14,11 @@
 
 module Models
   class ApiResponseStatus < Sequel::Model(:api_response_statuses)
-    def self.daily_failure_rate(date)
+    def self.daily_failure_rates(date)
       where(date: date).
         all.
         select(&:catalyst_stats?).
-        map(&:failure_rate).
-        any? { |rate| rate >= 5 }
+        map(&:failure_rate)
     end
 
     def failure_rate

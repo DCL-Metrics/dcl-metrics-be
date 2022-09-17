@@ -11,7 +11,7 @@ module Services
     def call
       return static_result if date < Date.strptime('2022-09-11')
 
-      Models::ApiResponseStatus.daily_failure_rate(date)
+      Models::ApiResponseStatus.daily_failure_rates(date).any? { |rate| rate > 5 }
     end
 
     private
@@ -23,7 +23,6 @@ module Services
         '2022-07-17' => true,
         '2022-07-18' => true,
         '2022-07-19' => true,
-        '2022-07-20' => true,
         '2022-08-18' => true,
       }.fetch(date.to_s) { false }
     end
