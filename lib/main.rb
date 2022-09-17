@@ -76,7 +76,7 @@ Sidekiq.configure_server do |config|
   }
 
   config.server_middleware do |chain|
-    chain.add Middleware::SideKiqErrorNotifications
+    chain.add Middleware::SidekiqErrorNotifications
   end
 end
 
