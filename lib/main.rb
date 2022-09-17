@@ -27,6 +27,8 @@ Sidekiq.configure_server do |config|
   }
 end
 
+# global constants
+PUBLIC_ROADS = JSON.parse(File.read('./lib/static/roads.json'))
 
 # misc
 require 'dry/monads'
