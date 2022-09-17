@@ -14,10 +14,6 @@ gem 'sidekiq'
 # http
 gem 'faraday'
 
-# bug-tracking and performance monitoring
-gem 'sentry-ruby'
-gem 'sentry-sidekiq'
-
 # monads
 gem 'dry-monads'
 

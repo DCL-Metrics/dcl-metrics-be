@@ -18,9 +18,12 @@ class Server < Sinatra::Application
     end
   end
 
-  # Send all exceptions to sentry
+  # Notify on all errors
   error Exception do
-    Sentry.capture_exception(env['sinatra.error'])
+    Services::TelegramOperator.notify(
+      level: :error,
+      message: env['sinatra.error'].inspect
+    )
 
     { msg: 'Something went wrong' }.to_json
   end

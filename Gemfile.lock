@@ -43,11 +43,6 @@ GEM
     rerun (0.13.1)
       listen (~> 3.0)
     ruby2_keywords (0.0.5)
-    sentry-ruby (5.4.2)
-      concurrent-ruby (~> 1.0, >= 1.0.2)
-    sentry-sidekiq (5.4.2)
-      sentry-ruby (~> 5.4.2)
-      sidekiq (>= 3.0)
     sequel (5.60.1)
     sidekiq (6.5.6)
       connection_pool (>= 2.2.5)
@@ -76,8 +71,6 @@ DEPENDENCIES
   rack-test
   rake
   rerun
-  sentry-ruby
-  sentry-sidekiq
   sequel
   sidekiq
   sinatra

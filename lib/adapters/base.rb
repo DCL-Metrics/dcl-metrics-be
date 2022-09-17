@@ -20,8 +20,6 @@ module Adapters
       begin
         data = JSON.parse(response.body)
       rescue JSON::ParserError => e
-        Sentry.capture_exception(e) if defined?(Sentry)
-
         print "parser error when fetching from '#{url}'\n"
         return Failure('malformed json response')
       end

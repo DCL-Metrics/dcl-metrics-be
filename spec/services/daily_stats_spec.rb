@@ -3,7 +3,7 @@ class DailyStatsSpec < BaseSpec
     create_peer_stats_on_date(day_one, 6) # for total active parcels count
     create_peer_stats_on_date(day_two, 3) # for total active parcels count
     create_data_points                    # for unique users count
-    create_scenes
+    create_scenes                         # for total active scenes count
   end
 
   # two fully afk sessions - one on day one, one on day two

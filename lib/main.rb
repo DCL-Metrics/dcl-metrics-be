@@ -10,23 +10,6 @@ Sequel::Model.plugin :timestamps, update_on_create: true
 Sequel::Model.plugin :update_or_create
 Sequel::Model.plugin :validation_helpers
 
-require 'sidekiq'
-Sidekiq.configure_client do |config|
-  config.redis = {
-    db: 0,
-    url: ENV['REDIS_URL'],
-    ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
-  }
-end
-
-Sidekiq.configure_server do |config|
-  config.redis = {
-    db: 0,
-    url: ENV['REDIS_URL'],
-    ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
-  }
-end
-
 # global constants
 PUBLIC_ROADS = JSON.parse(File.read('./lib/static/roads.json'))
 
@@ -55,24 +38,6 @@ require './lib/adapters/dcl/scenes.rb'
 require './lib/adapters/dcl/user_profiles.rb'
 require './lib/adapters/telegram.rb'
 
-# require jobs
-require './lib/jobs/job.rb'
-require './lib/jobs/fetch_peer_data.rb'
-require './lib/jobs/fetch_peer_stats.rb'
-require './lib/jobs/process_snapshots.rb'
-require './lib/jobs/process_snapshot.rb'
-require './lib/jobs/process_user_activities.rb'
-require './lib/jobs/process_all_daily_stats.rb'
-require './lib/jobs/process_daily_user_activity.rb'
-require './lib/jobs/process_daily_stats.rb'
-require './lib/jobs/process_daily_user_stats.rb'
-require './lib/jobs/process_daily_parcel_stats.rb'
-require './lib/jobs/process_daily_parcel_traffic.rb'
-require './lib/jobs/clean_up_transitory_data.rb'
-require './lib/jobs/delete_data_points.rb'
-require './lib/jobs/create_daily_parcel_traffic.rb'
-require './lib/jobs/export_data_to_staging_db.rb'
-
 # require services
 require './lib/services/telegram_operator.rb'
 require './lib/services/process_snapshots.rb'
@@ -91,22 +56,44 @@ require './lib/serializers/global/daily_stats.rb'
 require './lib/serializers/global/parcels.rb'
 require './lib/serializers/global/users.rb'
 
-if ENV['SENTRY_DSN']
-  require 'sentry-ruby'
+# sidekiq configuration
+require 'sidekiq'
+require './lib/middleware/sidekiq_error_notifications.rb'
 
-  Sentry.init do |config|
-    config.dsn = ENV['SENTRY_DSN']
-    config.breadcrumbs_logger = [:sentry_logger, :http_logger]
-    config.traces_sample_rate = ENV['SENTRY_SAMPLE_RATE']
+Sidekiq.configure_client do |config|
+  config.redis = {
+    db: 0,
+    url: ENV['REDIS_URL'],
+    ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
+  }
+end
 
-    config.before_send = lambda do |event, hint|
-      Services::TelegramOperator.notify(
-        level: :error,
-        message: "Sentry caught an error",
-        payload: event.to_hash
-      )
+Sidekiq.configure_server do |config|
+  config.redis = {
+    db: 0,
+    url: ENV['REDIS_URL'],
+    ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
+  }
 
-      event
-    end
+  config.server_middleware do |chain|
+    chain.add Middleware::SideKiqErrorNotifications
   end
 end
+
+# require jobs
+require './lib/jobs/job.rb'
+require './lib/jobs/fetch_peer_data.rb'
+require './lib/jobs/fetch_peer_stats.rb'
+require './lib/jobs/process_snapshots.rb'
+require './lib/jobs/process_snapshot.rb'
+require './lib/jobs/process_user_activities.rb'
+require './lib/jobs/process_all_daily_stats.rb'
+require './lib/jobs/process_daily_user_activity.rb'
+require './lib/jobs/process_daily_stats.rb'
+require './lib/jobs/process_daily_user_stats.rb'
+require './lib/jobs/process_daily_parcel_stats.rb'
+require './lib/jobs/process_daily_parcel_traffic.rb'
+require './lib/jobs/clean_up_transitory_data.rb'
+require './lib/jobs/delete_data_points.rb'
+require './lib/jobs/create_daily_parcel_traffic.rb'
+require './lib/jobs/export_data_to_staging_db.rb'
