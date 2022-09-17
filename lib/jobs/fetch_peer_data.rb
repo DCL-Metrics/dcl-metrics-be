@@ -26,7 +26,7 @@ module Jobs
         Models::Scene.find_or_create(cid: scene[:id]) do |s|
           s.name          = scene[:name]
           s.owner         = scene[:owner]
-          s.parcels       = scene[:parcels].to_json
+          s.parcels_json  = scene[:parcels].to_json
           s.first_seen_at = first_seen_at
           s.first_seen_on = first_seen_at.to_date.to_s
         end
