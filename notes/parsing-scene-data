@@ -14,6 +14,8 @@ total_unique_users = Models::DailyStats.find(date: date).unique_users
 cids_by_scene = scenes.map { |group, data| [group.first, group.last, data.flat_map(&:cid)] }
   # the contents of map should be a job request so this gets parsed quickly
 
+# TODO: add "newest scenes" (nothing matches name/parcels)
+# TODO: add "recently updated" (matches name/parcels but new deploy)
 stats = cids_by_scene.map do |name, parcels, cids|
   # TODO: do i need to do something with the cids here?
   # TODO: wrapper / presenter class for scene traffic
