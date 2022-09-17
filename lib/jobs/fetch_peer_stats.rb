@@ -23,10 +23,10 @@ module Jobs
 
       # enrich data with scene cid
       formatted_data.each do |coordinates, data|
-        scene = scenes.detect { |s| s[:parcels].include?(coordinates) }
+        scene = scenes.detect { |s| s.parcels.include?(coordinates) }
         next if scene.nil? # empty parcel
 
-        data['scene_cid'] = scene[:id]
+        data['scene_cid'] = scene.cid
       end
 
       # create model
@@ -42,17 +42,6 @@ module Jobs
           parcel_data[current_time.to_i] =  data['count']
 
           ps.data_json = parcel_data.to_json
-        end
-      end
-
-      # create any unknown scenes
-      scenes.each do |scene|
-        Models::Scene.find_or_create(cid: scene[:id]) do |s|
-          s.name          = scene[:name]
-          s.owner         = scene[:owner]
-          s.parcels_json  = scene[:parcels].to_json
-          s.first_seen_at = current_time
-          s.first_seen_on = date
         end
       end
     end
