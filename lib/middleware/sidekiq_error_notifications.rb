@@ -8,8 +8,8 @@ module Middleware
           level: :error,
           message: 'Error in sidekiq job',
           payload: {
-            error_class: error.class,
-            error_msg: error.message,
+            error_class: e.class,
+            error_msg: e.message,
             job: job,
             queue: queue,
             worker: worker
