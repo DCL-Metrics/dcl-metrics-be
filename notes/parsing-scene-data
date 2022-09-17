@@ -5,17 +5,13 @@ cids = DATABASE_CONNECTION[
   "select distinct scene_cid
   from peer_stats
   where date = '#{date}'"
-].all.flat_map(&:values)
+].all.flat_map(&:values).compact
 
 # scenes.count is DailyStats#total_active_scenes
-scenes = Models::Scene.where(cid: cids).uniq { |s| [s.name, s.parcels] }
-public_roads = JSON.parse(File.read('./lib/static/roads.json'))
+scenes = Models::Scene.collect(cids)
 total_unique_users = Models::DailyStats.find(date: date).unique_users
 
-cids_by_scene = scenes.
-  reject { |s| s.parcels.any? { |parcel| public_roads.include?(parcel) } }.
-  group_by { |s| [s.name, s.parcels] }.
-  map { |group, data| [group.first, group.last, data.flat_map(&:cid)] }
+cids_by_scene = scenes.map { |group, data| [group.first, group.last, data.flat_map(&:cid)] }
   # the contents of map should be a job request so this gets parsed quickly
 
 stats = cids_by_scene.map do |name, parcels, cids|
