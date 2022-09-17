@@ -3,6 +3,7 @@
 # Date    :date,                  null: false
 # Integer :unique_users,          null: false
 # Integer :total_active_parcels,  null: false
+# Integer :total_active_scenes,  null: false
 #
 # Time    :created_at,            null: false
 #
@@ -21,7 +22,8 @@ module Models
     def serialize
       {
         unique_users: unique_users,
-        active_parcels: total_active_parcels
+        active_parcels: total_active_parcels,
+        active_scenes: total_active_scenes
       }
     end
 

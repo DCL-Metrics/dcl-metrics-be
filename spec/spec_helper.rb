@@ -38,7 +38,8 @@ class BaseSpec < Minitest::Spec
       Models::PeerStats.create(
         date: date,
         data_json: {}.to_json,
-        coordinates: "#{Random.rand(150)},#{Random.rand(150)}"
+        coordinates: "#{Random.rand(150)},#{Random.rand(150)}",
+        scene_cid: SecureRandom.uuid
       )
     end
   end
@@ -57,6 +58,16 @@ class BaseSpec < Minitest::Spec
           timestamp: Time.parse(row['timestamp'])
         )
       end
+    end
+  end
+
+  def create_scenes
+    Models::PeerStats.all.each do |ps|
+      Models::Scene.create(
+        cid: ps.scene_cid,
+        name: "Scene #{ps.scene_cid}",
+        parcels_json: ["#{Random.rand(150)},#{Random.rand(150)}"].to_json
+      )
     end
   end
 

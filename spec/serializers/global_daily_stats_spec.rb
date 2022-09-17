@@ -15,7 +15,7 @@ class GlobalDailyStatsSpec < BaseSpec
       parse(File.read('./spec/fixtures/expectations/serializers/global_daily_stats.json'))
   end
 
-  let(:expected_keys) { %i[unique_users active_parcels] }
+  let(:expected_keys) { %i[unique_users active_parcels active_scenes degraded] }
 
   it 'serializes data and returns expected output' do
     result = Serializers::Global::DailyStats.serialize
