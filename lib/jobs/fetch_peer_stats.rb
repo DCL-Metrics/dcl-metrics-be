@@ -50,7 +50,7 @@ module Jobs
         Models::Scene.find_or_create(cid: scene[:id]) do |s|
           s.name          = scene[:name]
           s.owner         = scene[:owner]
-          s.parcels       = scene[:parcels].to_json
+          s.parcels_json  = scene[:parcels].to_json
           s.first_seen_at = current_time
           s.first_seen_on = date
         end
