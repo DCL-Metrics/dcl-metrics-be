@@ -40,7 +40,7 @@ module Services
     end
 
     private
-    attr_reader :coordinates
+    attr_reader :coordinates, :current_time
     attr_accessor :scenes
   end
 end
