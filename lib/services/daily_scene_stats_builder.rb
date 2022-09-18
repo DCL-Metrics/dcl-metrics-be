@@ -13,7 +13,7 @@ module Services
       Models::DailySceneStats.where(date: date).delete
 
       Models::Scene.collect(cids).each do |group, data|
-        # name, coordiantes, cids, unique_users
+        # date, name, coordiantes, cids, total_unique_users
         Jobs::ProcessDailySceneStats.
           perform_async(date, group.first, group.last, data.flat_map(&:cid), unique_users)
       end
