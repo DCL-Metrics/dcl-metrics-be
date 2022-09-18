@@ -20,6 +20,7 @@ module Jobs
       # exits the scene as a whole
       total_visitors = visits.count
       unique_visitors = visits.distinct(:address).count
+      unique_visitors_afk = afk.distinct(:address).count
       unique_addresses = scene_traffic.flat_map(&:addresses).uniq.count
 
       if visits.any?
@@ -43,8 +44,7 @@ module Jobs
         end
 
         # % of afk users
-        total_afk_users = afk.distinct(:address).count
-        percent_of_users_afk = (total_afk_users / unique_visitors.to_f) * 100
+        percent_of_users_afk = (unique_visitors_afk / unique_visitors.to_f) * 100
 
         # users with longest session
         visits_by_address = visits.all.group_by(&:address)
@@ -99,6 +99,7 @@ module Jobs
         cids: cids.sort.join(','),
         total_visitors: total_visitors,
         unique_visitors: unique_visitors,
+        unique_visitors_afk: unique_visitors_afk,
         unique_addresses: unique_addresses,
         share_of_global_visitors: share_of_global_visitors,
         avg_time_spent: avg_time_spent,
