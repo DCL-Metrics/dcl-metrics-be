@@ -10,29 +10,41 @@ module Jobs
         ending_coordinates: coordinates
       )
 
+      visits = scene_activities.where(name: 'visit')
+      afk    = scene_activities.where(name: 'afk')
+
       # NOTE: "total visitors" is not entirely correct.
-      # this is all visits within the parcels of the scene,
-      # so if i jump back and forth between coordinates within the scene 10 times
-      # that counts as ten visits but the borders should be
-      # if someone exits the scene as a whole
-      total_visitors = scene_activities.where(name: 'visit').count
-      unique_visitors = scene_activities.where(name: 'visit').distinct(:address).count
+      # this is all visits within the parcels of the scene, so if i jump
+      # back and forth between coordinates within the scene 10 times
+      # that counts as ten visits but the borders should be if someone
+      # exits the scene as a whole
+      total_visitors = visits.count
+      unique_visitors = visits.distinct(:address).count
       unique_addresses = scene_traffic.flat_map(&:addresses).uniq.count
 
       # "x% of users that visited dcl today visited this scene"
       share_of_global_visitors = (unique_visitors / total_global_users.to_f) * 100
 
       # avg_time_spent
-      total_visit_duration_seconds = scene_activities.where(name: 'visit').sum(:duration)
-      avg_time_spent = (total_visit_duration_seconds / 60) / total_visitors.to_f
+      avg_time_spent = if visits.any?
+         total_visit_duration_seconds = visits.sum(:duration)
+         (total_visit_duration_seconds / 60) / total_visitors.to_f
+       else
+         0
+       end
 
-      # avg_time_spent_afk
-      total_afk_duration_seconds = scene_activities.where(name: 'afk').sum(:duration)
-      avg_time_spent_afk = (total_afk_duration_seconds / 60) / total_visitors.to_f
+      if afk.any?
+        # avg_time_spent_afk
+        total_afk_duration_seconds = afk.sum(:duration)
+        avg_time_spent_afk = (total_afk_duration_seconds / 60) / total_visitors.to_f
 
-      # % of afk users
-      total_afk_users = scene_activities.where(name: 'afk').distinct(:address).count
-      percent_of_users_afk = (total_afk_users / unique_visitors.to_f) * 100
+        # % of afk users
+        total_afk_users = afk.distinct(:address).count
+        percent_of_users_afk = (total_afk_users / unique_visitors.to_f) * 100
+      else
+        avg_time_spent_afk = 0
+        percent_of_users_afk = 0
+      end
 
       # logins:
       session_starts = Models::UserActivity.
@@ -50,15 +62,15 @@ module Jobs
 
       # complete sessions (user logged in and logged out from this scene - not unique):
       complete_sessions = scene_activities.where(name: 'session')
-      if complete_sessions.any?
+      avg_complete_session_duration = if complete_sessions.any?
         total_duration = complete_sessions.sum(:duration) / 60
-        avg_complete_session_duration = total_duration / complete_sessions.count.to_f
+        total_duration / complete_sessions.count.to_f
       else
-        avg_complete_session_duration = nil
+        0
       end
 
       # users with longest session
-      visits_by_address = scene_activities.where(name: 'visit').all.group_by(&:address)
+      visits_by_address = visits.all.group_by(&:address)
       visitors_by_duration = visits_by_address.
         map { |address, visits| [address, visits.map(&:duration).sum / 60] }.
         sort_by(&:last)
@@ -73,6 +85,7 @@ module Jobs
         to_h
 
       Models::DailySceneStats.create(
+        date: date,
         name: name,
         coordinates: coordinates.sort.join(';'),
         cids: cids.sort.join(','),
