@@ -23,7 +23,7 @@ module Models
     end
 
     def addresses
-      @addresses ||= Json.parse(addresses_json)
+      @addresses ||= JSON.parse(addresses_json)
     end
   end
 end
