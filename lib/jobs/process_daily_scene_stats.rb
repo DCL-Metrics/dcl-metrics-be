@@ -2,7 +2,7 @@ module Jobs
   class ProcessDailySceneStats < Job
     sidekiq_options queue: 'processing'
 
-    def perform(date, name, coordinates, cids, unique_users)
+    def perform(date, name, coordinates, cids, total_global_users)
       scene_traffic =  Models::ParcelTraffic.where(coordinates: coordinates, date: date)
       scene_activities = Models::UserActivity.where(
         date: date,
@@ -20,7 +20,7 @@ module Jobs
       unique_addresses = scene_traffic.flat_map(&:addresses).uniq.count
 
       # "x% of users that visited dcl today visited this scene"
-      share_of_global_visitors = (unique_visitors / total_unique_users.to_f) * 100
+      share_of_global_visitors = (unique_visitors / total_global_users.to_f) * 100
 
       # avg_time_spent
       total_visit_duration_seconds = scene_activities.where(name: 'visit').sum(:duration)
