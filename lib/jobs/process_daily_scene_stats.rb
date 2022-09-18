@@ -31,7 +31,7 @@ module Jobs
         avg_time_spent = if total_visit_duration_seconds.zero?
           0
         else
-          (total_visit_duration_seconds / 60.to_f) / total_visitors
+          (total_visit_duration_seconds / 60.to_f) / unique_visitors
         end
 
         # avg_time_spent_afk
@@ -39,7 +39,7 @@ module Jobs
         avg_time_spent_afk = if total_afk_duration_seconds.zero?
           0
         else
-          (total_afk_duration_seconds / 60.to_f) / total_visitors
+          (total_afk_duration_seconds / 60.to_f) / unique_visitors
         end
 
         # % of afk users
