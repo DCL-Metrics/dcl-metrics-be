@@ -50,8 +50,12 @@ module Jobs
 
       # complete sessions (user logged in and logged out from this scene - not unique):
       complete_sessions = scene_activities.where(name: 'session')
-      total_duration = complete_sessions.sum(:duration) / 60
-      avg_complete_session_duration = total_duration / complete_sessions.count.to_f
+      if complete_sessions.any?
+        total_duration = complete_sessions.sum(:duration) / 60
+        avg_complete_session_duration = total_duration / complete_sessions.count.to_f
+      else
+        avg_complete_session_duration = nil
+      end
 
       # users with longest session
       visits_by_address = scene_activities.where(name: 'visit').all.group_by(&:address)
