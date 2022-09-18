@@ -21,5 +21,9 @@ module Models
     def scenes
       Models::Scene.where(cid: JSON.parse(scene_cids_json))
     end
+
+    def addresses
+      @addresses ||= Json.parse(addresses_json)
+    end
   end
 end
