@@ -15,7 +15,7 @@ module Services
       Models::Scene.collect(cids).each do |group, data|
         # name, coordiantes, cids, unique_users
         Jobs::ProcessDailySceneStats.
-          perform_async(group.first, group.last, data.flat_map(&:cid), unique_users)
+          perform_async(date, group.first, group.last, data.flat_map(&:cid), unique_users)
       end
     end
 

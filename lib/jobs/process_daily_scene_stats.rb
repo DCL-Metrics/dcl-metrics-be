@@ -2,7 +2,7 @@ module Jobs
   class ProcessDailySceneStats < Job
     sidekiq_options queue: 'processing'
 
-    def perform(name, coordinates, cids, unique_users)
+    def perform(date, name, coordinates, cids, unique_users)
       scene_traffic =  Models::ParcelTraffic.where(coordinates: coordinates, date: date)
       scene_activities = Models::UserActivity.where(
         date: date,
