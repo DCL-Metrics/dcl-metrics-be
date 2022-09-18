@@ -84,6 +84,8 @@ module Jobs
         map { |pt| [pt.coordinates, pt.unique_addresses] }.
         to_h
 
+      # NOTE: all the "to_i"'s are important cause the db fields are integers
+      # and sequel doesn't seem to like to auto-convert
       Models::DailySceneStats.create(
         date: date,
         name: name,
@@ -92,16 +94,16 @@ module Jobs
         total_visitors: total_visitors,
         unique_visitors: unique_visitors,
         unique_addresses: unique_addresses,
-        share_of_global_visitors: share_of_global_visitors,
-        avg_time_spent: avg_time_spent,
-        avg_time_spent_afk: avg_time_spent_afk,
-        percent_of_users_afk: percent_of_users_afk,
+        share_of_global_visitors: share_of_global_visitors.to_i,
+        avg_time_spent: avg_time_spent.to_i,
+        avg_time_spent_afk: avg_time_spent_afk.to_i,
+        percent_of_users_afk: percent_of_users_afk.to_i,
         total_logins: total_logins,
         unique_logins: unique_logins,
         total_logouts: total_logouts,
         unique_logouts: unique_logouts,
         complete_sessions: complete_sessions.count,
-        avg_complete_session_duration: avg_complete_session_duration,
+        avg_complete_session_duration: avg_complete_session_duration.to_i,
         visitors_by_total_time_spent_json: visitors_by_duration.to_h.to_json,
         visitors_total_time_spent_histogram_json: user_visit_histogram.to_json,
         parcels_heatmap_json: parcels_heatmap.to_json
