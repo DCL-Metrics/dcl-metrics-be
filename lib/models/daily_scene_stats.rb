@@ -46,7 +46,11 @@ module Models
     end
 
     def marathon_users
-      JSON.parse(visitors_by_total_time_spent_json).last(10).to_h
+      JSON.parse(visitors_by_total_time_spent_json).
+        sort_by(&:last).
+        last(10).
+        reverse.
+        to_h
     end
 
     private
