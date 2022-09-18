@@ -1,6 +1,6 @@
 module Jobs
   class FetchPeerData < Job
-    sidekiq_options queue: 'scraping'
+    sidekiq_options queue: 'scraping', retry: false
 
     def perform
       data = Adapters::Dcl::Peers.fetch_snapshot
