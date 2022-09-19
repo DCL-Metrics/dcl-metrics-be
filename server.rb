@@ -9,22 +9,14 @@ class Server < Sinatra::Application
     requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR']
 
     unless ALLOWED_ACCESS_IP.include?(requesting_ip)
-      Services::TelegramOperator.notify(
-        level: :info,
-        message: "Unexpected API Access by IP '#{requesting_ip}'"
-      )
-
+      notify_telegram(:info, "Unexpected API Access by IP '#{requesting_ip}'")
       halt 401, { msg: "I'm afraid I can't let you do that, #{requesting_ip}" }.to_json
     end
   end
 
   # Notify on all errors
   error Exception do
-    Services::TelegramOperator.notify(
-      level: :error,
-      message: env['sinatra.error'].inspect
-    )
-
+    Services::TelegramOperator.notify(:error, env['sinatra.error'].inspect)
     { msg: 'Something went wrong' }.to_json
   end
 
@@ -44,5 +36,11 @@ class Server < Sinatra::Application
       scenes: scenes,
       users: users
     }.to_json
+  end
+
+  private
+
+  def notify_telegram(lvl, msg)
+    Services::TelegramOperator.notify(level: lvl, message: msg)
   end
 end
