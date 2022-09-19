@@ -24,15 +24,7 @@ module Services
           next if scenes.detect { |s| s.cid == scene['id'] }
 
           # create scene if unknown and add to result collection
-          scenes.push(
-            Models::Scene.find_or_create(cid: scene['id']) do |s|
-              s.name          = scene['metadata']['display']['title']
-              s.owner         = scene['metadata']['owner']
-              s.parcels_json  = scene['pointers'].to_json
-              s.first_seen_at = current_time
-              s.first_seen_on = current_time.to_date.to_s
-            end
-          )
+          find_or_create_scene(scene)
         end
       end
 
@@ -42,5 +34,21 @@ module Services
     private
     attr_reader :coordinates, :current_time
     attr_accessor :scenes
+
+    def find_or_create_scene(scene)
+      begin
+        model = Models::Scene.find_or_create(cid: scene['id']) do |s|
+          s.name          = scene['metadata']['display']['title']
+          s.owner         = scene['metadata']['owner']
+          s.parcels_json  = scene['pointers'].to_json
+          s.first_seen_at = current_time
+          s.first_seen_on = current_time.to_date.to_s
+        end
+
+        scenes.push(model)
+      rescue Sequel::UniqueConstraintViolation
+        scenes.push(Models::Scene.find(cid: scene['id']))
+      end
+    end
   end
 end
