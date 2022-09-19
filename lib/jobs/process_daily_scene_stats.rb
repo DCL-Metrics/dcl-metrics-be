@@ -43,6 +43,14 @@ module Jobs
           (total_afk_duration_seconds / 60.to_f) / unique_visitors
         end
 
+        # TODO: this calculation is fucked up and i'm not sure why
+        # I think it must actually be a problem with user_activity calculation
+        # for example, how can this be:
+        #
+        # :unique_visitors=>159
+        # :unique_visitors_afk=>177
+        # :percent_of_users_afk=>111
+        #
         # % of afk users
         percent_of_users_afk = (unique_visitors_afk / unique_visitors.to_f) * 100
 

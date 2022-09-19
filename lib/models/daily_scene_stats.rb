@@ -6,6 +6,7 @@
 # String  :cids,            null: false
 # Integer :total_visitors
 # Integer :unique_visitors
+# Integer :unique_visitors_afk
 # Integer :unique_addresses
 # Integer :share_of_global_visitors
 # Integer :avg_time_spent
