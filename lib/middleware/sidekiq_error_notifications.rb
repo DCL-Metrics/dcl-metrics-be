@@ -1,5 +1,6 @@
 module Middleware
   class SidekiqErrorNotifications
+    IGNORABLE_ERRORS = [Sequel::PoolTimeout]
     def call(worker, job, queue)
       begin
         yield
