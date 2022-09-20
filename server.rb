@@ -38,6 +38,23 @@ class Server < Sinatra::Application
     }.to_json
   end
 
+  get '/peer_status' do
+    date = Date.today - 1
+    Models::ApiResponseStatus.where(date: date).all
+
+    # format:
+    # "date": '2022-09-18',
+    # "url": "https://peer-ec1.decentraland.org/lambdas/profiles",
+    # "statuses": {
+    #   "200": 16,·
+    #   "429": 1
+    # },
+    # "failure_rate": x,
+    # "success_count": 16,
+    # "failure_count": 1
+
+  end
+
   private
 
   def notify_telegram(lvl, msg)

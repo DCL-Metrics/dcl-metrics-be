@@ -21,6 +21,10 @@ module Models
         map(&:failure_rate)
     end
 
+    def status_counts
+      JSON.parse(responses_json)['statuses']
+    end
+
     def failure_rate
       (failure_count / total_count.to_f) * 100
     end
