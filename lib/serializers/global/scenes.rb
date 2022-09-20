@@ -47,22 +47,24 @@ module Serializers
           exclude(attribute => nil).
           exclude(attribute => 0).
           all.
-          group_by(&:name).
-          each { |name, data| result[name] = build_values(data, attribute) }
+          group_by { |s| [s.name, s.coordinates] }.
+          each do |grouping, data|
+            result[grouping.first] = build_values(data, attribute, grouping.last)
+          end
 
         result.sort_by { |name, values| values[attribute] }.last(5).reverse.to_h
       end
 
-      def build_values(data, attribute)
+      def build_values(data, attribute, coordinates)
         {
           attribute => data.sum { |d| d[attribute].to_i },
-          map_url: build_map_url(data)
+          map_url: build_map_url(coordinates)
         }
       end
 
-      def build_map_url(data)
-        center = data.first_coordinate
-        selected = data.coordinates
+      def build_map_url(coordinates)
+        center = coordinates.split(';').first
+        selected = coordinates
 
         "https://api.decentraland.org/v2/map.png?center=#{center}&selected=#{selected}"
       end

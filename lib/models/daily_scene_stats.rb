@@ -46,10 +46,6 @@ module Models
       previous_x_days(90)
     end
 
-    def first_coordinate
-      coordinates.split(';').first
-    end
-
     def marathon_users
       JSON.parse(visitors_by_total_time_spent_json).
         sort_by(&:last).
