@@ -25,16 +25,11 @@ class Server < Sinatra::Application
   end
 
   get '/global' do
-    daily   = Serializers::Global::DailyStats.serialize
-    parcels = Serializers::Global::Parcels.serialize
-    scenes  = {}
-    users   = Serializers::Global::Users.serialize
-
     {
-      global: daily,
-      parcels: parcels,
-      scenes: scenes,
-      users: users
+      global: Serializers::Global::DailyStats.serialize,
+      parcels: Serializers::Global::Parcels.serialize,
+      scenes: Serializers::Global::Scenes.serialize,
+      users: Serializers::Global::Users.serialize
     }.to_json
   end
 
