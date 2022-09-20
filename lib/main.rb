@@ -57,6 +57,7 @@ require './lib/services/daily_data_assessor.rb'
 require './lib/serializers/global/daily_stats.rb'
 require './lib/serializers/global/parcels.rb'
 require './lib/serializers/global/users.rb'
+require './lib/serializers/peer_status.rb'
 
 # sidekiq configuration
 require 'sidekiq'
