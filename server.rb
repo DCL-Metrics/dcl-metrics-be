@@ -43,6 +43,8 @@ class Server < Sinatra::Application
   end
 
   get '/peer_status' do
+    # NOTE: maybe we want to provide more dates later
+    # but for now just use yesterday's data
     date = Date.today - 1
     api_responses = Models::ApiResponseStatus.where(date: date).all
 
