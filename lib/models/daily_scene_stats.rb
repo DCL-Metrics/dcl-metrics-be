@@ -46,12 +46,43 @@ module Models
       previous_x_days(90)
     end
 
+    def serialize
+      {
+        name: name,
+        map_url: map_url,
+        visitors: unique_addresses,
+        share_of_global_visitors: share_of_global_visitors,
+        avg_time_spent: avg_time_spent,
+        avg_time_spent_afk: avg_time_spent_afk,
+        total_logins: total_logins,
+        unique_logins: unique_logins,
+        total_logouts: total_logouts,
+        unique_logouts: unique_logouts,
+        complete_sessions: complete_sessions,
+        avg_complete_session_duration: avg_complete_session_duration,
+        marathon_users: marathon_users,
+        time_spent_histogram: time_spent_histogram,
+        parcels_heatmap: JSON.parse(parcels_heatmap_json)
+      }
+    end
+
     def marathon_users
       JSON.parse(visitors_by_total_time_spent_json).
         sort_by(&:last).
         last(10).
         reverse.
         to_h
+    end
+
+    def map_url
+      center = coordinates.split(';').first
+      selected = coordinates
+
+      "https://api.decentraland.org/v2/map.png?center=#{center}&selected=#{selected}"
+    end
+
+    def time_spent_histogram
+      JSON.parse(visitors_total_time_spent_histogram_json)
     end
 
     private

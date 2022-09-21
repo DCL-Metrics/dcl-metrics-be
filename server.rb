@@ -33,6 +33,15 @@ class Server < Sinatra::Application
     }.to_json
   end
 
+  get '/scenes/top' do
+    Models::DailySceneStats.
+      yesterday.
+      order(:unique_addresses).
+      last(10).
+      map(&:serialize).
+      to_json
+  end
+
   get '/peer_status' do
     date = Date.today - 1
     api_responses = Models::ApiResponseStatus.where(date: date).all

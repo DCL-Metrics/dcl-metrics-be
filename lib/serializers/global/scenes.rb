@@ -1,6 +1,7 @@
 module Serializers
   module Global
     class Scenes
+      # TODO: write a test after there is 7 days of data
       def self.serialize
         new.call
       end
@@ -58,15 +59,8 @@ module Serializers
       def build_values(data, attribute, coordinates)
         {
           attribute => data.sum { |d| d[attribute].to_i },
-          map_url: build_map_url(coordinates)
+          map_url: data.first.map_url
         }
-      end
-
-      def build_map_url(coordinates)
-        center = coordinates.split(';').first
-        selected = coordinates
-
-        "https://api.decentraland.org/v2/map.png?center=#{center}&selected=#{selected}"
       end
 
       def data
