@@ -21,6 +21,7 @@
 #
 # Jsonb   :visitors_by_total_time_spent_json
 # Jsonb   :visitors_total_time_spent_histogram_json
+# Jsonb   :visitors_by_hour_histogram_json
 # Jsonb   :parcels_heatmap_json
 #
 # Time    :created_at,      null: false
@@ -62,6 +63,7 @@ module Models
         avg_complete_session_duration: avg_complete_session_duration,
         marathon_users: marathon_users,
         time_spent_histogram: time_spent_histogram,
+        visitors_by_hour_histogram: visitors_by_hour_histogram,
         parcels_heatmap: JSON.parse(parcels_heatmap_json)
       }
     end
@@ -83,6 +85,10 @@ module Models
 
     def time_spent_histogram
       JSON.parse(visitors_total_time_spent_histogram_json)
+    end
+
+    def visitors_by_hour_histogram
+      JSON.parse(visitors_by_hour_histogram_json)
     end
 
     private

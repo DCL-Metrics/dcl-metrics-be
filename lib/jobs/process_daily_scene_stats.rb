@@ -100,6 +100,15 @@ module Jobs
         map { |pt| [pt.coordinates, pt.unique_addresses] }.
         to_h
 
+      visitors_by_hour_histogram = scene_traffic.
+        flat_map { |pt| JSON.parse(pt.histogram_json) }.
+        group_by { |h| h['hour'] }.
+        map do |timestamp, data|
+          hour = timestamp.split[1].split(':').first
+          max_count = data.max_by { |d| d['count'] }['count']
+          [hour, max_count]
+        end.to_h
+
       Models::DailySceneStats.create(
         date: date,
         name: name,
@@ -121,6 +130,7 @@ module Jobs
         avg_complete_session_duration: avg_complete_session_duration,
         visitors_by_total_time_spent_json: visitors_by_duration.to_h.to_json,
         visitors_total_time_spent_histogram_json: user_visit_histogram.to_json,
+        visitors_by_hour_histogram_json: visitors_by_hour_histogram.to_json,
         parcels_heatmap_json: parcels_heatmap.to_json
       )
 
