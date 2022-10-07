@@ -103,7 +103,3 @@ require './lib/jobs/clean_up_transitory_data.rb'
 require './lib/jobs/delete_data_points.rb'
 require './lib/jobs/create_daily_parcel_traffic.rb'
 require './lib/jobs/export_data_to_staging_db.rb'
-
-# require temp jobs
-require './lib/jobs/temp/backfill_visitors_by_hour_histogram.rb'
-require './lib/jobs/temp/backfill_visitors_by_hour_histogram_for_model.rb'
