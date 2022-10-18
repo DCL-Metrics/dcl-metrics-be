@@ -13,8 +13,8 @@ The expected response, as json:
 ``` json
 {
   "global": { // see "global" below
-    "2022-08-01": {"unique_users":9392,"active_parcels":5130, "degraded": false},
-    "2022-08-02": {"unique_users":9722,"active_parcels":4890, "degraded": true},
+    "2022-08-01": {"unique_users":9392,"active_parcels":5130,"active_scenes":1436,""degraded": false},
+    "2022-08-02": {"unique_users":9722,"active_parcels":4890,"active_scenes":1221,"degraded": true},
     // ...
   },
   "parcels": { // see "parcels" below
@@ -45,9 +45,50 @@ The expected response, as json:
         // ...
       },
     "last_week": {}, // format as above
-    "last_month": {} // format as above
+    "last_month": {}, // format as above
+    "last_quarter": {}, // format as above
   },
-  "scenes": {}, // NOT YET IMPLEMENTED
+  "scenes": {
+    "yesterday": {
+      "logins": {
+        "SCENE NAME": {
+          "total_logins": 3456,
+          "map_url": "https://..."
+        },
+        // ...
+      },
+      "logouts": {
+        "SCENE NAME": {
+          "total_logouts": 3456,
+          "map_url": "https://..."
+        },
+        // ...
+      },
+      "time_spent": {
+        "SCENE NAME": {
+          "avg_time_spent": 3456,
+          "map_url": "https://..."
+        },
+        // ...
+      },
+      "time_spent_afk": {
+        "SCENE NAME": {
+          "avg_time_spent_afk": 3456,
+          "map_url": "https://..."
+        },
+        // ...
+      },
+      "visitors": {
+        "SCENE NAME": {
+          "unique_addresses": 3456,
+          "map_url": "https://..."
+        },
+        // ...
+      },
+    "last_week": {}, // format as above
+    "last_month": {}, // format as above
+    "last_quarter": {}, // format as above
+  },
   "users": { // see "users" below
     "yesterday": {
       "parcels_visited": [
@@ -74,7 +115,8 @@ The expected response, as json:
       ]
     },
     "last_week": {}, // format as above
-    "last_month": {} // format as above
+    "last_month": {}, // format as above
+    "last_quarter": {} // format as above
   }
 }
 ```
