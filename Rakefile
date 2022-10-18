@@ -141,7 +141,9 @@ namespace :data_preservation do
     Jobs::ExportDataToStagingDb.perform_async('daily_parcel_stats', 90)
     Jobs::ExportDataToStagingDb.perform_async('daily_scene_stats', 90)
     Jobs::ExportDataToStagingDb.perform_async('daily_user_stats', 90)
-    Jobs::ExportDataToStagingDb.perform_async('api_response_status', 14)
+
+    Jobs::ExportDataToStagingDb.
+      perform_async('api_response_status', 14, 'api_response_statuses')
   end
 end
 
