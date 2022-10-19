@@ -34,12 +34,9 @@ class Server < Sinatra::Application
   end
 
   get '/scenes/top' do
-    Models::DailySceneStats.
-      yesterday.
-      order(:unique_addresses).
-      last(10).
-      map(&:serialize).
-      to_json
+    scenes = Models::DailySceneStats.yesterday.order(:unique_addresses).last(10)
+
+    Serializers::Scenes.serialize(scenes).to_json
   end
 
   get '/peer_status' do
