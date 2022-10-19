@@ -2,42 +2,35 @@
 
 module Services
   class EnrichUserData
-    def self.call(data:)
-      new(data).call
+    def self.call(users:)
+      new(users).call
     end
 
-    def initialize(data)
-      @data = data
+    def initialize(users)
+      @users = users
     end
 
     def call
-      data.each do |d|
-        user = user_data.detect { |u| u[:address] == d[:address] }
-        next unless user
+      users.map do |user|
+        api_data = user_data.detect { |ud| ud[:address] == user[:address] } || {}
 
-        d[:avatar_url] = user[:avatar_url]
-        d[:guest_user] = user[:guest_user]
-        d[:name] = user[:name]
-        d[:verified_user] = user[:verified_user]
+        user[:avatar_url] = api_data[:avatar_url]
+        user[:guest_user] = api_data[:guest_user]
+        user[:name] = api_data[:name]
+        user[:verified_user] = api_data[:verified_user]
+        user
       end
-
-      # NOTE: useful for debugging
-      # data.select { |d| d[:name].nil? }.each do |d|
-      #   print "#{self.class.name}: can't find data for address #{d[:address]}\n"
-      # end
-
-      data
     end
 
     private
-    attr_reader :data
+    attr_reader :users
 
     def user_data
       @user_data ||= Services::FetchDclUserData.call(addresses: addresses)
     end
 
     def addresses
-      data.map { |row| row[:address] }.uniq
+      @addresses ||= users.map { |row| row[:address] }.uniq
     end
   end
 end

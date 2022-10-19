@@ -58,11 +58,7 @@ module Serializers
             each do |address, data|
               result.push({
                 address: address,
-                attribute => data.sum { |row| row[attribute] },
-                avatar_url: nil,
-                guest_user: nil,
-                name: nil,
-                verified_user: nil
+                attribute => data.sum { |row| row[attribute] }
               })
             end
 
@@ -70,7 +66,7 @@ module Serializers
       end
 
       def enrich_user_data(users)
-        Services::EnrichUserData.call(data: users)
+        Services::EnrichUserData.call(users: users)
       end
 
       def data
