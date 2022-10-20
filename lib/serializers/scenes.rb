@@ -12,6 +12,7 @@ module Serializers
       scenes.map do |scene|
         {
           name: scene.name,
+          date: scene.date.to_s,
           map_url: scene.map_url,
           visitors: scene.unique_addresses,
           share_of_global_visitors: scene.share_of_global_visitors,

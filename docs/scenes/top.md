@@ -14,6 +14,7 @@ The expected response, as json:
 [
   {
     "name":"ICE Poker - The Stronghold",
+    "date": "2022-10-13",
     "map_url":"https://...",
     "visitors":2493,
     "share_of_global_visitors":33,
