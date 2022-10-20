@@ -17,7 +17,7 @@ module Models
     def self.collect(cids)
       where(cid: cids).
         reject(&:public_road?).
-        group_by { |s| [s.name, s.parcels] }
+        group_by { |s| [s.name, s.parcels.sort] }
     end
 
     def parcels
