@@ -3,7 +3,7 @@ module Jobs
     sidekiq_options queue: 'processing'
 
     def perform(date)
-      time_spent = DATABASE_CONNECTION[
+      time_spent = USER_ACTIVITIES_DATABASE[
         "select
           starting_coordinates as coordinates,
           count(distinct address) as visits,
@@ -24,7 +24,7 @@ module Jobs
         sub("]",")").
         gsub('"',"'")
 
-      time_spent_afk = DATABASE_CONNECTION[
+      time_spent_afk = USER_ACTIVITIES_DATABASE[
         "select
           starting_coordinates as coordinates,
           count(distinct address) as afk_visitors,
@@ -48,7 +48,7 @@ module Jobs
         limit 10"
       ].all
 
-      top_login_locations = DATABASE_CONNECTION[
+      top_login_locations = USER_ACTIVITIES_DATABASE[
         "select
           starting_coordinates as coordinates,
           count(distinct address) as logins
@@ -61,7 +61,7 @@ module Jobs
         limit 10"
       ].all
 
-      top_logout_locations = DATABASE_CONNECTION[
+      top_logout_locations = USER_ACTIVITIES_DATABASE[
         "select
           ending_coordinates as coordinates,
           count(distinct address) as logouts

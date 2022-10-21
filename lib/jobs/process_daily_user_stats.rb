@@ -4,7 +4,7 @@ module Jobs
 
     def perform(date)
       # TODO: figure out how to filter users who are more than x% AFK
-      time_spent = DATABASE_CONNECTION[
+      time_spent = USER_ACTIVITIES_DATABASE[
         "select address, sum(duration) AS time_spent
         from user_activities
         where name = 'session'
