@@ -131,6 +131,46 @@ namespace :data_preservation do
     Jobs::DeleteDataPoints.perform_in(1000, date)
   end
 
+  # temporary job
+  # ex: rake data_preservation:recompile_user_activities['2022-07-20']
+  desc "recompile user_activities data for date"
+  task :recompile_user_activities, [:date] do |task, args|
+    require './lib/main'
+
+    # for given date:
+    # 1. processes snapshots for the given date +/- 1 (if they don't exist)
+    # 2. creates user activities for date
+    # 3. deletes data points for date - 1
+
+    date = args[:date]
+    parsed_date = Date.parse(date)
+    yesterday = (parsed_date - 1).to_s
+    tomorrow = (parsed_date + 1).to_s
+
+
+    # create data points from peers dump
+    ### yesterday
+    if Models::DataPoint.where(date: yesterday).count.zero?
+      Jobs::ProcessSnapshots.perform_async(yesterday)
+    end
+
+    ### today
+    if Models::DataPoint.where(date: date).count.zero?
+      Jobs::ProcessSnapshots.perform_async(date)
+    end
+
+    ### tomorrow
+    if Models::DataPoint.where(date: tomorrow).count.zero?
+      Jobs::ProcessSnapshots.perform_async(tomorrow)
+    end
+
+    # process user activities
+    Jobs::ProcessUserActivities.perform_in(600, date) # 10 minutes
+
+    # clean up
+    Jobs::DeleteDataPoints.perform_in(1200, yesterday) # 20 minutes
+  end
+
   desc "export recent stats to staging db"
   task :export_recent_stats_to_staging_db do
     require './lib/main'
