@@ -1,4 +1,4 @@
-print "adding first_seen_on to user_activities\n"
+print "adding first_seen_on to scenes\n"
 
 Sequel.migration do
   change do
