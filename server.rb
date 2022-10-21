@@ -16,7 +16,8 @@ class Server < Sinatra::Application
 
   # Notify on all errors
   error Exception do
-    Services::TelegramOperator.notify(:error, env['sinatra.error'].inspect)
+    notify_telegram(:error, env['sinatra.error'].inspect)
+
     { msg: 'Something went wrong' }.to_json
   end
 
