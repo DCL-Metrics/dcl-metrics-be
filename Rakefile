@@ -63,9 +63,6 @@ namespace :compute do
 
     # process all daily stats for previous day
     Jobs::ProcessAllDailyStats.perform_in(900, previous_date) # 15 minutes
-
-    # clean up database
-    Jobs::CleanUpTransitoryData.perform_in(1200) # 20 minutes
   end
 
   desc "results of api response status yesterday"

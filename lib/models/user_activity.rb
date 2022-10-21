@@ -18,7 +18,7 @@
 # add_index :user_activities, [:ending_coordinates]
 
 module Models
-  class UserActivity < Sequel::Model
+  class UserActivity < Sequel::Model(USER_ACTIVITIES_DATABASE[:user_activities])
     def validate
       super
       validates_unique([:name, :address, :start_time, :end_time])

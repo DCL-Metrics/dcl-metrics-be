@@ -3,12 +3,18 @@ print "Using DATABASE:  #{ENV['DATABASE_URL']}\n\n"
 print "##############################\n"
 
 require 'sequel'
-DATABASE_CONNECTION = Sequel.
-  connect(ENV['DATABASE_URL'], pool_timeout: ENV['DATABASE_POOL_TIMEOUT'].to_i)
 Sequel.default_timezone = :utc
 Sequel::Model.plugin :timestamps, update_on_create: true
 Sequel::Model.plugin :update_or_create
 Sequel::Model.plugin :validation_helpers
+
+DATABASE_CONNECTION = Sequel.connect(
+  ENV['DATABASE_URL'],
+  pool_timeout: ENV['DATABASE_POOL_TIMEOUT'].to_i)
+
+USER_ACTIVITIES_DATABASE = Sequel.connect(
+  ENV['USER_ACTIVITIES_DATABASE_URL'],
+  pool_timeout: ENV['DATABASE_POOL_TIMEOUT'].to_i)
 
 # global constants
 PUBLIC_ROADS = JSON.parse(File.read('./lib/static/roads.json'))
@@ -101,7 +107,6 @@ require './lib/jobs/process_daily_parcel_stats.rb'
 require './lib/jobs/preprocess_daily_scene_stats.rb'
 require './lib/jobs/process_daily_scene_stats.rb'
 require './lib/jobs/process_daily_parcel_traffic.rb'
-require './lib/jobs/clean_up_transitory_data.rb'
 require './lib/jobs/delete_data_points.rb'
 require './lib/jobs/create_daily_parcel_traffic.rb'
 require './lib/jobs/export_data_to_staging_db.rb'
