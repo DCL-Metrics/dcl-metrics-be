@@ -55,14 +55,15 @@ namespace :compute do
     # process all user activities for given date
     Jobs::ProcessUserActivities.perform_async(date)
 
+    # NOTE: think this is unnecessary now that i am keeping all activities
     # rebuild all user activities for previous day
-    Jobs::ProcessUserActivities.perform_in(300, previous_date) # 5 minutes
+    # Jobs::ProcessUserActivities.perform_in(300, previous_date) # 5 minutes
 
     # process all daily stats for given date
-    Jobs::ProcessAllDailyStats.perform_in(600, date) # 10 minutes
+    Jobs::ProcessAllDailyStats.perform_in(300, date) # 5 minutes
 
     # process all daily stats for previous day
-    Jobs::ProcessAllDailyStats.perform_in(900, previous_date) # 15 minutes
+    Jobs::ProcessAllDailyStats.perform_in(600, previous_date) # 10 minutes
   end
 
   desc "results of api response status yesterday"
