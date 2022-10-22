@@ -143,9 +143,9 @@ namespace :data_preservation do
   end
 
   # temporary job
-  # ex: rake data_preservation:recompile_user_activities['2022-07-20']
-  desc "recompile user_activities data for date"
-  task :recompile_user_activities, [:date] do |task, args|
+  # ex: rake data_preservation:recompile_user_activities
+  desc "recompile user_activities data from the most recent calculation date"
+  task :recompile_user_activities do
     require './lib/main'
 
     # 0. find date + 1 of the last parsed activities
