@@ -47,6 +47,7 @@ module Serializers
         data[period].
           exclude(attribute => nil).
           exclude(attribute => 0).
+          select(attribute, :name, :coordinates, :map_url).
           all.
           group_by { |s| [s.name, s.coordinates] }.
           each do |grouping, data|
