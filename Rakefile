@@ -167,6 +167,15 @@ namespace :data_preservation do
 
     parsed_date = parsed_user_activities.last[:day].to_date + 1
     date = parsed_date.to_s
+    if parsed_date.month == 10
+      Services::TelegramOperator.notify(
+        level: :info,
+        message: "User Activity parsing is nearly complete. Now parsing '#{date}'"
+      )
+    end
+
+    return if date == '2022-10-20'
+
     yesterday = (parsed_date - 1).to_s
     tomorrow = (parsed_date + 1).to_s
 
