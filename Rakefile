@@ -146,6 +146,9 @@ namespace :data_preservation do
   # ex: rake data_preservation:recompile_user_activities
   desc "recompile user_activities data from the most recent calculation date"
   task :recompile_user_activities do
+    # Don't run this task from midnight to 3am (other tasks are running)
+    return if [0, 1, 2].include?(Time.now.utc.hour)
+
     require './lib/main'
 
     # 0. find date + 1 of the last parsed activities
