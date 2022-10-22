@@ -148,16 +148,24 @@ namespace :data_preservation do
   task :recompile_user_activities, [:date] do |task, args|
     require './lib/main'
 
-    # for given date:
+    # 0. find date + 1 of the last parsed activities
     # 1. processes snapshots for the given date +/- 1 (if they don't exist)
     # 2. creates user activities for date
     # 3. deletes data points for date - 1
 
-    date = args[:date]
-    parsed_date = Date.parse(date)
+    # 2022-10-20 was where i started not removing newly made user activities
+    parsed_user_activities = USER_ACTIVITIES_DATABASE[
+      "select date_trunc('day', date) as day,
+      count(id)
+      from user_activities
+      where date < '2022-10-20' group by day
+      order by 1"
+    ].all
+
+    parsed_date = parsed_user_activities.last[:day].to_date + 1
+    date = parsed_date.to_s
     yesterday = (parsed_date - 1).to_s
     tomorrow = (parsed_date + 1).to_s
-
 
     # create data points from peers dump
     ### yesterday
