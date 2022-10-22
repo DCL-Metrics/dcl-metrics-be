@@ -29,7 +29,7 @@ class Server < Sinatra::Application
     {
       global: Serializers::Global::DailyStats.serialize,
       parcels: Serializers::Global::Parcels.serialize,
-      scenes: Serializers::Global::Scenes.serialize,
+      scenes: Models::SerializedDailySceneStats.order(:date).last.data,
       users: Serializers::Global::Users.serialize
     }.to_json
   end
