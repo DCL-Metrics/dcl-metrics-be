@@ -12,9 +12,6 @@ class Server < Sinatra::Application
       notify_telegram(:info, "Unexpected API Access by IP '#{requesting_ip}'")
       halt 401, { msg: "I'm afraid I can't let you do that, #{requesting_ip}" }.to_json
     end
-
-    DATABASE_CONNECTION.logger = request.logger
-    USER_ACTIVITIES_DATABASE.logger = request.logger
   end
 
   # Notify on all errors

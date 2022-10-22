@@ -16,6 +16,9 @@ USER_ACTIVITIES_DATABASE = Sequel.connect(
   ENV['USER_ACTIVITIES_DATABASE_URL'],
   pool_timeout: ENV['DATABASE_POOL_TIMEOUT'].to_i)
 
+DATABASE_CONNECTION.loggers << Logger.new($stdout)
+USER_ACTIVITIES_DATABASE.loggers << Logger.new($stdout)
+
 # global constants
 PUBLIC_ROADS = JSON.parse(File.read('./lib/static/roads.json'))
 
