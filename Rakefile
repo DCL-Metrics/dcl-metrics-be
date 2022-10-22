@@ -96,6 +96,17 @@ namespace :compute do
       message: result
     )
   end
+
+  desc "build and serialize yesterday's global scene stats"
+  task :create_serialized_global_scene_stats do
+    require './lib/main'
+
+    data_json = Serializers::Global::Scenes.serialize.to_json
+    Models::SerializedDailySceneStats.create(
+      date: (Date.today - 1).to_s,
+      data_json: data_json
+    )
+  end
 end
 
 namespace :data_preservation do
