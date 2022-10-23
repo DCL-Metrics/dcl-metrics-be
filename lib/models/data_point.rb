@@ -15,7 +15,7 @@
 # add_index :data_points, [:date]
 
 module Models
-  class DataPoint < Sequel::Model
+  class DataPoint < Sequel::Model(FAT_BOY_DATABASE[:data_points])
     def self.histogram
       DATABASE_CONNECTION[
         "select DATE_TRUNC('day', date) as day,
