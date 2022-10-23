@@ -142,6 +142,25 @@ namespace :data_preservation do
     Jobs::DeleteDataPoints.perform_in(1000, date)
   end
 
+  desc "compile data points"
+  task :compile_data_points do
+    # Don't run this task from midnight to 3am (other tasks are running)
+    return if [0, 1, 2].include?(Time.now.utc.hour)
+
+    require './lib/main'
+
+    parsed_date = Models::DataPoint.histogram.last[:day].to_date + 1
+    date = parsed_date.to_s
+    if parsed_date.month == 10
+      Services::TelegramOperator.notify(
+        level: :info,
+        message: "DataPoint compilation is nearly complete. Now compiling '#{date}'"
+      )
+    end
+
+    return if date == '2022-10-22'
+    Jobs::ProcessSnapshots.perform_async(date)
+  end
   # temporary job
   # ex: rake data_preservation:recompile_user_activities
   desc "recompile user_activities data from the most recent calculation date"
