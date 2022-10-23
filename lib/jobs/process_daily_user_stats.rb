@@ -15,7 +15,7 @@ module Jobs
         limit 10"
       ].all
 
-      parcels_visited = DATABASE_CONNECTION[
+      parcels_visited = FAT_BOY_DATABASE[
         "select address, count(distinct coordinates) AS parcels_visited
         from data_points
         where date = '#{date}'

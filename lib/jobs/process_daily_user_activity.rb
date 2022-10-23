@@ -5,7 +5,7 @@ module Jobs
     def perform(address, date)
       @address = address
 
-      data = DATABASE_CONNECTION[
+      data = FAT_BOY_DATABASE[
         "select * from data_points
         where address = '#{@address}'
         and date = '#{date}'

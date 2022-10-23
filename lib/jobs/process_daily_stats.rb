@@ -3,7 +3,7 @@ module Jobs
     sidekiq_options queue: 'processing'
 
     def perform(date)
-      unique_users = DATABASE_CONNECTION[
+      unique_users = FAT_BOY_DATABASE[
         "select distinct address from data_points where date = '#{date}'"
       ].count
 

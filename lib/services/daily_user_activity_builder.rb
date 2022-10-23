@@ -5,7 +5,7 @@ module Services
     end
 
     def initialize(date)
-      @addresses= DATABASE_CONNECTION[
+      @addresses= FAT_BOY_DATABASE[
         "select distinct address from data_points where date = '#{date}'"
       ].all.flat_map(&:values)
       @date = date

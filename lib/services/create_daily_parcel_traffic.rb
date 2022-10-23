@@ -25,7 +25,7 @@ module Services
     attr_reader :coordinates, :date
 
     def data_ndj
-      DATABASE_CONNECTION[
+      FAT_BOY_DATABASE[
         "select * from data_points
         where coordinates='#{coordinates}'
         and date='#{date}'"
@@ -33,7 +33,7 @@ module Services
     end
 
     def scene_cids_json
-      DATABASE_CONNECTION[
+      FAT_BOY_DATABASE[
         "select distinct(scene_cid) from data_points
         where coordinates='#{coordinates}'
         and date='#{date}'"
@@ -41,7 +41,7 @@ module Services
     end
 
     def addresses
-      DATABASE_CONNECTION[
+      FAT_BOY_DATABASE[
         "select distinct(address) from data_points
         where coordinates='#{coordinates}'
         and date='#{date}'"
@@ -49,7 +49,7 @@ module Services
     end
 
     def histogram_json
-      DATABASE_CONNECTION[
+      FAT_BOY_DATABASE[
         "select DATE_TRUNC('hour', timestamp) as hour,
         count(distinct address)
         from data_points

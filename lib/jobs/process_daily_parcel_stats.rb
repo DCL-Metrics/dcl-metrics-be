@@ -39,7 +39,7 @@ module Jobs
         limit 10"
       ].all
 
-      unique_visitors = DATABASE_CONNECTION[
+      unique_visitors = FAT_BOY_DATABASE[
         "select coordinates, count(distinct address) AS unique_visitors
         from data_points
         where date = '#{date}'

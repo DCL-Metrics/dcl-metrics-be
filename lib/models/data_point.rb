@@ -17,7 +17,7 @@
 module Models
   class DataPoint < Sequel::Model(FAT_BOY_DATABASE[:data_points])
     def self.histogram
-      DATABASE_CONNECTION[
+      FAT_BOY_DATABASE[
         "select DATE_TRUNC('day', date) as day,
         count(id)
         from data_points

@@ -3,7 +3,7 @@ module Jobs
     sidekiq_options queue: 'processing'
 
     def perform(date)
-      coordinates = DATABASE_CONNECTION[
+      coordinates = FAT_BOY_DATABASE[
         "select distinct coordinates from data_points where date = '#{date}'"
       ].flat_map(&:values)
 
