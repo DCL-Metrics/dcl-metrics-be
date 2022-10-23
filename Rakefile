@@ -137,9 +137,6 @@ namespace :data_preservation do
 
     # process daily parcel traffic
     Jobs::ProcessDailyParcelTraffic.perform_in(500, date)
-
-    # clean up
-    Jobs::DeleteDataPoints.perform_in(1000, date)
   end
 
   desc "compile data points"
@@ -158,7 +155,7 @@ namespace :data_preservation do
       )
     end
 
-    return if date == '2022-10-22'
+    return if parsed_date >= Date.parse('2022-10-22')
     Jobs::ProcessSnapshots.perform_async(date)
   end
   # temporary job
@@ -238,14 +235,6 @@ end
 
 namespace :db do
   APP_NAME = 'dclund'
-
-  desc "Remove DataPoints on given date"
-  task :delete_data_points, [:date] do |task, args|
-    require './lib/main'
-
-    date = args[:date] || (Date.today - 2).to_s
-    Jobs::DeleteDataPoints.perform_async(date)
-  end
 
   desc "Drop database for environment in DATABASE_ENV for DATABASE_USER"
   task :drop do
