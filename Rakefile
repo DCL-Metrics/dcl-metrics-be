@@ -135,7 +135,14 @@ namespace :data_preservation do
 
     require './lib/main'
 
-    parsed_date = Models::DataPoint.histogram.last[:day].to_date + 1
+    compiled_days = Models::DataPoint.
+      histogram.
+      map { |row| row[:day].to_date }.
+      reject { |day| day >= DateTime.parse('2022-10-23') }
+
+    parsed_date = compiled_days.last[:day].to_date + 1
+    return if parsed_date >= Date.parse('2022-10-23')
+
     date = parsed_date.to_s
     print "Compiling data points for #{date}\n"
     if parsed_date.month == 10
@@ -145,7 +152,6 @@ namespace :data_preservation do
       )
     end
 
-    return if parsed_date >= Date.parse('2022-10-22')
     Jobs::ProcessSnapshots.perform_async(date)
   end
   # temporary job
