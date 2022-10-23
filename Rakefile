@@ -125,18 +125,7 @@ namespace :data_preservation do
   task :recompile_parcel_traffic, [:date] do |task, args|
     require './lib/main'
 
-    # for given date:
-    # 1. processes snapshots for the given date
-    # 2. creates daily parcel traffic data
-    # 3. deletes the snapshots on that date
-
-    date = args[:date]
-
-    # create data points from peers dump
-    Jobs::ProcessSnapshots.perform_async(date)
-
-    # process daily parcel traffic
-    Jobs::ProcessDailyParcelTraffic.perform_in(500, date)
+    Jobs::ProcessDailyParcelTraffic.perform_in(500, args[:date])
   end
 
   desc "compile data points"
@@ -148,6 +137,7 @@ namespace :data_preservation do
 
     parsed_date = Models::DataPoint.histogram.last[:day].to_date + 1
     date = parsed_date.to_s
+    print "Compiling data points for #{date}\n"
     if parsed_date.month == 10
       Services::TelegramOperator.notify(
         level: :info,
