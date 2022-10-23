@@ -151,11 +151,6 @@ namespace :data_preservation do
 
     require './lib/main'
 
-    # 0. find date + 1 of the last parsed activities
-    # 1. processes snapshots for the given date +/- 1 (if they don't exist)
-    # 2. creates user activities for date
-    # 3. deletes data points for date - 1
-
     # 2022-10-20 was where i started not removing newly made user activities
     parsed_user_activities = USER_ACTIVITIES_DATABASE[
       "select date_trunc('day', date) as day,
@@ -176,30 +171,8 @@ namespace :data_preservation do
 
     return if date == '2022-10-20'
 
-    yesterday = (parsed_date - 1).to_s
-    tomorrow = (parsed_date + 1).to_s
-
-    # create data points from peers dump
-    ### yesterday
-    if Models::DataPoint.where(date: yesterday).count.zero?
-      Jobs::ProcessSnapshots.perform_async(yesterday)
-    end
-
-    ### today
-    if Models::DataPoint.where(date: date).count.zero?
-      Jobs::ProcessSnapshots.perform_async(date)
-    end
-
-    ### tomorrow
-    if Models::DataPoint.where(date: tomorrow).count.zero?
-      Jobs::ProcessSnapshots.perform_async(tomorrow)
-    end
-
     # process user activities
     Jobs::ProcessUserActivities.perform_in(600, date) # 10 minutes
-
-    # clean up
-    Jobs::DeleteDataPoints.perform_in(1200, yesterday) # 20 minutes
   end
 
   desc "export recent stats to staging db"
