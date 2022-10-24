@@ -32,10 +32,10 @@ class Server < Sinatra::Application
       global: Serializers::Global::DailyStats.serialize,
       parcels: Serializers::Global::Parcels.serialize,
       scenes: {
-        yesterday: scene_data.detect { |s| s.timeframe == :yesterday }.data,
-        last_week: scene_data.detect { |s| s.timeframe == :last_week }.data,
-        last_month: scene_data.detect { |s| s.timeframe == :last_month }.data,
-        last_quarter: scene_data.detect { |s| s.timeframe == :last_quarter }.data
+        yesterday: scene_data.detect { |s| s.timeframe == 'yesterday' }.data,
+        last_week: scene_data.detect { |s| s.timeframe == 'last_week' }.data,
+        last_month: scene_data.detect { |s| s.timeframe == 'last_month' }.data,
+        last_quarter: scene_data.detect { |s| s.timeframe == 'last_quarter' }.data
       },
       users: Serializers::Global::Users.serialize
     }.to_json
