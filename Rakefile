@@ -164,7 +164,7 @@ namespace :data_preservation do
     require './lib/main'
 
     # 2022-10-20 was where i started not removing newly made user activities
-    parsed_user_activities = USER_ACTIVITIES_DATABASE[
+    parsed_user_activities = FAT_BOY_DATABASE[
       "select date_trunc('day', date) as day,
       count(id)
       from user_activities

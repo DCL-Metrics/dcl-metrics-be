@@ -12,10 +12,6 @@ DATABASE_CONNECTION = Sequel.connect(
   ENV['DATABASE_URL'],
   pool_timeout: ENV['DATABASE_POOL_TIMEOUT'].to_i)
 
-USER_ACTIVITIES_DATABASE = Sequel.connect(
-  ENV['USER_ACTIVITIES_DATABASE_URL'],
-  pool_timeout: ENV['DATABASE_POOL_TIMEOUT'].to_i)
-
 FAT_BOY_DATABASE = Sequel.connect(
   ENV['FAT_BOY_DATABASE_URL'],
   pool_timeout: ENV['DATABASE_POOL_TIMEOUT'].to_i)
