@@ -195,7 +195,7 @@ namespace :data_preservation do
 
     Jobs::ExportDataToStagingDb.perform_async('daily_stats', 90)
     Jobs::ExportDataToStagingDb.perform_async('daily_parcel_stats', 90)
-    Jobs::ExportDataToStagingDb.perform_async('daily_scene_stats', 90)
+    Jobs::ExportDataToStagingDb.perform_async('serialized_daily_scene_stats', 1)
     Jobs::ExportDataToStagingDb.perform_async('daily_user_stats', 90)
 
     Jobs::ExportDataToStagingDb.
