@@ -138,10 +138,10 @@ namespace :data_preservation do
     compiled_days = Models::DataPoint.
       histogram.
       map { |row| row[:day].to_date }.
-      reject { |day| day >= DateTime.parse('2022-10-23') }
+      reject { |day| day >= DateTime.parse('2022-10-22') }
 
-    parsed_date = compiled_days.last[:day].to_date + 1
-    return if parsed_date >= Date.parse('2022-10-23')
+    parsed_date = compiled_days.last + 1
+    return if parsed_date >= Date.parse('2022-10-22')
 
     date = parsed_date.to_s
     print "Compiling data points for #{date}\n"
