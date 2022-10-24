@@ -101,11 +101,13 @@ namespace :compute do
   task :create_serialized_global_scene_stats do
     require './lib/main'
 
-    data_json = Serializers::Global::Scenes.serialize.to_json
-    Models::SerializedDailySceneStats.create(
-      date: (Date.today - 1).to_s,
-      data_json: data_json
-    )
+    Serializers::Global::Scenes.serialize.each do |key, values|
+      Models::SerializedDailySceneStats.create(
+        date: (Date.today - 1).to_s,
+        data_json: values.to_json,
+        timeframe: key.to_s
+      )
+    end
   end
 end
 
