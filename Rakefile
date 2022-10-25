@@ -130,32 +130,6 @@ namespace :data_preservation do
     Jobs::ProcessDailyParcelTraffic.perform_in(500, args[:date])
   end
 
-  desc "compile data points"
-  task :compile_data_points do
-    # Don't run this task from midnight to 3am (other tasks are running)
-    return if [0, 1, 2].include?(Time.now.utc.hour)
-
-    require './lib/main'
-
-    compiled_days = Models::DataPoint.
-      histogram.
-      map { |row| row[:day].to_date }.
-      reject { |day| day >= DateTime.parse('2022-10-22') }
-
-    parsed_date = compiled_days.last + 1
-    return if parsed_date >= Date.parse('2022-10-22')
-
-    date = parsed_date.to_s
-    print "Compiling data points for #{date}\n"
-    if parsed_date.month == 10
-      Services::TelegramOperator.notify(
-        level: :info,
-        message: "DataPoint compilation is nearly complete. Now compiling '#{date}'"
-      )
-    end
-
-    Jobs::ProcessSnapshots.perform_async(date)
-  end
   # temporary job
   # ex: rake data_preservation:recompile_user_activities
   desc "recompile user_activities data from the most recent calculation date"
