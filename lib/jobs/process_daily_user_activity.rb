@@ -41,18 +41,27 @@ module Jobs
             if @events.detect { |e| e[:event] == 'login' }.nil?
               build_event('login', visit)
               build_event('enter_parcel', visit)
+              build_event('enter_scene', visit) unless visit[:scene_cid].nil?
             end
 
-            recent_entrance = @events.detect { |e| e[:event] == 'enter_parcel' }
-            if recent_entrance && recent_entrance[:coordinates] != visit[:coordinates]
+            # recent parcel entrance
+            rpe = @events.detect { |e| e[:event] == 'enter_parcel' }
+            if rpe && rpe[:coordinates] != visit[:coordinates]
               build_event('exit_parcel', visit)
               build_event('enter_parcel', visit)
             end
-          else
+
+            # recent scene entrance
+            rse = @events.detect { |e| e[:event] == 'enter_scene' }
+            if rse && rse[:scene_cid] != visit[:scene_cid]
+              build_event('exit_scene', visit)
+              build_event('enter_scene', visit) unless visit[:scene_cid].nil?
+            end
+          else # not within time delta, ie no carry-over session
             build_event('login', visit)
             build_event('enter_parcel', visit)
+            build_event('enter_scene', visit) unless visit[:scene_cid].nil?
           end
-
         else
           case
           when prev_data_point[:position] == visit[:position] && !afk
@@ -70,6 +79,9 @@ module Jobs
             end
 
             build_event('login', visit)
+          when prev_data_point[:scene_cid] != visit[:scene_cid]
+            build_event('exit_scene', visit)
+            build_event('enter_scene', visit) unless visit[:scene_cid].nil?
           when prev_data_point[:coordinates] != visit[:coordinates]
             build_event('exit_parcel', visit)
             build_event('enter_parcel', visit)
@@ -89,6 +101,7 @@ module Jobs
           unless within_time_delta?(prev_data_point[:timestamp], end_of_day, 10)
             build_event('logout', prev_data_point)
             build_event('exit_parcel', prev_data_point)
+            build_event('exit_scene', prev_data_point) unless prev_data_point[:scene_cid].nil?
 
             if afk
               afk = false
@@ -105,6 +118,7 @@ module Jobs
       create_user_activity('afk', 'afk_start', 'afk_end')
       create_user_activity('session', 'login', 'logout')
       create_user_activity('visit', 'enter_parcel', 'exit_parcel')
+      create_user_activity('visit_scene', 'enter_scene', 'exit_scene')
 
       # create UserEvent from any remaining events
       @events.each do |e|
@@ -165,6 +179,7 @@ module Jobs
           ua.ending_position = e[:position]
           ua.end_time = e[:timestamp]
           ua.duration = e[:timestamp] - start_time
+          ua.scene_cid = e[:scene_cid]
         end
 
         @events.delete(start)
@@ -177,6 +192,7 @@ module Jobs
         coordinates: visit[:coordinates],
         event: event_type,
         position: visit[:position],
+        scene_cid: visit[:scene_cid],
         timestamp: visit[:timestamp]
       }
     end

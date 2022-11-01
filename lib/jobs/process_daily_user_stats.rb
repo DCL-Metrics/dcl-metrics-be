@@ -24,16 +24,26 @@ module Jobs
         limit 10"
       ].all
 
+      scenes_visited = FAT_BOY_DATABASE[
+        "select address, count(distinct scene_cid) AS scenes_visited
+        from data_points
+        where date = '#{date}'
+        group by address
+        order by scenes_visited desc
+        limit 10"
+      ].all
+
       # TODO: overnight logins should be counted.
       # 'date' should be the date the event started,
       # for example if a session started yesterday and ended today
       # the date should be yesterday.
-      (time_spent + parcels_visited).each do |row|
+      (time_spent + parcels_visited + scenes_visited).each do |row|
         Models::DailyUserStats.create(
           date: date,
           address: row[:address],
           time_spent: row[:time_spent],
-          parcels_visited: row[:parcels_visited]
+          parcels_visited: row[:parcels_visited],
+          scenes_visited: row[:scenes_visited]
         )
       end
 

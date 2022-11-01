@@ -6,6 +6,7 @@
 # String  :starting_position,     null: false
 # String  :ending_coordinates,    null: false
 # String  :ending_position,       null: false
+# String  :scene_cid
 # Time    :start_time,            null: false
 # Time    :end_time,              null: false
 # Integer :duration,              null: false

@@ -5,6 +5,7 @@
 # String  :event,       null: false
 # String  :position,    null: false
 # Time    :timestamp,   null: false
+# String  :scene_cid
 #
 # Time    :created_at,  null: false
 #
