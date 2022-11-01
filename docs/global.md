@@ -102,6 +102,17 @@ The expected response, as json:
         },
         // ...
       ],
+      "scenes_visited": [
+        {
+          "address": "0xf5950c26fb352c58adb9fc30825b012ac5b3d441",
+          "scenes_visited": 43,
+          "avatar_url": "https://peer-ec1.decentraland.org/xxx",
+          "guest_user": false, // user is not logged in with web3?
+          "name": "M1ssConduct",
+          "verified_user": false // user has a name token?
+        },
+        // ...
+      ],
       "time_spent: [
         {
           "address": "0x8acf65f50d56449894e655a6d018cbb01cf9a914",
