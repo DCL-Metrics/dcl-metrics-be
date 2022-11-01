@@ -16,7 +16,8 @@ end
 namespace :heroku do
   desc "run tasks on application release"
   task :release do
-    `bundle exec rake db:migrate`
+    `bundle exec rake db:migrate[#{ENV['DATABASE_URL']}]`
+    `bundle exec rake db:migrate[#{ENV['FAT_BOY_DATABASE_URL']}]`
   end
 
   desc "invalidate FE cache for global stats"
@@ -236,18 +237,19 @@ namespace :db do
   end
 
   desc "Run migrations (optionally include version number)"
-  task :migrate do
+  task :migrate, [:db_url] do |task, args|
     require "sequel"
     Sequel.extension :migration
 
     # NOTE: example format:
     # DATABASE_URL=postgres://{user}:{password}@{hostname}:{port}/{database-name}
-    unless ENV.member?('DATABASE_URL')
-      raise 'Please provide a database as `ENV[DATABASE_URL]`'
-    end
 
     version = ENV['VERSION']
-    database_url = ENV['DATABASE_URL']
+    database_url = args[:db_url] || ENV['DATABASE_URL']
+    unless database_url
+      raise 'Please provide a database to run migrations on'
+    end
+
     migration_dir = File.expand_path('../migrations', __FILE__)
     db = Sequel.connect(database_url)
 
