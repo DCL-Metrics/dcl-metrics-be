@@ -3,14 +3,33 @@ module Jobs
     sidekiq_options queue: 'processing'
 
     def perform(date, name, coordinates, cids, total_global_users)
-      scene_traffic =  Models::ParcelTraffic.where(coordinates: coordinates, date: date)
+      scene_traffic =  Models::ParcelTraffic.where(
+        coordinates: coordinates,
+        date: date,
+        scene_cid: cids
+      )
+
       scene_activities = Models::UserActivity.where(
         date: date,
         starting_coordinates: coordinates,
         ending_coordinates: coordinates
       )
 
-      visits = scene_activities.where(name: 'visit')
+      # TODO: URGENT~~
+      # scene traffic and scene activities are showing pretty different data
+      # ex:
+      # scenes = Models::DailySceneStats.where(name: 'PeanutButta')
+      # date = '2022-11-02'
+      # coordinates = scenes.last.coordinates
+      # scene_activities.where(name: 'visit').count
+      # => 1
+      # scene_activities.where(name: 'visit_scene').count
+      # => 10
+      # scene_traffic.first.addresses.uniq.count
+      # => 83
+
+
+      visits = scene_activities.where(name: 'visit_scene')
       afk    = scene_activities.where(name: 'afk')
 
       # NOTE: "total visitors" is not entirely correct.

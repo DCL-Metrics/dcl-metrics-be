@@ -1,20 +1,20 @@
 module Services
   class CreateDailyParcelTraffic
-    def self.call(coordinates:, date:)
-      new(coordinates, date).call
+    def self.call(coordinates:, date:, scene_cid:)
+      new(coordinates, date, scene_cid).call
     end
 
-    def initialize(coordinates, date)
+    def initialize(coordinates, date, scene_cid)
       @coordinates = coordinates
       @date = date
+      @scene_cid = scene_cid
     end
 
     def call
       Models::ParcelTraffic.create(
         coordinates: coordinates,
         date: date,
-        data_ndj: data_ndj,
-        scene_cids_json: scene_cids_json,
+        scene_cid: scene_cid,
         addresses_json: addresses.to_json,
         histogram_json: histogram_json,
         unique_addresses: addresses.count
@@ -22,28 +22,13 @@ module Services
     end
 
     private
-    attr_reader :coordinates, :date
-
-    def data_ndj
-      FAT_BOY_DATABASE[
-        "select * from data_points
-        where coordinates='#{coordinates}'
-        and date='#{date}'"
-      ].all.map(&:to_json).join("\n")
-    end
-
-    def scene_cids_json
-      FAT_BOY_DATABASE[
-        "select distinct(scene_cid) from data_points
-        where coordinates='#{coordinates}'
-        and date='#{date}'"
-      ].all.flat_map(&:values).to_json
-    end
+    attr_reader :coordinates, :date, :scene_cid
 
     def addresses
       FAT_BOY_DATABASE[
         "select distinct(address) from data_points
         where coordinates='#{coordinates}'
+        and scene_cid='#{scene_cid}'
         and date='#{date}'"
       ].all.flat_map(&:values)
     end
@@ -54,6 +39,7 @@ module Services
         count(distinct address)
         from data_points
         where coordinates='#{coordinates}'
+        and scene_cid='#{scene_cid}'
         and date = '#{date}'
         group by hour
         order by 1"
