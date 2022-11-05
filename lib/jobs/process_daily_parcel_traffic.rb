@@ -18,6 +18,8 @@ module Jobs
     # all merged together even though the same parcel might host several scenes
     # during that time
     def perform(date)
+      Models::ParcelTraffic.where(date: date).delete
+
       parcels_by_scene_cid = FAT_BOY_DATABASE[
         "select scene_cid, coordinates
         from data_points
