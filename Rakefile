@@ -128,7 +128,7 @@ namespace :data_preservation do
   task :recompile_parcel_traffic, [:date] do |task, args|
     require './lib/main'
 
-    Jobs::ProcessDailyParcelTraffic.perform_in(500, args[:date])
+    Jobs::ProcessDailyParcelTraffic.perform_async(args[:date])
   end
 
   # temporary job
@@ -160,7 +160,7 @@ namespace :data_preservation do
     return if date == '2022-10-23'
 
     # process user activities
-    Jobs::ProcessUserActivities.perform_in(600, date) # 10 minutes
+    Jobs::ProcessUserActivities.perform_async(date)
   end
 
   desc "export recent stats to staging db"
