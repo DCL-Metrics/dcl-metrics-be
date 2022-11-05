@@ -145,20 +145,20 @@ namespace :data_preservation do
       "select date_trunc('day', date) as day,
       count(id)
       from user_activities
-      where date < '2022-10-20' group by day
+      where date < '2022-10-23' group by day
       order by 1"
     ].all
 
     parsed_date = parsed_user_activities.last[:day].to_date + 1
     date = parsed_date.to_s
-    if parsed_date.month == 10
+    if parsed_date.month == 11
       Services::TelegramOperator.notify(
         level: :info,
         message: "User Activity parsing is nearly complete. Now parsing '#{date}'"
       )
     end
 
-    return if date == '2022-10-20'
+    return if date == '2022-11-04'
 
     # process user activities
     Jobs::ProcessUserActivities.perform_in(600, date) # 10 minutes
