@@ -28,6 +28,10 @@ module Jobs
       # scene_traffic.first.addresses.uniq.count
       # => 83
 
+      # TODO: NEW
+      # sort scenes by unique visitors
+      # notify about the difference between visitors (people who stay for more
+      # than 90 seconds in the scene) and addresses (people who pop in and leave)
 
       visits = scene_activities.where(name: 'visit_scene')
       afk    = scene_activities.where(name: 'afk')
