@@ -140,7 +140,6 @@ namespace :data_preservation do
 
     require './lib/main'
 
-    # 2022-10-20 was where i started not removing newly made user activities
     parsed_user_activities = FAT_BOY_DATABASE[
       "select date_trunc('day', date) as day,
       count(id)
@@ -151,14 +150,14 @@ namespace :data_preservation do
 
     parsed_date = parsed_user_activities.last[:day].to_date + 1
     date = parsed_date.to_s
-    if parsed_date.month == 11
+    if parsed_date.month == 10 && parsed_date.day == 23
       Services::TelegramOperator.notify(
         level: :info,
-        message: "User Activity parsing is nearly complete. Now parsing '#{date}'"
+        message: "Old User Activity parsing is complete. Newer user activities should be parsed manually"
       )
     end
 
-    return if date == '2022-11-04'
+    return if date == '2022-10-23'
 
     # process user activities
     Jobs::ProcessUserActivities.perform_in(600, date) # 10 minutes
