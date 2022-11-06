@@ -125,10 +125,8 @@ namespace :data_preservation do
   # TODO: recompile from 12 aug - 4 nov
   # temporary job
   # ex: rake data_preservation:recompile_parcel_traffic['2022-07-20']
-  desc "recompile parcel_traffic data for date"
-  task :recompile_parcel_traffic, [:date] do |task, args|
-    require './lib/main'
-
+  desc "recompile parcel_traffic data"
+  task :recompile_parcel_traffic do
     # Don't run this task from midnight to 3am (other tasks are running)
     return if [0, 1, 2].include?(Time.now.utc.hour)
 
@@ -158,7 +156,7 @@ namespace :data_preservation do
   desc "recompile user_activities data from the most recent calculation date"
   task :recompile_user_activities do
     # Don't run this task from midnight to 3am (other tasks are running)
-    return if [0, 1, 2].include?(Time.now.utc.hour)
+    return if [23, 0, 1, 2].include?(Time.now.utc.hour)
 
     require './lib/main'
 
