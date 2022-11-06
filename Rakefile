@@ -122,13 +122,35 @@ namespace :data_preservation do
     Jobs::ProcessDailyParcelTraffic.perform_async(date)
   end
 
+  # TODO: recompile from 12 aug - 4 nov
   # temporary job
   # ex: rake data_preservation:recompile_parcel_traffic['2022-07-20']
   desc "recompile parcel_traffic data for date"
   task :recompile_parcel_traffic, [:date] do |task, args|
     require './lib/main'
 
-    Jobs::ProcessDailyParcelTraffic.perform_async(args[:date])
+    # Don't run this task from midnight to 3am (other tasks are running)
+    return if [0, 1, 2].include?(Time.now.utc.hour)
+
+    require './lib/main'
+
+    parsed_parcel_traffic = DATABASE_CONNECTION[
+      "select date_trunc('day', date) as day,
+      count(id)
+      from parcel_traffic
+      where date < '2022-11-05'
+      and date > '2022-08-11'
+      group by day
+      order by 1"
+    ].all
+
+    parsed_date = parsed_parcel_traffic.last[:day].to_date + 1
+    date = parsed_date.to_s
+
+    return if parsed_date > Date.parse'2022-11-04'
+
+    # process parcel_traffic
+    Jobs::ProcessDailyParcelTraffic.perform_async(date)
   end
 
   # temporary job

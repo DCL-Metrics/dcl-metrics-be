@@ -2,7 +2,6 @@
 #
 # String  :coordinates, null: false
 # Date    :date,        null: false
-# Text    :data_ndj,    null: false
 # Jsonb   :scene_cids_json
 # Jsonb   :addresses_json
 # Jsonb   :histogram_json
@@ -13,7 +12,7 @@
 # add_index :parcel_traffic, [:coordinates]
 # add_index :parcel_traffic, [:date]
 # add_index :parcel_traffic, [:scene_cid]
-# add_index :parcel_traffic, [:coordinates, :date], unique: true
+# add_index :parcel_traffic, [:coordinates, :date, :scene_cid], unique: true
 
 module Models
   class ParcelTraffic < Sequel::Model(:parcel_traffic)
