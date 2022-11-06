@@ -147,7 +147,7 @@ namespace :data_preservation do
     parsed_date = parsed_parcel_traffic.last[:day].to_date + 1
     date = parsed_date.to_s
 
-    return if parsed_date > Date.parse'2022-11-04'
+    return if parsed_date > Date.parse('2022-11-04')
 
     # process parcel_traffic
     Jobs::ProcessDailyParcelTraffic.perform_async(date)
