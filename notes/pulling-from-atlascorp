@@ -1,0 +1,41 @@
+# GO TO 11:30
+
+start_hour = 11
+start_minute = 00
+
+
+30.times do |i|
+  print "#{start_hour}:#{start_minute.to_s.rjust(2, "0")}\n"
+  end_minute = start_minute + 1 == 60 ? 0 : start_minute + 1
+  end_hour = end_minute.zero? ? start_hour + 1 : start_hour
+  print "#{end_hour}:#{end_minute.to_s.rjust(2, "0")}\n"
+
+  raw_data = `curl -X POST https://dao-data.atlascorp.io/islands-history -H "Content-Type: application/json" -d '{"start": "2022-11-07T#{start_hour}:#{start_minute.to_s.rjust(2, "0")}:00+00:00", "end": "2022-11-07T#{end_hour}:#{end_minute.to_s.rjust(2, "0")}:00+00:00"}'`
+
+  start_minute = start_minute + 1 == 60 ? 0 : start_minute + 1
+  start_hour = start_minute.zero? ? start_hour + 1 : start_hour
+
+  data = JSON.parse(raw_data)['data'].flat_map { |x| x['islands'].flat_map { |xx| xx['peers'] } }
+
+  coordinates = data.map { |c| c['parcel']&.join(',') }.compact
+  scenes = Services::FetchSceneData.call(coordinates: coordinates)
+
+  # enrich peer data with scene cid
+  data.each do |d|
+    next unless d['parcel']
+
+    scene = scenes.detect { |s| s.parcels.include?(d['parcel'].join(',')) }
+    next if scene.nil? # empty parcel
+    d['scene_cid'] = scene.cid
+  end;nil
+
+  Models::PeersDump.create(
+    created_at: Time.at(data.first['lastPing']/1000),
+    data_json: data.to_json
+  )
+
+  sleep 6
+end
+
+
+
