@@ -62,7 +62,7 @@ class Server < Sinatra::Application
 
     {
       available_dates: scene_query.map { |x| x.date.to_s },
-      result: Serializers::Scenes.serialize([scene_query.first(date: date)])
+      result: Serializers::Scenes.serialize([scene_query.first(date: date)]).first
     }.to_json
   end
 
