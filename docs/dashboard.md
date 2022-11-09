@@ -16,6 +16,8 @@ the scenes they have subscribed to in the backend
 [optional] - the date for which to fetch scene stats. available dates are
 returned with every successful response
 
+example: https://dcl-metrics-be-staging.herokuapp.com/dashboard/neuromancer?date=2022-11-08
+
 #### SAMPLE DATA
 
 The expected response, as json:
