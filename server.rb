@@ -58,7 +58,7 @@ class Server < Sinatra::Application
 
   get '/dashboard/:dashboard_name' do
     date = params['date'] || Date.today - 1
-    scene_query = dashboard_mapping[params[:name].to_sym].order(:date)
+    scene_query = dashboard_mapping[params[:dashboard_name].to_sym].order(:date)
 
     {
       available_dates: scene_query.map { |x| x.date.to_s },
