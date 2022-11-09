@@ -11,8 +11,7 @@ module Jobs
 
       scene_activities = Models::UserActivity.where(
         date: date,
-        starting_coordinates: coordinates,
-        ending_coordinates: coordinates
+        starting_coordinates: coordinates
       )
 
       # TODO: URGENT~~
