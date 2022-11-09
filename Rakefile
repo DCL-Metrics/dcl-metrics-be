@@ -122,7 +122,6 @@ namespace :data_preservation do
     Jobs::ProcessDailyParcelTraffic.perform_async(date)
   end
 
-  # TODO: recompile from 12 aug - 4 nov
   # temporary job
   # ex: rake data_preservation:recompile_parcel_traffic['2022-07-20']
   desc "recompile parcel_traffic data"

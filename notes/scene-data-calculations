@@ -1,0 +1,52 @@
+coordinates = "104,-141"
+data = Models::DataPoint.where(coordinates: coordinates, date: '2022-11-03')
+scene = Models::Scene.where(cid: data.last.scene_cid)
+scenes = Models::Scene.where(parcels_json: scene.last.parcels_json)
+coordinates = scenes.first.parcels
+
+traffic =  Models::ParcelTraffic.where(
+  coordinates: coordinates,
+  scene_cid: scenes.map(&:cid)
+)
+
+# users per day (with/without uniq)
+traffic.
+  all.
+  group_by(&:date).
+  map { |date, data| [date.to_s, data.flat_map(&:addresses).uniq.count] }.
+  sort.
+  to_h
+
+Models::UserActivity.
+  where(starting_coordinates: coordinates, name: 'visit_scene').
+  all.
+  group_by(&:date).
+  map do |date, data|
+    min = data.min_by(&:duration).duration.round/60
+    max = data.max_by(&:duration).duration.round/60
+    avg = (data.map(&:duration).sum/data.count.to_f).round/60
+
+    [date.to_s, [min, avg, max]]
+  end.
+  sort.
+  to_h
+
+
+"2022-10-13"=>[1, 79, 142],
+"2022-10-14"=>[1, 55, 175],
+"2022-10-15"=>[1, 46, 422],
+"2022-10-16"=>[1, 202, 694],
+"2022-10-17"=>[1, 117, 612],
+"2022-10-18"=>[0, 37, 173],
+"2022-10-19"=>[0, 208, 805],
+"2022-10-20"=>[0, 82, 1141],
+"2022-10-21"=>[1, 5, 12],
+"2022-10-22"=>[2, 9, 17],
+"2022-10-31"=>[1, 14, 21],
+"2022-11-01"=>[1, 49, 188],
+"2022-11-02"=>[0, 4, 10],
+"2022-11-03"=>[0, 65, 414],
+"2022-11-04"=>[1, 112, 863],
+"2022-11-05"=>[8, 30, 52],
+"2022-11-06"=>[77, 77, 77],
+"2022-11-07"=>[4, 14, 25]
