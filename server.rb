@@ -1,7 +1,7 @@
 require 'sinatra'
 
 class Server < Sinatra::Application
-  ALLOWED_ACCESS_IP = %w[99.80.183.117 99.81.135.32]
+  ALLOWED_ACCESS_IP = %w[99.80.183.117 99.81.135.32 95.90.232.62]
 
   # Ensure all requests come from a fixed IP
   before do
