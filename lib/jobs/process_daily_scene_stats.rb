@@ -109,7 +109,12 @@ module Jobs
       unique_logouts = session_ends.distinct(:address).count
 
       # complete sessions (user logged in and logged out from this scene - not unique):
-      complete_sessions = scene_activities.where(name: 'session')
+      complete_sessions = Models::UserActivity.where(
+        date: date,
+        starting_coordinates: coordinates,
+        ending_coordinates: coordinates,
+        name: 'session'
+      )
       total_duration_seconds = complete_sessions.sum(:duration).to_i
       avg_complete_session_duration = if total_duration_seconds.zero?
         0
