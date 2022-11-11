@@ -61,8 +61,8 @@ class Server < Sinatra::Application
     serialized = Serializers::Scenes.serialize(scenes.all)
 
     {
-      daily_users: result.map { |scene| [scene[:date], scene[:visitors]] }.to_h,
-      result: result.map { |scene| [scene[:date], scene] }.to_h
+      daily_users: serialized.map { |scene| [scene[:date], scene[:visitors]] }.to_h,
+      result: serialized.map { |scene| [scene[:date], scene] }.to_h
     }.to_json
   end
 
