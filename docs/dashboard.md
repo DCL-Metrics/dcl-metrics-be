@@ -9,22 +9,17 @@ Data for dashboard clients
 where `dashboard_name` is the name of the subscribed client. these are mapped to
 the scenes they have subscribed to in the backend
 
-## QUERY PARAMENTERS
-
-### `date`
-
-[optional] - the date for which to fetch scene stats. available dates are
-returned with every successful response
-
-example: https://dcl-metrics-be-staging.herokuapp.com/dashboard/neuromancer?date=2022-11-08
-
 #### SAMPLE DATA
 
 The expected response, as json:
 
 ``` json
 {
-  "available_dates":["2022-10-15","2022-10-16","2022-10-17"]
+  "daily_users": {
+    "2022-10-15": 23,
+    "2022-10-16": 208,
+    "2022-10-17": 42
+  },
   "result": {} // scene stats
 }
 ```

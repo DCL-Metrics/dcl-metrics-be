@@ -57,12 +57,12 @@ class Server < Sinatra::Application
   end
 
   get '/dashboard/:dashboard_name' do
-    date = params['date'] || Date.today - 1
-    scene_query = dashboard_mapping[params[:dashboard_name].to_sym].order(:date)
+    scenes = dashboard_mapping[params[:dashboard_name].to_sym].order(:date)
+    serialized = Serializers::Scenes.serialize(scenes.all)
 
     {
-      available_dates: scene_query.map { |x| x.date.to_s },
-      result: Serializers::Scenes.serialize([scene_query.first(date: date)]).first
+      daily_users: result.map { |scene| [scene[:date], scene[:visitors]] }.to_h,
+      result: result.map { |scene| [scene[:date], scene] }.to_h
     }.to_json
   end
 
