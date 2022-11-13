@@ -9,6 +9,9 @@ module Serializers
     end
 
     def call
+      addresses = scenes.flat_map { |scene| scene.marathon_users.keys }.uniq
+      enriched_users = enrich_user_data(addresses)
+
       scenes.map do |scene|
         {
           name: scene.name,
@@ -24,7 +27,7 @@ module Serializers
           unique_logouts: scene.unique_logouts,
           complete_sessions: scene.complete_sessions,
           avg_complete_session_duration: scene.avg_complete_session_duration,
-          marathon_users: enrich_user_data(scene.marathon_users),
+          marathon_users: serialize_marathon_users(scene.marathon_users, enriched_users),
           time_spent_histogram: scene.time_spent_histogram,
           visitors_by_hour_histogram: scene.visitors_by_hour_histogram,
           parcels_heatmap: scene.parcels_heatmap
@@ -35,9 +38,17 @@ module Serializers
     private
     attr_reader :scenes
 
-    def enrich_user_data(users)
-      formatted_users = users.map { |k,v| { address: k, time_spent: v } }
-      Services::EnrichUserData.call(users: formatted_users)
+    def serialize_marathon_users(marathon_users, enriched_users)
+      marathon_users.map do |address, time_spent|
+        enriched_users.
+          detect { |x| x[:address] == address }.
+          merge(time_spent: time_spent.round)
+      end
+    end
+
+    def enrich_user_data(addresses)
+      users = addresses.map { |address| { address: address } }
+      Services::EnrichUserData.call(users: users)
     end
   end
 end
