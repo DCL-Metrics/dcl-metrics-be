@@ -61,23 +61,21 @@ module Services
           verified_user = user['hasClaimedName']
 
           # NOTE: guest user has a triple bang - force boolean and then invert it
-          users.push({
+          new_user = Models::TempUser.create(
             address: user['userId'],
             avatar_url: user['avatar']['snapshots']['face256'],
-            guest_user: verified_user ? false : !!!user['hasConnectedWeb3'],
+            guest: verified_user ? false : !!!user['hasConnectedWeb3'],
             name: user['name'],
-            verified_user: verified_user
-          })
+            verified: verified_user
+          )
 
-          users.each do |user|
-            Models::TempUser.create(
-              address: user[:address],
-              avatar_url: user[:avatar_url],
-              guest: user[:guest_user],
-              name: user[:name],
-              verified: user[:verified_user]
-            )
-          end
+          users.push({
+            address: new_user.address,
+            avatar_url: new_user.avatar_url,
+            guest_user: new_user.guest?,
+            name: new_user.name,
+            verified_user: new_user.verified?
+          })
         end
       end
     end
