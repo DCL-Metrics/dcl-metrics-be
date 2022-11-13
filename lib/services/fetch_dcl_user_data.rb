@@ -75,7 +75,7 @@ module Services
               avatar_url: user[:avatar_url],
               guest: user[:guest_user],
               name: user[:name],
-              verified: user[:verified]
+              verified: user[:verified_user]
             )
           end
         end
