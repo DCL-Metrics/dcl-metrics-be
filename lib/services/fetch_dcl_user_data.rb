@@ -5,7 +5,7 @@ module Services
     end
 
     def initialize(addresses)
-      @addresses = addresses.uniq
+      @addresses = addresses.uniq.map(&:downcase)
       @users = []
     end
 
