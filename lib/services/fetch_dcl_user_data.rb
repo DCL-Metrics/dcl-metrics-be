@@ -13,8 +13,7 @@ module Services
     # and calls update_or_create on all users in the last hour - but users need
     # to be created before that happens
     def call
-      # TODO: after users have been added
-      # find_known_users
+      find_known_users
       create_users_from_unknown_addresses
       return users if all_data_fetched?
 
@@ -36,17 +35,18 @@ module Services
       addresses - users.map { |u| u[:address] }
     end
 
-    # def find_known_users
-    #   Models::Users.where(address: remaining_addresses).each do |user|
-    #     users.push({
-    #       address: user.address,
-    #       avatar_url: user.avatar_url,
-    #       guest_user: user.guest_user?,
-    #       name: user.name,
-    #       verified_user: user.verified_user?
-    #     })
-    #   end
-    # end
+    # TODO: use a real user model
+    def find_known_users
+      Models::TempUser.where(address: remaining_addresses).each do |user|
+        users.push({
+          address: user.address,
+          avatar_url: user.avatar_url,
+          guest_user: user.guest?,
+          name: user.name,
+          verified_user: user.verified?
+        })
+      end
+    end
 
     def create_users_from_unknown_addresses(specified_addresses = [])
       to_fetch = specified_addresses.empty? ? remaining_addresses : specified_addresses
@@ -68,6 +68,16 @@ module Services
             name: user['name'],
             verified_user: verified_user
           })
+
+          users.each do |user|
+            Models::TempUser.create(
+              address: user[:address],
+              avatar_url: user[:avatar_url],
+              guest: user[:guest_user],
+              name: user[:name],
+              verified: user[:verified]
+            )
+          end
         end
       end
     end

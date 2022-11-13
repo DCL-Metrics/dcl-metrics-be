@@ -37,6 +37,7 @@ require './lib/models/daily_scene_stats.rb'
 require './lib/models/parcel_traffic.rb'
 require './lib/models/api_response_status.rb'
 require './lib/models/serialized_daily_scene_stats.rb'
+require './lib/models/temp_user.rb'
 
 # require adapters
 require 'faraday'
