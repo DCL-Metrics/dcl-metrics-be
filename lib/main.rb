@@ -72,7 +72,6 @@ require './lib/serializers/scenes.rb'
 # sidekiq configuration
 require 'sidekiq'
 require './lib/middleware/sidekiq_error_notifications.rb'
-require './lib/middleware/sidekiq_processing_time.rb'
 
 Sidekiq.configure_client do |config|
   config.redis = {
@@ -91,7 +90,6 @@ Sidekiq.configure_server do |config|
 
   config.server_middleware do |chain|
     chain.add Middleware::SidekiqErrorNotifications
-    chain.add Middleware::SidekiqProcessingTime
   end
 end
 
