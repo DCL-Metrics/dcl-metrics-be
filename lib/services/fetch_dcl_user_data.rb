@@ -20,6 +20,11 @@ module Services
       # give it another try for good measure
       # NOTE: wow this is janky af
       remaining_addresses.each { |address| create_users_from_unknown_addresses([address]) }
+
+      # if they don't respond twice, then sorry not sorry, you're just a guest user now
+      create_nil_users_from_remaining_addresses
+
+      # return users
       users
     end
 
@@ -77,6 +82,26 @@ module Services
             verified_user: new_user.verified?
           })
         end
+      end
+    end
+
+    def create_nil_users_from_remaining_addresses
+      remaining_addresses.each do |address|
+        new_user = Models::TempUser.create(
+          address: address,
+          avatar_url: nil,
+          guest: true,
+          name: 'Guest User',
+          verified: false
+        )
+
+        users.push({
+          address: new_user.address,
+          avatar_url: new_user.avatar_url,
+          guest_user: new_user.guest?,
+          name: new_user.name,
+          verified_user: new_user.verified?
+        })
       end
     end
   end
