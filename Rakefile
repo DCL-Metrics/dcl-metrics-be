@@ -135,8 +135,8 @@ namespace :data_preservation do
       "select date_trunc('day', date) as day,
       count(id)
       from parcel_traffic
-      where date < '2022-11-05'
-      and date > '2022-08-11'
+      where date < '2022-11-14'
+      and date > '2022-08-21'
       group by day
       order by 1"
     ].all
@@ -151,7 +151,7 @@ namespace :data_preservation do
       )
     end
 
-    return if parsed_date > Date.parse('2022-11-04')
+    return if parsed_date > Date.parse('2022-11-14')
 
     # process parcel_traffic
     Jobs::ProcessDailyParcelTraffic.perform_async(date)
