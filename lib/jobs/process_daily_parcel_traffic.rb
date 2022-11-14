@@ -24,8 +24,7 @@ module Jobs
         "select scene_cid, coordinates
         from data_points
         where date = '#{date}'
-        group by scene_cid, coordinates
-        "
+        group by scene_cid, coordinates"
       ].map(&:values)
 
       parcels_by_scene_cid.each do |scene_cid, coordinates|
