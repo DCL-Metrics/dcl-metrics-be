@@ -25,25 +25,40 @@ module Services
     attr_reader :coordinates, :date, :scene_cid
 
     def addresses
-      FAT_BOY_DATABASE[
-        "select distinct(address) from data_points
-        where coordinates='#{coordinates}'
-        and scene_cid='#{scene_cid}'
-        and date='#{date}'"
-      ].all.flat_map(&:values)
+      base_query = Models::DataPoint.
+        where(coordinates: coordinates).
+        where(date: date).
+        where(scene_cid: scene_cid).
+        select(:address).
+        distinct.
+        all.
+        flat_map(&:values)
     end
 
     def histogram_json
-      FAT_BOY_DATABASE[
-        "select DATE_TRUNC('hour', timestamp) as hour,
-        count(distinct address)
-        from data_points
-        where coordinates='#{coordinates}'
-        and scene_cid='#{scene_cid}'
-        and date = '#{date}'
-        group by hour
-        order by 1"
-      ].all.to_json
+      query = scene_cid.nil? ? query_with_no_scene_cid : query_with_scene_cid
+      FAT_BOY_DATABASE[query].all.to_json
+    end
+
+    def query_with_scene_cid
+      "select DATE_TRUNC('hour', timestamp) as hour,
+      count(distinct address)
+      from data_points
+      where coordinates='#{coordinates}'
+      and scene_cid='#{scene_cid}'
+      and date = '#{date}'
+      group by hour
+      order by 1"
+    end
+
+    def query_with_no_scene_cid
+      "select DATE_TRUNC('hour', timestamp) as hour,
+      count(distinct address)
+      from data_points
+      where coordinates='#{coordinates}'
+      and date = '#{date}'
+      group by hour
+      order by 1"
     end
   end
 end
