@@ -144,7 +144,7 @@ namespace :data_preservation do
     parsed_date = parsed_parcel_traffic.last[:day].to_date + 1
     date = parsed_date.to_s
 
-    if parsed_date > Date.parse('2022-11-04')
+    if parsed_date > Date.parse('2022-11-12')
       Services::TelegramOperator.notify(
         level: :info,
         message: "nearing completion of parcel traffic parsing."
