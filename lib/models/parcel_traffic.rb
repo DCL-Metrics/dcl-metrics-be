@@ -2,7 +2,7 @@
 #
 # String  :coordinates, null: false
 # Date    :date,        null: false
-# Jsonb   :scene_cids_json
+# String  :scene_cid
 # Jsonb   :addresses_json
 # Jsonb   :histogram_json
 # Integer :unique_addresses
@@ -16,11 +16,6 @@
 
 module Models
   class ParcelTraffic < Sequel::Model(:parcel_traffic)
-    # TODO: need custom way to load data that doesn't blow up the server
-    def scenes
-      Models::Scene.where(cid: JSON.parse(scene_cids_json))
-    end
-
     def addresses
       @addresses ||= JSON.parse(addresses_json)
     end
