@@ -32,7 +32,7 @@ module Services
         select(:address).
         distinct.
         all.
-        flat_map(&:values)
+        flat_map { |x| x.values.values }
     end
 
     def histogram_json
