@@ -1,3 +1,6 @@
+# TODO: after users table is introduced and up to date,
+# this should be refactored and likely removed entirely
+
 module Services
   class FetchDclUserData
     def self.call(addresses:)
@@ -60,18 +63,12 @@ module Services
         user_data = Adapters::Dcl::UserProfiles.call(addresses: batch)
 
         user_data.each do |data|
-          next if data.nil?
-          next if data.empty?
-          user = data['avatars'][0]
-          verified_user = user['hasClaimedName']
-
-          # NOTE: guest user has a triple bang - force boolean and then invert it
           new_user = Models::TempUser.create(
-            address: user['userId'],
-            avatar_url: user['avatar']['snapshots']['face256'],
-            guest: verified_user ? false : !!!user['hasConnectedWeb3'],
-            name: user['name'],
-            verified: verified_user
+            address: data[:address],
+            avatar_url: data[:avatar_url],
+            guest: data[:guest],
+            name: data[:name],
+            verified: data[:verified]
           )
 
           users.push({

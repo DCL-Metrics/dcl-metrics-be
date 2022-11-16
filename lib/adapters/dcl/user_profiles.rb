@@ -15,7 +15,19 @@ module Adapters
         response = Adapters::Base.get(URL, { id: addresses })
         return [] if response.failure?
 
-        response.success.compact
+        response.success.compact.map do |user_data|
+          user = user_data['avatars'][0]
+          verified_user = user['hasClaimedName']
+
+          # NOTE: guest user has a triple bang - force boolean and then invert it
+          {
+            address: user['userId'],
+            avatar_url: user['avatar']['snapshots']['face256'],
+            guest: verified_user ? false : !!!user['hasConnectedWeb3'],
+            name: user['name'],
+            verified: verified_user
+          }
+        end
       end
 
       private
