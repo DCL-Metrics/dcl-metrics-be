@@ -15,8 +15,13 @@
 
 module Models
   class User < Sequel::Model(FAT_BOY_DATABASE[:users])
-    one_to_one :user_nfts, left_key: :address, right_key: :address
-    one_to_one :user_dao_activity, left_key: :address, right_key: :address
+    def user_nfts
+      Models::UserNfts.find(address: address)
+    end
+
+    def user_dao_activity
+      Models::UserDaoActivity.find(address: address)
+    end
 
     def verified?
       user_nfts.owns_dclens

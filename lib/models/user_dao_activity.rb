@@ -27,7 +27,9 @@
 
 module Models
   class UserDaoActivity < Sequel::Model(FAT_BOY_DATABASE[:user_dao_activities])
-    one_to_one :user, left_key: :address, right_key: :address
+    def user
+      Models::User.find(address: address)
+    end
 
     def recently_active?
       # dao_latest_vote_at < x days ago
