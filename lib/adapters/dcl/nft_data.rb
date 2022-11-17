@@ -30,7 +30,8 @@ module Adapters
       def land_data
         parcels = base_response(PARCEL_CATEGORY)
         estates = base_response(ESTATE_CATEGORY)
-        lands = parcels['data'] + estates['data']
+        # NOTE: either of these can be nil
+        lands = [parcels['data'], estates['data']].compact.flatten
         estate_parcels_total = count_parcels_in_estates(estates)
 
         {
