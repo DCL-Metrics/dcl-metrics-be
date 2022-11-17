@@ -5,7 +5,7 @@ module Jobs
     def perform(address, date, user_data_json)
       user = Models::User.find(address: address)
       user_data = JSON.parse(user_data_json)
-      guest = user_data['guest']
+      guest = user_data['guest'] || true
       name = user_data['name']
 
       if user.nil?
@@ -13,7 +13,7 @@ module Jobs
           address: address,
           avatar_url: user_data['avatar_url'],
           first_seen: date,
-          guest: user_data['guest'],
+          guest: guest,
           last_seen: date,
           name: name
         )
