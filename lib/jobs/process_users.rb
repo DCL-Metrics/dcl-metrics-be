@@ -11,13 +11,13 @@ module Jobs
         user_data = Adapters::Dcl::UserProfiles.call(addresses: address_batch)
 
         address_batch.each do |address|
-          user = user_data.detect { |x| address == x[:address] }
+          user = user_data.detect { |x| address == x[:address] } || {}
 
           # address, date, guest, avatar_url, name
           Jobs::ProcessUser.perform_async(
             address,
             date,
-            !!user[:guest], # convert nil values to false
+            user[:guest] || true,
             user[:avatar_url],
             user[:name]
           )
