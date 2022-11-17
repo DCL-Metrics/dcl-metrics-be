@@ -61,7 +61,7 @@ module Adapters
       end
 
       def first_acquisition(data)
-        return nil unless dat
+        return nil unless data
 
         timestamp = data.map { |e| e['nft']['updatedAt'] }.sort.first
         return nil unless timestamp
