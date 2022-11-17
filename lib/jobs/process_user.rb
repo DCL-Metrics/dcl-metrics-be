@@ -15,30 +15,33 @@ module Jobs
           name: name
         )
 
-        # don't create additional models if the user is a guest
-        Models::UserNfts.create(nft_data(address).merge(address: address)) if !guest
+        create_or_update_user_nfts(address, guest)
       else
         user.update(last_seen: date, name: name)
 
-        if !guest
-          data = nft_data(address)
-
-          Models::UserNfts.update_or_create(address: address) do |user_nft|
-            user_nft.owns_dclens = data[:owns_dclens]
-            user_nft.owns_land = data[:owns_land]
-            user_nft.owns_wearables = data[:owns_wearables]
-            user_nft.total_dclens = data[:total_dclens]
-            user_nft.total_lands = data[:total_lands]
-            user_nft.total_wearables = data[:total_wearables]
-            user_nft.first_dclens_acquired_at = data[:first_dclens_acquired_at]
-            user_nft.first_land_acquired_at = data[:first_land_acquired_at]
-            user_nft.first_wearable_acquired_at = data[:first_wearable_acquired_at]
-          end
-        end
+        create_or_update_user_nfts(address, guest)
       end
     end
 
     private
+
+    def create_or_update_user_nfts(address, guest)
+      # Guests can't have nfts associated with their addresses
+      # because guest addresses are ephemeral
+      return if guest
+
+      user_nfts = Models::UserNfts.find(address: address)
+      data = nft_data(address)
+
+      if user_nfts.exists?
+        # don't update twice in the same day
+        return if user_nfts.updated_at ==  Date.today
+
+        user_nfts.update(data)
+      else
+        Models::UserNfts.create(data.merge(address: address))
+      end
+    end
 
     def nft_data(address)
       Adapters::Dcl::NftData.call(address: address)
