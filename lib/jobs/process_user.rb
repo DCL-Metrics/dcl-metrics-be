@@ -19,7 +19,22 @@ module Jobs
         Models::UserNfts.create(nft_data(address).merge(address: address)) if !guest
       else
         user.update(last_seen: date, name: name)
-        Models::UserNfts.find(address: address).update(nft_data(address)) if !guest
+
+        if !guest
+          data = nft_data(address)
+
+          Models::UserNfts.update_or_create(address: address) do |user_nft|
+            user_nft.owns_dclens = data[:owns_dclens]
+            user_nft.owns_land = data[:owns_land]
+            user_nft.owns_wearables = data[:owns_wearables]
+            user_nft.total_dclens = data[:total_dclens]
+            user_nft.total_lands = data[:total_lands]
+            user_nft.total_wearables = data[:total_wearables]
+            user_nft.first_dclens_acquired_at = data[:first_dclens_acquired_at]
+            user_nft.first_land_acquired_at = data[:first_land_acquired_at]
+            user_nft.first_wearable_acquired_at = data[:first_wearable_acquired_at]
+          end
+        end
       end
     end
 
