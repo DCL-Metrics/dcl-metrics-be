@@ -31,12 +31,10 @@ module Adapters
         parcels = base_response(PARCEL_CATEGORY)
         estates = base_response(ESTATE_CATEGORY)
         lands = parcels['data'] + estates['data']
-        estate_parcels_total = estates['data'].
-          map { |estate| estate.dig('nft', 'data', 'estate', 'size') }.
-          sum
+        estate_parcels_total = count_parcels_in_estates(estates)
 
         {
-          owns_land: lands.any?,
+          owns_land: !!lands&.any?,
           total_lands: parcels['total'] + estate_parcels_total,
           first_land_acquired_at: first_acquisition(lands)
         }
@@ -46,7 +44,7 @@ module Adapters
         names = base_response(NAME_CATEGORY)
 
         {
-          owns_dclens: names['data'].any?,
+          owns_dclens: !!names['data']&.any?,
           total_dclens: names['total'],
           first_dclens_acquired_at: first_acquisition(names['data'])
         }
@@ -56,7 +54,7 @@ module Adapters
         wearables = base_response(WEARABLE_CATEGORY)
 
         {
-          owns_wearables: wearables['data'].any?,
+          owns_wearables: !!wearables['data']&.any?,
           total_wearables: wearables['total'],
           first_wearable_acquired_at: first_acquisition(wearables['data'])
         }
@@ -67,6 +65,14 @@ module Adapters
         return nil unless timestamp
 
         Time.at(timestamp / 1000).utc
+      end
+
+      def count_parcels_in_estates(estates)
+        return 0 if estates['data'].nil?
+
+        estates['data'].
+          map { |estate| estate.dig('nft', 'data', 'estate', 'size') }.
+          sum
       end
 
       def base_response(category, attempt: 1, skip: 0)

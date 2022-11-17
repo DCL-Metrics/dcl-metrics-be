@@ -19,7 +19,7 @@ module Jobs
         Models::UserNfts.create(nft_data(address).merge(address: address)) if !guest
       else
         user.update(last_seen: date, name: name)
-        user.user_nfts.update(nft_data(address)) if !guest
+        Models::UserNfts.find(address: address).update(nft_data(address)) if !guest
       end
     end
 
