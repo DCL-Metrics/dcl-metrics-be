@@ -32,11 +32,11 @@ module Adapters
         estates = base_response(ESTATE_CATEGORY)
         # NOTE: either of these can be nil
         lands = [parcels['data'], estates['data']].compact.flatten
-        estate_parcels_total = count_parcels_in_estates(estates)
+        total_lands = count_total_lands(parcels, estates)
 
         {
           owns_land: !!lands&.any?,
-          total_lands: parcels['total'] + estate_parcels_total,
+          total_lands: total_lands,
           first_land_acquired_at: first_acquisition(lands)
         }
       end
@@ -70,10 +70,17 @@ module Adapters
         Time.at(timestamp / 1000).utc
       end
 
-      def count_parcels_in_estates(estates)
-        return 0 if estates['data'].nil?
+      def count_total_lands(parcels, estates)
+        estate_data = estates['data']
 
-        estates['data'].
+        parcels_in_estates = estates_data.nil? ? 0 : count_estate_parcels(estates_data)
+        parcel_count = parcels['total'].nil? ? 0 : parcels['total']
+
+        parcels_in_estates + parcel_count
+      end
+
+      def count_estate_parcels(estates)
+        estates.
           map { |estate| estate.dig('nft', 'data', 'estate', 'size') }.
           sum
       end
