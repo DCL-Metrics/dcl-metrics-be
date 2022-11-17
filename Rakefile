@@ -119,11 +119,9 @@ namespace :compute do
 
     require './lib/main'
 
-    parsed_users = DATABASE_CONNECTION[
-      "select date_trunc('day', date) as day,
-      count(id)
+    parsed_users = FAT_BOY_DATABASE[
+      "select date_trunc('day', last_seen) as day
       from users
-      where date < '2022-07-13'
       group by day
       order by 1"
     ].all
