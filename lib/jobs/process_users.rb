@@ -13,11 +13,13 @@ module Jobs
         address_batch.each do |address|
           user = user_data.detect { |x| address == x[:address] } || {}
 
-          # address, date, guest, avatar_url, name
+          # address, date, guest, name, avatar_url
           Jobs::ProcessUser.perform_async(
             address,
             date,
-            user.to_json
+            user.fetch(:guest) { true },
+            user[:name],
+            user[:avatar_url]
           )
         end
       end
