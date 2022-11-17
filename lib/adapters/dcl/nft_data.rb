@@ -71,7 +71,7 @@ module Adapters
       end
 
       def count_total_lands(parcels, estates)
-        estate_data = estates['data']
+        estates_data = estates['data']
 
         parcels_in_estates = estates_data.nil? ? 0 : count_estate_parcels(estates_data)
         parcel_count = parcels['total'].nil? ? 0 : parcels['total']
