@@ -110,6 +110,39 @@ namespace :compute do
       )
     end
   end
+
+  # temp job to get users up to speed
+  desc "compile user data"
+  task :create_user_data do
+    # Don't run this task from midnight to 3am (other tasks are running)
+    return if [0, 1, 2].include?(Time.now.utc.hour)
+
+    require './lib/main'
+
+    parsed_users = DATABASE_CONNECTION[
+      "select date_trunc('day', date) as day,
+      count(id)
+      from users
+      where date < '2022-07-13'
+      group by day
+      order by 1"
+    ].all
+
+    parsed_date = parsed_users.last[:day].to_date + 1
+    date = parsed_date.to_s
+
+    if parsed_date > Date.parse('2022-07-10')
+      Services::TelegramOperator.notify(
+        level: :info,
+        message: "nearing completion of first phase of user parsing."
+      )
+    end
+
+    return if parsed_date > Date.parse('2022-07-13')
+
+    # process parcel_traffic
+    Jobs::ProcessUsers.perform_async(date)
+  end
 end
 
 namespace :data_preservation do
