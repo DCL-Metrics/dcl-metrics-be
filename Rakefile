@@ -129,14 +129,14 @@ namespace :compute do
     parsed_date = parsed_users.last[:day].to_date + 1
     date = parsed_date.to_s
 
+    return if parsed_date > Date.parse('2022-07-13')
+
     if parsed_date > Date.parse('2022-07-10')
       Services::TelegramOperator.notify(
         level: :info,
         message: "nearing completion of first phase of user parsing."
       )
     end
-
-    return if parsed_date > Date.parse('2022-07-13')
 
     # process parcel_traffic
     Jobs::ProcessUsers.perform_async(date)
