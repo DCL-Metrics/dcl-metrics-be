@@ -5,8 +5,11 @@ module Jobs
     def perform(address, date, user_data_json)
       user = Models::User.find(address: address)
       user_data = JSON.parse(user_data_json)
+      p user_data: user_data
       guest = user_data['guest'] || true
       name = user_data['name']
+
+      p guest: guest
 
       if user.nil?
         Models::User.create(
