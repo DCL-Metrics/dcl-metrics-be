@@ -35,7 +35,7 @@ module Jobs
 
       if user_nfts.exists?
         # don't update twice in the same day
-        return if user_nfts.updated_at ==  Date.today
+        return if user_nfts.updated_at.to_date ==  Date.today
 
         user_nfts.update(data)
       else
