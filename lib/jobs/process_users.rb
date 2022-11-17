@@ -12,15 +12,12 @@ module Jobs
 
         address_batch.each do |address|
           user = user_data.detect { |x| address == x[:address] } || {}
-          guest = user[:guest] || true
 
           # address, date, guest, avatar_url, name
           Jobs::ProcessUser.perform_async(
             address,
             date,
-            guest,
-            user[:avatar_url],
-            user[:name]
+            user.to_json
           )
         end
       end

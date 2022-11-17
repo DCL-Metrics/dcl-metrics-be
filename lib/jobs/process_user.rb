@@ -2,15 +2,18 @@ module Jobs
   class ProcessUser < Job
     sidekiq_options queue: 'processing'
 
-    def perform(address, date, guest, avatar_url, name)
+    def perform(address, date, user_data_json)
       user = Models::User.find(address: address)
+      user_data = JSON.parse(user_data_json)
+      guest = user_data['guest']
+      name = user_data['name']
 
       if user.nil?
         Models::User.create(
           address: address,
-          avatar_url: avatar_url,
+          avatar_url: user_data['avatar_url'],
           first_seen: date,
-          guest: guest,
+          guest: user_data['guest'],
           last_seen: date,
           name: name
         )
