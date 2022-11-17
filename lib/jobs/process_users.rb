@@ -17,7 +17,7 @@ module Jobs
           Jobs::ProcessUser.perform_async(
             address,
             date,
-            user[:guest] || true,
+            !!user[:guest], # convert nil values to false
             user[:avatar_url],
             user[:name]
           )
