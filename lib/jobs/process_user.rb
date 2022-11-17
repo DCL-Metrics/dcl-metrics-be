@@ -33,13 +33,13 @@ module Jobs
       user_nfts = Models::UserNfts.find(address: address)
       data = nft_data(address)
 
-      if user_nfts.exists?
+      if user_nfts.nil?
+        Models::UserNfts.create(data.merge(address: address))
+      else
         # don't update twice in the same day
         return if user_nfts.updated_at.to_date ==  Date.today
 
         user_nfts.update(data)
-      else
-        Models::UserNfts.create(data.merge(address: address))
       end
     end
 
