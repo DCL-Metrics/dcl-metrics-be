@@ -15,11 +15,11 @@ module Jobs
           name: name
         )
 
-        create_or_update_user_nfts(address, guest)
+        # create_or_update_user_nfts(address, guest)
       else
         user.update(last_seen: date, name: name)
 
-        create_or_update_user_nfts(address, guest)
+        # create_or_update_user_nfts(address, guest)
       end
     end
 
