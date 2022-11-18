@@ -3,9 +3,7 @@ module Jobs
     sidekiq_options queue: 'processing'
 
     def perform(date)
-      addresses = FAT_BOY_DATABASE[
-        "select distinct address from data_points where date = '#{date}'"
-      ].all.flat_map(&:values)
+      addresses = fetch_addresses(date)
 
       addresses.each_slice(40) do |address_batch|
         user_data = Adapters::Dcl::UserProfiles.call(addresses: address_batch)
@@ -23,6 +21,12 @@ module Jobs
           )
         end
       end
+    end
+
+    private
+
+    def fetch_addresses(date)
+      Adapters::AtlasCorp::DailyUsers.call(date: date)[:addresses]
     end
   end
 end
