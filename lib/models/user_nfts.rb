@@ -18,6 +18,9 @@
 
 module Models
   class UserNfts < Sequel::Model(FAT_BOY_DATABASE[:user_nfts])
+    def self.stale
+      where { updated_at <= Date.today - 3 }
+    end
 
     def user
       Models::User.find(address: address)
@@ -28,6 +31,7 @@ module Models
     end
 
     def og?
+      # return true if first_land_acquired_at < GENESIS_DISPERSAL_DATE
       # land acquired before x date
       # dclens acquired before y date
       # wearable acquired before z date
