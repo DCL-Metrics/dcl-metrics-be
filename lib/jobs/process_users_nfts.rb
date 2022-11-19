@@ -7,10 +7,11 @@ module Jobs
       addresses_with_no_nft_model = FAT_BOY_DATABASE[
         "select t1.address
         from users t1
-        where t1.guest = false
         left join user_nfts t2 on t1.address = t2.address
-        where t2.id is null"
+        where t2.id is null and t1.guest = false"
       ].all.flat_map(&:values)
+
+      # TODO: later, run this for users where first_seen = Date.today
 
       addresses_not_recently_updated = Models::UserNfts.stale.map(&:address)
 
