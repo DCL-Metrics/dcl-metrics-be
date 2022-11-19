@@ -120,7 +120,7 @@ namespace :compute do
     require './lib/main'
 
     parsed_users = FAT_BOY_DATABASE[
-      "select date_trunc('day', last_seen) as day
+      "select date_trunc('day', first_seen) as day
       from users
       group by day
       order by 1"
