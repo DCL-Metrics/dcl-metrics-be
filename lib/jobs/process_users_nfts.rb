@@ -21,7 +21,7 @@ module Jobs
       ].
       flatten.
       each_slice(1000) do |addresses|
-        addresses.each { |u| Jobs::ProcessUserNfts.perform_async(address: u.address) }
+        addresses.each { |address| Jobs::ProcessUserNfts.perform_async(address) }
       end
     end
   end
