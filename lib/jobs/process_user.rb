@@ -15,6 +15,8 @@ module Jobs
           name: name
         )
       else
+        return if user.last_seen > Date.parse(date)
+
         user.update(last_seen: date, name: name)
       end
     end
