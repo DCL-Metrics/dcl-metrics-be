@@ -11,15 +11,20 @@ module Jobs
         where t2.id is null and t1.guest = false"
       ].all.flat_map(&:values)
 
-      # TODO: later, run this for users where first_seen = Date.today
+      first_seen_today = Models::User.
+        where(first_seen: Date.today - 1).
+        where(guest: false).
+        map(&:addresses)
 
       addresses_not_recently_updated = Models::UserNfts.stale.map(&:address)
 
       [
+        addresses_not_recently_updated,
         addresses_with_no_nft_model,
-        addresses_not_recently_updated
+        first_seen_today
       ].
       flatten.
+      uniq.
       each_slice(1000) do |addresses|
         addresses.each { |address| Jobs::ProcessUserNfts.perform_async(address) }
       end

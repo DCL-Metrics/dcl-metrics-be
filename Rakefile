@@ -114,32 +114,16 @@ namespace :compute do
   # temp job to get users up to speed
   desc "compile user data"
   task :create_user_data do
-    # Don't run this task from midnight to 3am (other tasks are running)
-    return if [0, 1, 2].include?(Time.now.utc.hour)
-
     require './lib/main'
 
-    parsed_users = FAT_BOY_DATABASE[
-      "select date_trunc('day', first_seen) as day
-      from users
-      group by day
-      order by 1"
-    ].all
+    Jobs::ProcessUsers.perform_async(Date.today - 1)
+  end
 
-    parsed_date = parsed_users.last[:day].to_date + 1
-    date = parsed_date.to_s
+  desc "compile user nft data"
+  task :fetch_user_nfts do
+    require './lib/main'
 
-    return if parsed_date == Date.today
-
-    if parsed_date == Date.today - 1
-      Services::TelegramOperator.notify(
-        level: :info,
-        message: "nearing completion of second phase of user parsing."
-      )
-    end
-
-    # process parcel_traffic
-    Jobs::ProcessUsers.perform_async(date)
+    Jobs::ProcessUsersNfts.perform_async
   end
 end
 
