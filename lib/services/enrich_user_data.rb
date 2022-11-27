@@ -1,5 +1,6 @@
 # NOTE: expects data as a hash with an address key
 
+# TODO: this should be more like ~serialize_user and take a single address
 module Services
   class EnrichUserData
     def self.call(users:)
@@ -12,12 +13,12 @@ module Services
 
     def call
       users.map do |user|
-        api_data = user_data.detect { |ud| ud[:address] == user[:address] } || {}
+        u = user_data.detect { |ud| ud.address == user[:address] } || null_user
 
-        user[:avatar_url] = api_data[:avatar_url]
-        user[:guest_user] = api_data[:guest_user]
-        user[:name] = api_data[:name]
-        user[:verified_user] = api_data[:verified_user]
+        user[:avatar_url] = u.avatar_url
+        user[:guest_user] = u.guest?
+        user[:name] = u.name
+        user[:verified_user] = u.verified?
         user
       end
     end
@@ -26,11 +27,15 @@ module Services
     attr_reader :users
 
     def user_data
-      @user_data ||= Services::FetchDclUserData.call(addresses: addresses)
+      @user_data ||= Models::User.where(address: addresses)
     end
 
     def addresses
       @addresses ||= users.map { |row| row[:address] }.uniq
+    end
+
+    def null_user
+      @null_user ||= Models::User.new(guest: true)
     end
   end
 end

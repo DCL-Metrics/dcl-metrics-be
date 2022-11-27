@@ -92,6 +92,27 @@ class BaseSpec < Minitest::Spec
     end
   end
 
+  def create_users
+    data = JSON.
+      parse(File.read('./spec/fixtures/user_data.json')).
+      map(&:symbolize_keys)
+
+    data.each do |u|
+      Models::User.create(
+        address: u[:address],
+        avatar_url: u[:avatar_url],
+        guest: u[:guest_user],
+        name: u[:name],
+        first_seen: '2022-11-11',
+        last_seen: Date.today.to_s
+      )
+
+      if u[:verified_user]
+        Models::UserNfts.create(address: u[:address], owns_dclens: true)
+      end
+    end
+  end
+
   def expand_path(path)
     File.expand_path(path, __FILE__)
   end

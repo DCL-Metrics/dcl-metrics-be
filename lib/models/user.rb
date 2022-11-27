@@ -23,8 +23,16 @@ module Models
       Models::UserDaoActivity.find(address: address)
     end
 
+    def name
+      values[:name] || 'Guest User'
+    end
+
+    def guest?
+      !!guest
+    end
+
     def verified?
-      user_nfts.owns_dclens
+      !!user_nfts&.owns_dclens
     end
   end
 end
