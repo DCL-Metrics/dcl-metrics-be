@@ -1,0 +1,38 @@
+Models::ParcelTraffic.
+  order(:max_concurrent_users).
+  exclude(max_concurrent_users: nil).
+  last(25).
+  map { |x| [
+    Models::Scene.find(cid: x.scene_cid)&.name,
+    x.coordinates,
+    x.date.to_s,
+    x.max_concurrent_users
+  ]}
+
+=>
+[["BEJBY BLUE x GLEB", "35,-96", "2022-09-08", 477],
+ [nil, "35,-96", "2022-09-08", 465],
+ ["TATRA BANKA 3.0", "35,-96", "2022-09-08", 319],
+ ["WonderMine Crafting Game", "-29,55", "2022-10-16", 311],
+ ["Ozzfest", "-56,54", "2022-11-11", 163],
+ ["Ozzfest", "-56,55", "2022-11-11", 159],
+ ["ICE Poker - The Stronghold", "-101,127", "2022-08-29", 155],
+ ["ICE Poker - The Stronghold", "-101,127", "2022-08-27", 154],
+ ["ICE Poker - The Stronghold", "-101,127", "2022-08-26", 153],
+ ["ICE Poker - The Stronghold", "-101,127", "2022-09-20", 150],
+ ["ICE Poker - The Stronghold", "-101,127", "2022-08-30", 150],
+ ["Ozzfest", "-56,54", "2022-11-10", 148],
+ ["ICE Poker - The Stronghold", "-100,127", "2022-08-29", 147],
+ ["WonderMine Crafting Game", "-29,55", "2022-09-16", 147],
+ ["ICE Poker - The Stronghold", "-101,127", "2022-09-02", 146],
+ ["ICE Poker - The Stronghold", "-100,127", "2022-08-30", 142],
+ ["ICE Poker - The Stronghold", "-101,127", "2022-08-28", 140],
+ ["ICE Poker - The Stronghold", "-101,127", "2022-09-05", 136],
+ ["ICE Poker - The Stronghold", "-100,127", "2022-09-06", 136],
+ ["ICE Poker - The Stronghold", "-101,127", "2022-09-06", 134],
+ ["ICE Poker - The Stronghold", "-101,127", "2022-09-03", 133],
+ ["Ozzfest", "-56,55", "2022-11-10", 132],
+ ["ICE Poker - The Stronghold", "-101,127", "2022-09-01", 132],
+ ["ICE Poker - The Stronghold", "-101,127", "2022-08-25", 131],
+ ["ICE Poker - The Stronghold", "-101,127", "2022-09-09", 131]]
+
