@@ -124,7 +124,7 @@ module Jobs
 
       # parcel heatmap
       parcels_heatmap = scene_traffic.
-        map { |pt| [pt.coordinates, pt.unique_addresses] }.
+        map { |pt| [pt.coordinates, pt.max_concurrent_users] }.
         to_h
 
       visitors_by_hour_histogram = scene_traffic.

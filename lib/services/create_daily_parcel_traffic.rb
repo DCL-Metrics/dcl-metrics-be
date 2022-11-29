@@ -17,6 +17,7 @@ module Services
         scene_cid: scene_cid,
         addresses_json: addresses.to_json,
         histogram_json: histogram_json,
+        max_concurrent_users: peer_stats_data.values.max,
         unique_addresses: addresses.count
       )
     end
@@ -33,6 +34,14 @@ module Services
         distinct.
         all.
         flat_map { |x| x.values.values }
+    end
+
+    def peer_stats_data
+      @peer_stats_data ||= Models::PeerStats.where(
+        date: date,
+        coordinates: coordinates,
+        scene_cid: scene_cid
+      ).data
     end
 
     def histogram_json
