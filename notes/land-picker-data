@@ -1,0 +1,49 @@
+date = Date.today - 1
+
+# TODO: needs to join with user_activities on coordinates (but only certain type)
+parcel_traffic = Models::ParcelTraffic.
+  join_table(:inner, :scenes, cid: :scene_cid).
+  where(date: date).
+  all.
+  group_by(&:coordinates)
+
+result = parcel_traffic.first(2).map do |coordinates, data|
+  {
+    coordinates: coordinates,
+    deploy_count: data.map(&:scene_cid).compact.count,
+    total_visitors: data.map(&:unique_addresses).sum,
+    total_avg_time_spent: 'need user activities',
+    total_avg_time_spent_afk: 'need user activities',
+    total_logins: 'need user activities',
+    total_logouts: 'need user activities',
+  }
+end
+
+more_deploys = parcel_traffic.select { |x, y| y.count > 1 }
+
+result = parcel_traffic.map do |coordinates, data|
+  scenes = data.
+    group_by { |x| [x.values[:parcels_json], x.values[:name]] }.
+    map do |(parcels, name), values|
+      {
+        name: name,
+        parcels: JSON.parse(parcels),
+        cids: values.map { |x| x[:cid] },
+        deploys: values.count,
+        visitors: values.map { |x| x[:unique_addresses] }.sum
+      }
+    end
+
+  {
+    coordinates: coordinates,
+    deploy_count: data.map(&:scene_cid).compact.count,
+    total_visitors: data.map(&:unique_addresses).sum,
+    total_avg_time_spent: Random.rand(2000),
+    total_avg_time_spent_afk: Random.rand(2000),
+    total_logins: Random.rand(2000),
+    total_logouts: Random.rand(2000),
+    scenes: scenes
+  }
+end
+
+

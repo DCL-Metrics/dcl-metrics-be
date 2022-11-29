@@ -1,6 +1,6 @@
 # NOTE: expects data as a hash with an address key
 
-# TODO: this should be more like ~serialize_user and take a single address
+# TODO: this should be more like ~serialize_users and just take a collection of addresses
 module Services
   class EnrichUserData
     def self.call(users:)
