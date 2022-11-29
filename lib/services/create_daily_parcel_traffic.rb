@@ -25,7 +25,7 @@ module Services
     attr_reader :coordinates, :date, :scene_cid
 
     def addresses
-      base_query = Models::DataPoint.
+      Models::DataPoint.
         where(coordinates: coordinates).
         where(date: date).
         where(scene_cid: scene_cid).
