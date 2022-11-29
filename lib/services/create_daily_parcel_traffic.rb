@@ -37,7 +37,7 @@ module Services
     end
 
     def peer_stats_data
-      @peer_stats_data ||= Models::PeerStats.where(
+      @peer_stats_data ||= Models::PeerStats.find(
         date: date,
         coordinates: coordinates,
         scene_cid: scene_cid
