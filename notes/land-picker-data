@@ -1,49 +1,92 @@
 date = Date.today - 1
 
+# NOTE: UUID of scene hashed by parcels/cids
+
 # TODO: needs to join with user_activities on coordinates (but only certain type)
 parcel_traffic = Models::ParcelTraffic.
-  join_table(:inner, :scenes, cid: :scene_cid).
+  join(:scenes, cid: :scene_cid).
   where(date: date).
-  all.
-  group_by(&:coordinates)
+  all
 
-result = parcel_traffic.first(2).map do |coordinates, data|
+
+result = parcel_traffic.group_by(&:coordinates).first(500).to_h.map do |coordinates, data|
+  current_scene_data = data.max_by { |x| x.values[:first_seen_at] }.values
+
+  scenes = data.
+    select do |x|
+      x.values[:parcels_json] == current_scene_data[:parcels_json] &&
+      x.values[:name] == current_scene_data[:name]
+    end.
+    map(&:values)
+
+  current_scene = {}
+
+  if scenes.any?
+    current_scene = {
+      cids: scenes.map { |x| x[:cid] },
+      deploys: scenes.count,
+      last_deployed_at: current_scene_data[:first_seen_at],
+      name: scenes[0][:name],
+      parcels: JSON.parse(scenes[0][:parcels_json]),
+      visitors: scenes.map { |x| x[:unique_addresses] }.sum
+    }
+  end
+
+  visits = Models::UserActivity.where(
+    date: date,
+    starting_coordinates: coordinates,
+    name: 'visit'
+  )
+
+  afk = Models::UserActivity.where(
+    date: date,
+    starting_coordinates: coordinates,
+    name: 'afk'
+  )
+
+  logins = Models::UserActivity.where(
+    date: date,
+    starting_coordinates: coordinates,
+    name: 'session'
+  )
+
+  logouts = Models::UserActivity.where(
+    date: date,
+    starting_coordinates: coordinates,
+    name: 'session'
+  )
+
+  total_avg_time_spent = visits.map(&:duration).sum / visits.count.to_f
+  total_avg_time_spent_afk = afk.map(&:duration).sum / afk.count.to_f
+
   {
     coordinates: coordinates,
     deploy_count: data.map(&:scene_cid).compact.count,
     total_visitors: data.map(&:unique_addresses).sum,
-    total_avg_time_spent: 'need user activities',
-    total_avg_time_spent_afk: 'need user activities',
-    total_logins: 'need user activities',
-    total_logouts: 'need user activities',
+    total_avg_time_spent: total_avg_time_spent.nan? ? 0 : total_avg_time_spent,
+    total_avg_time_spent_afk: total_avg_time_spent_afk.nan? ? 0 : total_avg_time_spent_afk,
+    total_logins: logins.count,
+    total_logouts: logouts.count,
+    scene: current_scene.empty? ? nil : current_scene
   }
 end
 
-more_deploys = parcel_traffic.select { |x, y| y.count > 1 }
+max_values = {
+  visitors: result.max_by { |x| x[:total_visitors] }[:total_visitors],
+  time_spent: result.max_by { |x| x[:total_avg_time_spent] }[:total_avg_time_spent],
+  time_spent_afk: result.max_by { |x| x[:total_avg_time_spent_afk] }[:total_avg_time_spent_afk],
+  logins: result.max_by { |x| x[:total_logins] }[:total_logins],
+  logouts: result.max_by { |x| x[:total_logouts] }[:total_logouts],
+}
 
-result = parcel_traffic.map do |coordinates, data|
-  scenes = data.
-    group_by { |x| [x.values[:parcels_json], x.values[:name]] }.
-    map do |(parcels, name), values|
-      {
-        name: name,
-        parcels: JSON.parse(parcels),
-        cids: values.map { |x| x[:cid] },
-        deploys: values.count,
-        visitors: values.map { |x| x[:unique_addresses] }.sum
-      }
-    end
-
-  {
-    coordinates: coordinates,
-    deploy_count: data.map(&:scene_cid).compact.count,
-    total_visitors: data.map(&:unique_addresses).sum,
-    total_avg_time_spent: Random.rand(2000),
-    total_avg_time_spent_afk: Random.rand(2000),
-    total_logins: Random.rand(2000),
-    total_logouts: Random.rand(2000),
-    scenes: scenes
-  }
+result.each do |r|
+  r.merge!(
+    visitor_intensity: r[:total_visitors].zero? ? 0 : (r[:total_visitors] / max_values[:visitors].to_f).round * 100,
+    time_spent_intensity: r[:total_avg_time_spent].zero? ? 0 : (r[:total_avg_time_spent] / max_values[:time_spent].to_f).round * 100,
+    time_spent_afk_intensity: r[:total_avg_time_spent_afk].zero? ? 0 : (r[:total_avg_time_spent_afk] / max_values[:time_spent_afk].to_f).round * 100,
+    login_intensity: r[:total_logins].zero? ? 0 : (r[:total_logins] / max_values[:logins].to_f).round * 100,
+    logout_intensity: r[:total_logouts].zero? ? 0 : (r[:total_logouts] / max_values[:logouts].to_f).round * 100
+  )
 end
 
 
