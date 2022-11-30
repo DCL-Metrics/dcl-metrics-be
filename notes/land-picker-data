@@ -62,6 +62,7 @@ result = parcel_traffic.group_by(&:coordinates).first(500).to_h.map do |coordina
   {
     coordinates: coordinates,
     deploy_count: data.map(&:scene_cid).compact.count,
+    max_concurrent_users: data.max_by(&:max_concurrent_users).max_concurrent_users,
     total_visitors: data.map(&:unique_addresses).sum,
     total_avg_time_spent: total_avg_time_spent.nan? ? 0 : total_avg_time_spent,
     total_avg_time_spent_afk: total_avg_time_spent_afk.nan? ? 0 : total_avg_time_spent_afk,
@@ -79,6 +80,7 @@ max_values = {
   logouts: result.max_by { |x| x[:total_logouts] }[:total_logouts],
 }
 
+# TODO: something is wrong here, either returning 0 or 100
 result.each do |r|
   r.merge!(
     visitor_intensity: r[:total_visitors].zero? ? 0 : (r[:total_visitors] / max_values[:visitors].to_f).round * 100,
