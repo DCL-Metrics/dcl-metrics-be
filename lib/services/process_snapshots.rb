@@ -12,6 +12,8 @@ module Services
     end
 
     def call
+      Models::DataPoint.where(date: date).each(&:delete)
+
       snapshot_ids.each do |snapshot_id|
         Jobs::ProcessSnapshot.perform_async(snapshot_id)
       end

@@ -18,7 +18,9 @@ module Jobs
       end
 
       # create peers dump
-      Models::PeersDump.create(data_json: data.to_json)
+      model = Models::PeersDump.create(data_json: data.to_json)
+
+      Jobs::ProcessSnapshot.perform(model.id)
     end
   end
 end
