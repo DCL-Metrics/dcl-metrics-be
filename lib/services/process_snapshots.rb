@@ -21,11 +21,3 @@ module Services
     attr_reader :snapshot_ids
   end
 end
-
-### Stats
-# start: 14:56:30
-# end: 15:14:19
-# duration: ~18 minutes
-#
-# created: 752_982 models
-
