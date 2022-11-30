@@ -20,7 +20,7 @@ module Jobs
       # create peers dump
       model = Models::PeersDump.create(data_json: data.to_json)
 
-      Jobs::ProcessSnapshot.perform(model.id)
+      Jobs::ProcessSnapshot.perform_async(model.id)
     end
   end
 end
