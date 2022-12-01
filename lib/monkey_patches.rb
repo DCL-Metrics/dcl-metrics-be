@@ -5,7 +5,12 @@ class ::Hash
     h = self.map do |k,v|
       transformed_values = case
                            when v.instance_of?(Hash) then v.stringify_keys
-                           when v.instance_of?(Array) then v.map(&:stringify_keys)
+                           when v.instance_of?(Array)
+                             if v.all? { |x| x.is_a?(Hash) }
+                               v.map(&:stringify_keys)
+                             else
+                               v
+                             end
                            else v
                            end
 
@@ -20,7 +25,12 @@ class ::Hash
     h = self.map do |k,v|
       transformed_values = case
                            when v.instance_of?(Hash) then v.symbolize_keys
-                           when v.instance_of?(Array) then v.map(&:symbolize_keys)
+                           when v.instance_of?(Array)
+                             if v.all? { |x| x.is_a?(Hash) }
+                               v.map(&:symbolize_keys)
+                             else
+                               v
+                             end
                            else v
                            end
 
