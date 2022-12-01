@@ -88,7 +88,6 @@ namespace :compute do
     end
   end
 
-  # temp job to get users up to speed
   desc "compile user data"
   task :create_user_data do
     require './lib/main'
