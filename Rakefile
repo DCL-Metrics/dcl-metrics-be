@@ -29,22 +29,6 @@ namespace :heroku do
 end
 
 namespace :compute do
-  # ex: rake compute:process_snapshots['2022-07-20']
-  desc "process snapshots into datapoints for date"
-  task :process_snapshots, [:date] do |task, args|
-    require './lib/main'
-
-    date = args[:date] || (Date.today - 1).to_s
-    previous_date = (Date.parse(date) - 1).to_s
-
-    # create data points from peers dump
-    Jobs::ProcessSnapshots.perform_async(date)
-
-    if Models::DataPoint.where(date: previous_date).count.zero?
-      Jobs::ProcessSnapshots.perform_async(previous_date)
-    end
-  end
-
   # ex: rake compute:all_daily['2022-07-20']
   desc "compute all daily stats for date and recalculate for the day previous"
   task :all_daily, [:date] do |task, args|
@@ -56,15 +40,8 @@ namespace :compute do
     # process all user activities for given date
     Jobs::ProcessUserActivities.perform_async(date)
 
-    # NOTE: think this is unnecessary now that i am keeping all activities
-    # rebuild all user activities for previous day
-    # Jobs::ProcessUserActivities.perform_in(300, previous_date) # 5 minutes
-
     # process all daily stats for given date
     Jobs::ProcessAllDailyStats.perform_in(300, date) # 5 minutes
-
-    # process all daily stats for previous day
-    Jobs::ProcessAllDailyStats.perform_in(600, previous_date) # 10 minutes
   end
 
   desc "results of api response status yesterday"

@@ -101,7 +101,6 @@ end
 require './lib/jobs/job.rb'
 require './lib/jobs/fetch_peer_data.rb'
 require './lib/jobs/fetch_peer_stats.rb'
-require './lib/jobs/process_snapshots.rb'
 require './lib/jobs/process_snapshot.rb'
 require './lib/jobs/process_user_activities.rb'
 require './lib/jobs/process_all_daily_stats.rb'
