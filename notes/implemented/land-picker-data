@@ -97,5 +97,3 @@ result.each do |r|
     max_concurrent_user_intensity: max_concurrent_user_intensity.zero? ? 1 : max_concurrent_user_intensity
   )
 end
-
-
