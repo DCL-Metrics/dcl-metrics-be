@@ -133,6 +133,37 @@ module Jobs
         end
       end
 
+      # create visit events when a user enters but doesn't leave
+      # more like an "appearance" - it will be updated the next time user
+      # activities run
+      @events.select { |e| e[:event] == 'enter_parcel' }.each do |e|
+        query = {
+          name: 'visit',
+          address: @address,
+          date: e[:timestamp].to_date,
+          start_time: e[:timestamp],
+          starting_coordinates: e[:coordinates],
+          starting_position: e[:position],
+        }
+
+        save_user_activity(query, e, 1)
+      end
+
+      # do the same for visit scene
+      # TODO: this could be better - see user activity spec
+      @events.select { |e| e[:event] == 'enter_scene' }.each do |e|
+        query = {
+          name: 'visit_scene',
+          address: @address,
+          date: e[:timestamp].to_date,
+          start_time: e[:timestamp],
+          starting_coordinates: e[:coordinates],
+          starting_position: e[:position],
+        }
+
+        save_user_activity(query, e, 1)
+      end
+
       # TODO: separate job
       # create user tags (landowner, estateowner, golfcraft player, meta8balls player, etc)
 
@@ -157,13 +188,14 @@ module Jobs
         sort_by { |e| e[:timestamp] }.
         uniq
 
-      return unless starting_events.any?
+      return if starting_events.none?
 
       ending_events.reverse.map do |e|
         start = starting_events.select { |se| se[:timestamp] < e[:timestamp] }.pop
         next unless start
 
         start_time = start[:timestamp]
+        duration = e[:timestamp] - start_time
 
         query = {
           name: name,
@@ -174,16 +206,20 @@ module Jobs
           starting_position: start[:position],
         }
 
-        Models::UserActivity.update_or_create(query) do |ua|
-          ua.ending_coordinates = e[:coordinates]
-          ua.ending_position = e[:position]
-          ua.end_time = e[:timestamp]
-          ua.duration = e[:timestamp] - start_time
-          ua.scene_cid = e[:scene_cid]
-        end
+        save_user_activity(query, e, duration)
 
         @events.delete(start)
         @events.delete(e)
+      end
+    end
+
+    def save_user_activity(query, e, duration)
+      Models::UserActivity.update_or_create(query) do |ua|
+        ua.ending_coordinates = e[:coordinates]
+        ua.ending_position = e[:position]
+        ua.end_time = e[:timestamp]
+        ua.duration = duration
+        ua.scene_cid = e[:scene_cid]
       end
     end
 

@@ -33,13 +33,24 @@ class BaseSpec < Minitest::Spec
     end
   end
 
-  def create_peer_stats_on_date(date, count = 5)
+  def create_random_peer_stats(date, count = 5)
     count.times do |i|
       Models::PeerStats.create(
         date: date,
         data_json: {}.to_json,
         coordinates: random_parcel,
         scene_cid: SecureRandom.uuid
+      )
+    end
+  end
+
+  def create_peer_stats(date, data)
+    data.each do |row|
+      Models::PeerStats.create(
+        date: date,
+        data_json: {}.to_json,
+        coordinates: row[:coordinates],
+        scene_cid: row[:cid]
       )
     end
   end
@@ -55,10 +66,15 @@ class BaseSpec < Minitest::Spec
           date: row['date'],
           peer_id: row['peer_id'],
           position: row['position'],
-          timestamp: Time.parse(row['timestamp'])
+          timestamp: Time.parse(row['timestamp']),
+          scene_cid: row['scene_cid']
         )
       end
     end
+  end
+
+  def create_parcel_traffic(date)
+    Jobs::ProcessDailyParcelTraffic.perform_async(date)
   end
 
   def create_scenes

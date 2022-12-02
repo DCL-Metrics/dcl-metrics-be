@@ -16,7 +16,9 @@ class GlobalParcelsSpec < BaseSpec
       transform_keys(&:to_sym)
   end
 
-  let(:expected_keys) { %i[logins logouts time_spent time_spent_afk visitors] }
+  let(:expected_keys) do
+    %i[logins logouts time_spent time_spent_afk visitors max_concurrent_users]
+  end
 
   it 'serializes data and returns expected output' do
     result = Serializers::Global::Parcels.serialize

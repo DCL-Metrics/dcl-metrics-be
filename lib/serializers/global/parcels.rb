@@ -12,28 +12,32 @@ module Serializers
             logouts: calculate_top(:logouts, :yesterday),
             time_spent: calculate_top(:avg_time_spent, :yesterday),
             time_spent_afk: calculate_top(:avg_time_spent_afk, :yesterday),
-            visitors: calculate_top(:unique_visitors, :yesterday)
+            visitors: calculate_top(:unique_visitors, :yesterday),
+            max_concurrent_users: calculate_top(:max_concurrent_users, :yesterday)
           },
           last_week: {
             logins: calculate_top(:logins, :last_week),
             logouts: calculate_top(:logouts, :last_week),
             time_spent: calculate_top(:avg_time_spent, :last_week),
             time_spent_afk: calculate_top(:avg_time_spent_afk, :last_week),
-            visitors: calculate_top(:unique_visitors, :last_week)
+            visitors: calculate_top(:unique_visitors, :last_week),
+            max_concurrent_users: calculate_top(:max_concurrent_users, :last_week)
           },
           last_month: {
             logins: calculate_top(:logins, :last_month),
             logouts: calculate_top(:logouts, :last_month),
             time_spent: calculate_top(:avg_time_spent, :last_month),
             time_spent_afk: calculate_top(:avg_time_spent_afk, :last_month),
-            visitors: calculate_top(:unique_visitors, :last_month)
+            visitors: calculate_top(:unique_visitors, :last_month),
+            max_concurrent_users: calculate_top(:max_concurrent_users, :last_month)
           },
           last_quarter: {
             logins: calculate_top(:logins, :last_quarter),
             logouts: calculate_top(:logouts, :last_quarter),
             time_spent: calculate_top(:avg_time_spent, :last_quarter),
             time_spent_afk: calculate_top(:avg_time_spent_afk, :last_quarter),
-            visitors: calculate_top(:unique_visitors, :last_quarter)
+            visitors: calculate_top(:unique_visitors, :last_quarter),
+            max_concurrent_users: calculate_top(:max_concurrent_users, :last_quarter)
           }
         }
       end

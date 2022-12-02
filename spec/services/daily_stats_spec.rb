@@ -1,7 +1,7 @@
 class DailyStatsSpec < BaseSpec
   before do
-    create_peer_stats_on_date(day_one, 6) # for total active parcels count
-    create_peer_stats_on_date(day_two, 3) # for total active parcels count
+    create_random_peer_stats(day_one, 6) # for total active parcels count
+    create_random_peer_stats(day_two, 3) # for total active parcels count
     create_data_points                    # for unique users count
     create_scenes                         # for total active scenes count
   end
