@@ -41,7 +41,7 @@ namespace :compute do
     Jobs::ProcessUserActivities.perform_async(date)
 
     # process all daily stats for given date
-    Jobs::ProcessAllDailyStats.perform_in(300, date) # 5 minutes
+    Jobs::ProcessAllDailyStats.perform_in(600, date) # 10 minutes
   end
 
   desc "results of api response status yesterday"
