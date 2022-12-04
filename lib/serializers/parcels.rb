@@ -58,12 +58,12 @@ module Serializers
 
     def max_values
       @max_values ||= {
-        visitors: max_value_for(:visitors)
-        avg_time_spent: max_value_for(:avg_time_spent)
-        avg_time_spent_afk: max_value_for(:avg_time_spent_afk)
-        logins: max_value_for(:logins)
-        logouts: max_value_for(:logouts)
-        max_concurrent_users: max_value_for(:max_concurrent_users)
+        visitors: max_value_for(:visitors),
+        avg_time_spent: max_value_for(:avg_time_spent),
+        avg_time_spent_afk: max_value_for(:avg_time_spent_afk),
+        logins: max_value_for(:logins),
+        logouts: max_value_for(:logouts),
+        max_concurrent_users: max_value_for(:max_concurrent_users),
         deploy_count: max_value_for(:deploy_count)
       }
     end
