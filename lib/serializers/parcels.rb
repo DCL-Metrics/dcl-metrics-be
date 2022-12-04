@@ -28,7 +28,7 @@ module Serializers
       return @result unless include_heat_map_data
 
       inject_heat_map_data
-      result
+      @result
     end
 
     private
