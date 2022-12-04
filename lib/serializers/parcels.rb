@@ -34,7 +34,7 @@ module Serializers
     private
     attr_reader :parcels, :include_heat_map_data
 
-    def inject_heat_map_data(result)
+    def inject_heat_map_data
       @result.each do |r|
         r.merge!(
           visitor_intensity: calculate_intensity(:visitors, r),
