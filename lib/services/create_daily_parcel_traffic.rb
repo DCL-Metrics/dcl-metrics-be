@@ -45,11 +45,11 @@ module Services
     end
 
     def histogram_json
-      query = scene_cid.nil? ? query_with_no_scene_cid : query_with_scene_cid
+      query = scene_cid.nil? ? histo_query_with_no_cid : histo_query_with_cid
       FAT_BOY_DATABASE[query].all.to_json
     end
 
-    def query_with_scene_cid
+    def histo_query_with_cid
       "select DATE_TRUNC('hour', timestamp) as hour,
       count(distinct address)
       from data_points
@@ -60,7 +60,7 @@ module Services
       order by 1"
     end
 
-    def query_with_no_scene_cid
+    def histo_query_with_no_cid
       "select DATE_TRUNC('hour', timestamp) as hour,
       count(distinct address)
       from data_points

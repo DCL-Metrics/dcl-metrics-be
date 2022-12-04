@@ -47,6 +47,14 @@ class Server < Sinatra::Application
     Serializers::Scenes.serialize(scenes).to_json
   end
 
+  get '/parcels' do
+    parcels = Models::DailyParcelStats.yesterday
+
+    Serializers::Parcels.
+      serialize(parcels, include_heat_map_data: params['include_heat_map_data']).
+      to_json
+  end
+
   get '/peer_status' do
     # NOTE: maybe we want to provide more dates later
     # but for now just use yesterday's data

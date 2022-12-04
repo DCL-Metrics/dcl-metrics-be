@@ -28,9 +28,11 @@ namespace :heroku do
   end
 end
 
+# NOTE: if i do need to re-calculate the previous days stats,
+# do that at some random off-time (4 or 5am)
 namespace :compute do
   # ex: rake compute:all_daily['2022-07-20']
-  desc "compute all daily stats for date and recalculate for the day previous"
+  desc "compute all daily stats for date"
   task :all_daily, [:date] do |task, args|
     require './lib/main'
 
@@ -41,7 +43,7 @@ namespace :compute do
     Jobs::ProcessUserActivities.perform_async(date)
 
     # process all daily stats for given date
-    Jobs::ProcessAllDailyStats.perform_in(300, date) # 5 minutes
+    Jobs::ProcessAllDailyStats.perform_in(600, date) # 10 minutes
   end
 
   desc "results of api response status yesterday"
@@ -88,7 +90,6 @@ namespace :compute do
     end
   end
 
-  # temp job to get users up to speed
   desc "compile user data"
   task :create_user_data do
     require './lib/main'

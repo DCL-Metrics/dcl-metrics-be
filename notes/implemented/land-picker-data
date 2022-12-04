@@ -51,7 +51,7 @@ result = parcel_traffic.group_by(&:coordinates).map do |coordinates, data|
 
   logouts = Models::UserActivity.where(
     date: date,
-    starting_coordinates: coordinates,
+    ending_coordinates: coordinates,
     name: 'session'
   )
 
@@ -63,8 +63,8 @@ result = parcel_traffic.group_by(&:coordinates).map do |coordinates, data|
     deploy_count: data.map(&:scene_cid).compact.count,
     max_concurrent_users: data.max_by(&:max_concurrent_users).max_concurrent_users,
     total_visitors: data.map(&:unique_addresses).sum,
-    total_avg_time_spent: total_avg_time_spent.nan? ? 0 : total_avg_time_spent,
-    total_avg_time_spent_afk: total_avg_time_spent_afk.nan? ? 0 : total_avg_time_spent_afk,
+    total_avg_time_spent: total_avg_time_spent.nan? ? 0 : total_avg_time_spent.round,
+    total_avg_time_spent_afk: total_avg_time_spent_afk.nan? ? 0 : total_avg_time_spent_afk.round,
     total_logins: logins.count,
     total_logouts: logouts.count,
     scene: current_scene.empty? ? nil : current_scene
@@ -79,7 +79,6 @@ max_values = {
   logouts: result.max_by { |x| x[:total_logouts] }[:total_logouts],
   max_concurrent_users: result.max_by { |x| x[:max_concurrent_users] }[:max_concurrent_users]
 }
-
 
 result.each do |r|
   visitor_intensity = r[:total_visitors].zero? ? 0 : ((r[:total_visitors] / max_values[:visitors].to_f) * 100).round
@@ -98,5 +97,3 @@ result.each do |r|
     max_concurrent_user_intensity: max_concurrent_user_intensity.zero? ? 1 : max_concurrent_user_intensity
   )
 end
-
-

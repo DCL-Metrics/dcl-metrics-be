@@ -1,5 +1,29 @@
 class DailyParcelStatsSpec < BaseSpec
-  before { create_data_points }
+  before do
+    create_data_points
+
+    # process user activity on day one
+    Services::DailyUserActivityBuilder.call(date: day_one)
+
+    peer_stats_params = Models::DataPoint.
+      where(date: day_one).
+      map { |x| { coordinates: x.coordinates, cid: x.scene_cid } }.
+      uniq
+
+    create_peer_stats(day_one, peer_stats_params)
+    create_parcel_traffic(day_one)
+
+    # process user activity on day two
+    Services::DailyUserActivityBuilder.call(date: day_two)
+
+    peer_stats_params = Models::DataPoint.
+      where(date: day_two).
+      map { |x| { coordinates: x.coordinates, cid: x.scene_cid } }.
+      uniq
+
+    create_peer_stats(day_two, peer_stats_params)
+    create_parcel_traffic(day_two)
+  end
 
   # two fully afk sessions - one on day one, one on day two
   let(:address_one) { '0x1d22d0041d6d9e7ec6865ca06292af8d5fb050b0' }
@@ -11,32 +35,19 @@ class DailyParcelStatsSpec < BaseSpec
   let(:day_two) { '2022-04-11' }
 
   it 'processes data with expected flow and results' do
-    # process parcel activity on day one
-    # print "\n\nDay one\n\n"
-    Services::DailyUserActivityBuilder.call(date: day_one)
 
     # build daily parcel stats for day one
     Services::DailyParcelStatsBuilder.call(date: day_one)
 
     assert_equal 4, Models::DailyParcelStats.count
 
-    # process parcel activity on day two
-    Services::DailyUserActivityBuilder.call(date: day_two)
-
     # build daily stats for day two
     Services::DailyParcelStatsBuilder.call(date: day_two)
 
     assert_equal 6, Models::DailyParcelStats.count
 
-    # process daily stats for day one again
-    # they should be updated since there are more user activities
-    Services::DailyParcelStatsBuilder.call(date: day_one)
-
-    # additional stats are present
-    assert_equal 7, Models::DailyParcelStats.count
-
     day_one_stats = Models::DailyParcelStats.where(date: day_one)
-    assert_equal 5, day_one_stats.count
+    assert_equal 4, day_one_stats.count
 
     assert_equal '120,-25', day_one_stats.first.coordinates
     assert_equal 720, day_one_stats.first.avg_time_spent
