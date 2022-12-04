@@ -32,7 +32,7 @@ module Serializers
     end
 
     private
-    attr_reader :parcels
+    attr_reader :parcels, :include_heat_map_data
 
     def inject_heat_map_data(result)
       @result.each do |r|
