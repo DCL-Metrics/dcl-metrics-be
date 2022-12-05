@@ -82,7 +82,6 @@ module Serializers
         last_deployed_at: scene.first_seen_at,
         name: scene.name,
         parcels: scene.parcels
-        # map_url: scene.map_url # TODO: ask if this is wanted
       }
     end
   end
