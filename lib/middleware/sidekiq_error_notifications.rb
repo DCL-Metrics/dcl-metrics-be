@@ -1,6 +1,8 @@
 module Middleware
   class SidekiqErrorNotifications
-    IGNORABLE_ERRORS = [Sequel::PoolTimeout]
+    IGNORABLE_ERRORS = [Sequel::PoolTimeout, Sequel::ValidationFailed]
+    NON_RETRY_ERRORS = [Sequel::ValidationFailed]
+
     def call(worker, job, queue)
       begin
         yield
@@ -9,7 +11,7 @@ module Middleware
 
         # raising tells sidekiq to mark this job as failed
         # and move it to the retry queue
-        raise
+        raise unless NON_RETRY_ERRORS.include?(e.class)
       end
     end
 
