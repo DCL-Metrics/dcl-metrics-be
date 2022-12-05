@@ -77,6 +77,17 @@ namespace :compute do
     )
   end
 
+  desc "serialize yesterday's parcel stats"
+  task :create_serialized_parcel_stats do
+    require './lib/main'
+
+    data = Serializers::Parcels.
+      serialize(Models::DailyParcelStats.yesterday, include_heat_map_data: true).
+      to_json
+
+    Models::SerializedDailySceneStats.create(date: Date.today - 1, data_json: data)
+  end
+
   desc "build and serialize yesterday's global scene stats"
   task :create_serialized_global_scene_stats do
     require './lib/main'
@@ -191,6 +202,7 @@ namespace :data_preservation do
     Jobs::ExportDataToStagingDb.perform_async('daily_parcel_stats', 90)
     Jobs::ExportDataToStagingDb.perform_async('daily_scene_stats', 2)
     Jobs::ExportDataToStagingDb.perform_async('serialized_daily_scene_stats', 1)
+    Jobs::ExportDataToStagingDb.perform_async('serialized_daily_parcel_stats', 1)
     Jobs::ExportDataToStagingDb.perform_async('daily_user_stats', 90)
 
     Jobs::ExportDataToStagingDb.
