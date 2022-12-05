@@ -55,7 +55,7 @@ class Server < Sinatra::Application
     # result = Serializers::Parcels.serialize(parcels)
 
     date = Date.today - 1
-    Models::SerializedDailyParcelStats.find(date: x)&.data_json
+    Models::SerializedDailyParcelStats.find(date: date)&.data_json
   end
 
   get '/peer_status' do
