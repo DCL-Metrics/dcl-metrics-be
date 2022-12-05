@@ -85,7 +85,7 @@ namespace :compute do
       serialize(Models::DailyParcelStats.yesterday, include_heat_map_data: true).
       to_json
 
-    Models::SerializedDailySceneStats.create(date: Date.today - 1, data_json: data)
+    Models::SerializedDailyParcelStats.create(date: Date.today - 1, data_json: data)
   end
 
   desc "build and serialize yesterday's global scene stats"
