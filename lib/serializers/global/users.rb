@@ -49,32 +49,41 @@ module Serializers
       private
 
       def calculate_top(attribute, period)
-        result = []
+        date = calculate_start_of_period(period)
 
-          data[period].
-            exclude(attribute => nil).
-            all.
-            group_by { |row| row[:address] }.
-            each do |address, data|
-              result.push({
-                address: address,
-                attribute => data.sum { |row| row[attribute] }
-              })
-            end
+        result = DATABASE_CONNECTION[
+          "select address, sum(#{attribute}) as #{attribute}
+          from daily_user_stats
+          where date >= '#{date}'
+          and #{attribute} is not null
+          group by address
+          order by 2"
+        ]
 
-        result.sort_by { |row| row[attribute] }.last(10).reverse
+        wrap_data(result, attribute)
+      end
+
+      def wrap_data(data, attribute)
+        data.
+        all.
+        last(10).
+        reverse
       end
 
       def enrich_user_data(users)
         Services::EnrichUserData.call(users: users)
       end
 
-      def data
+      def calculate_start_of_period(period)
+        Date.today - period_mapping[period]
+      end
+
+      def period_mapping
         {
-          yesterday: Models::DailyUserStats.yesterday,
-          last_week: Models::DailyUserStats.last_week,
-          last_month: Models::DailyUserStats.last_month,
-          last_quarter: Models::DailyUserStats.last_quarter
+          yesterday: 1,
+          last_week: 7,
+          last_month: 30,
+          last_quarter: 90
         }
       end
     end

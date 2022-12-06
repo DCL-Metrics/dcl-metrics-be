@@ -9,67 +9,93 @@ module Serializers
       def call
         {
           yesterday: {
-            logins: calculate_top(:total_logins, :yesterday),
-            logouts: calculate_top(:total_logouts, :yesterday),
-            time_spent: calculate_top(:avg_time_spent, :yesterday),
-            time_spent_afk: calculate_top(:avg_time_spent_afk, :yesterday),
-            visitors: calculate_top(:unique_addresses, :yesterday)
+            logins: calculate_data(:top, :total_logins, :yesterday),
+            logouts: calculate_data(:top, :total_logouts, :yesterday),
+            time_spent: calculate_data(:max, :avg_time_spent, :yesterday),
+            time_spent_afk: calculate_data(:max, :avg_time_spent_afk, :yesterday),
+            visitors: calculate_data(:top, :unique_addresses, :yesterday)
           },
           last_week: {
-            logins: calculate_top(:total_logins, :last_week),
-            logouts: calculate_top(:total_logouts, :last_week),
-            time_spent: calculate_top(:avg_time_spent, :last_week),
-            time_spent_afk: calculate_top(:avg_time_spent_afk, :last_week),
-            visitors: calculate_top(:unique_addresses, :last_week)
+            logins: calculate_data(:top, :total_logins, :last_week),
+            logouts: calculate_data(:top, :total_logouts, :last_week),
+            time_spent: calculate_data(:max, :avg_time_spent, :last_week),
+            time_spent_afk: calculate_data(:max, :avg_time_spent_afk, :last_week),
+            visitors: calculate_data(:top, :unique_addresses, :last_week)
           },
           last_month: {
-            logins: calculate_top(:total_logins, :last_month),
-            logouts: calculate_top(:total_logouts, :last_month),
-            time_spent: calculate_top(:avg_time_spent, :last_month),
-            time_spent_afk: calculate_top(:avg_time_spent_afk, :last_month),
-            visitors: calculate_top(:unique_addresses, :last_month)
+            logins: calculate_data(:top, :total_logins, :last_month),
+            logouts: calculate_data(:top, :total_logouts, :last_month),
+            time_spent: calculate_data(:max, :avg_time_spent, :last_month),
+            time_spent_afk: calculate_data(:max, :avg_time_spent_afk, :last_month),
+            visitors: calculate_data(:top, :unique_addresses, :last_month)
           },
           last_quarter: {
-            logins: calculate_top(:total_logins, :last_quarter),
-            logouts: calculate_top(:total_logouts, :last_quarter),
-            time_spent: calculate_top(:avg_time_spent, :last_quarter),
-            time_spent_afk: calculate_top(:avg_time_spent_afk, :last_quarter),
-            visitors: calculate_top(:unique_addresses, :last_quarter)
+            logins: calculate_data(:top, :total_logins, :last_quarter),
+            logouts: calculate_data(:top, :total_logouts, :last_quarter),
+            time_spent: calculate_data(:max, :avg_time_spent, :last_quarter),
+            time_spent_afk: calculate_data(:max, :avg_time_spent_afk, :last_quarter),
+            visitors: calculate_data(:top, :unique_addresses, :last_quarter)
           }
         }
       end
 
       private
 
-      def calculate_top(attribute, period)
-        result = {}
+      # sum + group by
+      def calculate_data(type, attribute, period)
+        operation = operation_mapping[type]
+        date = calculate_start_of_period(period)
 
-        data[period].
-          exclude(attribute => nil).
-          exclude(attribute => 0).
-          all.
-          group_by { |s| [s.name, s.coordinates] }.
-          each do |grouping, data|
-            result[grouping.first] = build_values(data, attribute, grouping.last)
-          end
+        result = DATABASE_CONNECTION[
+          "select name, coordinates, #{operation}(#{attribute}) as #{attribute}
+          from daily_scene_stats
+          where date >= '#{date}'
+          and #{attribute} is not null
+          and #{attribute} != 0
+          group by name, coordinates
+          order by 3"
+        ]
 
-        result.sort_by { |name, values| values[attribute] }.last(5).reverse.to_h
+        wrap_data(result, attribute)
       end
 
-      def build_values(data, attribute, coordinates)
+      def wrap_data(data, attribute)
+        data.
+        all.
+        last(5).
+        reverse.
+        map { |hash| [hash[:name], build_output_hash(attribute, hash)] }.
+        to_h
+      end
+
+      def operation_mapping
         {
-          attribute => data.sum { |d| d[attribute].to_i },
-          map_url: data.first.map_url
+          max: :max,
+          top: :sum
         }
       end
 
-      def data
+      def calculate_start_of_period(period)
+        Date.today - period_mapping[period]
+      end
+
+      def period_mapping
         {
-          yesterday: Models::DailySceneStats.yesterday,
-          last_week: Models::DailySceneStats.last_week,
-          last_month: Models::DailySceneStats.last_month,
-          last_quarter: Models::DailySceneStats.last_quarter
+          yesterday: 1,
+          last_week: 7,
+          last_month: 30,
+          last_quarter: 90
         }
+      end
+
+      def build_output_hash(attribute, data)
+        { attribute.to_sym => data[attribute], map_url: map_url(data[:coordinates])}
+      end
+
+      def map_url(coordinates)
+        center = coordinates.split(';').first
+
+        "https://api.decentraland.org/v2/map.png?center=#{center}&selected=#{coordinates}"
       end
     end
   end
