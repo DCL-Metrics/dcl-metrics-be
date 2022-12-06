@@ -3,6 +3,8 @@ module Jobs
     sidekiq_options queue: 'processing'
 
     def perform(date)
+      Models::SerializedDailySceneStats.where(date: date).delete
+
       Models::DailySceneStats.
         yesterday.
         select(:id).
