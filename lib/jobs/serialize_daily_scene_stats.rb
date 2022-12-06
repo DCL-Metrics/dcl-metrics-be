@@ -6,7 +6,7 @@ module Jobs
       Models::SerializedDailySceneStats.where(date: date).delete
 
       Models::DailySceneStats.
-        yesterday.
+        where(date: date).
         select(:id).
         flat_map { |stat| stat.values[:id] }.
         each { |id| Jobs::SerializeDailySceneStat.perform_async(id) }
