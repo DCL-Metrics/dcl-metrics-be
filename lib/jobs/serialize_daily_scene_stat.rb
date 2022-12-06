@@ -4,7 +4,7 @@ module Jobs
 
     def perform(id)
       model = Models::DailySceneStats[id]
-      data_json = Serializers::Scenes.serialize([model]).to_json
+      data_json = Serializers::Scenes.serialize([model]).first.to_json
 
       Models::SerializedDailySceneStats.create(
         date: model.date,
