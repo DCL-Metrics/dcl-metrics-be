@@ -8,6 +8,9 @@
 #
 # add_index :serialized_daily_parcel_stats, :date, unique: true
 
+# NOTE: this model holds an entire days worth of serialized parcel stats in one
+# big JSON. it's used for building the heatmaps in the landpicker.
+
 module Models
   class SerializedDailyParcelStats < Sequel::Model(FAT_BOY_DATABASE[:serialized_daily_parcel_stats])
   end

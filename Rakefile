@@ -88,17 +88,11 @@ namespace :compute do
     Models::SerializedDailyParcelStats.create(date: Date.today - 1, data_json: data)
   end
 
-  desc "build and serialize yesterday's global scene stats"
-  task :create_serialized_global_scene_stats do
+  desc "serialize yesterday's scene stats"
+  task :create_serialized_scene_stats do
     require './lib/main'
 
-    Serializers::Global::Scenes.serialize.each do |key, values|
-      Models::SerializedDailySceneStats.create(
-        date: (Date.today - 1).to_s,
-        data_json: values.to_json,
-        timeframe: key.to_s
-      )
-    end
+    Jobs::SerializeDailySceneStats.perform_async(Date.today - 1)
   end
 
   desc "compile user data"
@@ -199,7 +193,7 @@ namespace :data_preservation do
     require './lib/main'
 
     Jobs::ExportDataToStagingDb.perform_async('daily_stats', 90)
-    Jobs::ExportDataToStagingDb.perform_async('daily_parcel_stats', 90)
+    Jobs::ExportDataToStagingDb.perform_async('daily_parcel_stats', 2)
     Jobs::ExportDataToStagingDb.perform_async('daily_scene_stats', 2)
     Jobs::ExportDataToStagingDb.perform_async('serialized_daily_scene_stats', 1)
     Jobs::ExportDataToStagingDb.perform_async('serialized_daily_parcel_stats', 1)
