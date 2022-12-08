@@ -204,6 +204,21 @@ namespace :data_preservation do
   end
 end
 
+namespace :atlas_corp do
+  desc "fetch peers"
+  task :fetch_peers do
+    require './lib/main'
+
+    job_iteration = 600 # time in seconds
+    times_to_run  = 10
+
+    times_to_run.times do |i|
+      delay = (job_iteration / times_to_run) * i
+      Jobs::FetchPeerData.perform_in(delay)
+    end
+  end
+end
+
 namespace :dcl do
   desc "fetch peers"
   task :fetch_peers do
