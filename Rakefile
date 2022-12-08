@@ -210,7 +210,7 @@ namespace :dcl do
     require './lib/main'
 
     job_iteration = 600 # time in seconds
-    times_to_run  = 7
+    times_to_run  = 10
 
     times_to_run.times do |i|
       delay = (job_iteration / times_to_run) * i
