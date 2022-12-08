@@ -38,11 +38,14 @@ module Models
     end
 
     def endpoint
-      url.split('/').last(2).join('/')
+      split = url.split('/')
+      return split.last if host == 'dao-data.atlascorp.io'
+
+      split.last(2).join('/')
     end
 
     def catalyst_stats?
-      ['stats/parcels', 'comms/peers'].include?(endpoint)
+      ['stats/parcels', 'comms/peers', 'islands-history'].include?(endpoint)
     end
   end
 end
