@@ -5,7 +5,13 @@ class Server < Sinatra::Application
 
   # Ensure all requests come from a fixed IP
   before do
+    # don't limit endpoints unless they are on production
     return unless ENV['RACK_ENV'] == 'production'
+
+    # don't limit the reports namespace
+    return if request.env["REQUEST_PATH"].split('/')[1] == 'reports'
+
+    # handle IP based blocking
     requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR']
 
     unless ALLOWED_ACCESS_IP.include?(requesting_ip)
@@ -69,6 +75,32 @@ class Server < Sinatra::Application
       daily_users: serialized.map { |scene| [scene[:date], scene[:visitors]] }.to_h,
       result: serialized.map { |scene| [scene[:date], scene] }.to_h
     }.to_json
+  end
+
+  get '/reports/:scene_name' do
+    scenes = Models::DailySceneStats.
+      where(name: params[:scene_name]).
+      order(:date).
+      select(:date, :unique_addresses, :avg_time_spent)
+
+    if data.empty?
+      halt 404, { msg: "I can't find data about '#{params[:scene_name]}'" }.to_json
+    end
+
+    data = scenes.
+      last(30).
+      map { |x| [x.date.to_s, x.unique_addresses, x.avg_time_spent] }.
+      prepend(%w[date visitors avg_time_spent_in_seconds])
+
+    filename = "#{params[:scene_name]}.csv"
+    file = Tempfile.new(filename)
+    file.write(data)
+    file.rewind
+
+    send_file file, filename: filename, type: 'text/csv', disposition: 'attachment'
+
+    file.close
+    file.unlink
   end
 
   private
