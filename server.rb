@@ -89,8 +89,8 @@ class Server < Sinatra::Application
 
     reporting_params = { url: "api.dcl-metrics.com/reports", params: params }
 
-    if data.empty?
-      Services::RequestLogger.call(reporting_params.merge(status: 404))
+    if scenes.empty?
+      Services::RequestLogger.call(**reporting_params.merge(status: 404))
       halt 404, { msg: "I can't find data about '#{params[:scene_name]}'" }.to_json
     end
 
@@ -104,7 +104,7 @@ class Server < Sinatra::Application
     file.write(data)
     file.rewind
 
-    Services::RequestLogger.call(reporting_params.merge(status: 200))
+    Services::RequestLogger.call(**reporting_params.merge(status: 200))
     send_file file, filename: filename, type: 'text/csv', disposition: 'attachment'
 
     file.close
