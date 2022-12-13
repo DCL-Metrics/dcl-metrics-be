@@ -15,7 +15,6 @@ class Server < Sinatra::Application
     requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR']
 
     unless ALLOWED_ACCESS_IP.include?(requesting_ip)
-      notify_telegram(:info, "Unexpected API Access by IP '#{requesting_ip}'")
       halt 401, { msg: "I'm afraid I can't let you do that, #{requesting_ip}" }.to_json
     end
   end
