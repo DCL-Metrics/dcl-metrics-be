@@ -119,6 +119,7 @@ class Server < Sinatra::Application
 
   def dashboard_mapping
     {
+      edifice: fetch_scene_stats(edifice_coordinates, 'Edifice Metaversal'),
       goldfish: fetch_scene_stats(goldfish_coordinates, 'DCL Scene'),
       ups_store: fetch_scene_stats(ups_store_coordinates, 'The UPS Store')
     }
@@ -126,6 +127,17 @@ class Server < Sinatra::Application
 
   def fetch_scene_stats(coordinates, name)
     Models::DailySceneStats.where(coordinates: coordinates, name: name)
+  end
+
+  def edifice_coordinates
+    [
+      "10,-37", "10,-38", "10,-39", "11,-33", "11,-34", "11,-35", "11,-36",
+      "11,-37", "11,-38", "11,-39", "12,-33", "12,-34", "12,-35", "12,-36",
+      "12,-37", "12,-38", "12,-39", "2,-39", "3,-39", "4,-39", "4,-40",
+      "4,-41", "4,-42", "5,-39", "5,-42", "6,-39", "6,-42", "6,-43", "6,-44",
+      "6,-45", "6,-46", "7,-37", "7,-38", "7,-39", "7,-40", "7,-41", "7,-42",
+      "8,-37", "8,-38", "8,-39", "9,-37", "9,-38", "9,-39"
+    ].sort.join(';')
   end
 
   def goldfish_coordinates
