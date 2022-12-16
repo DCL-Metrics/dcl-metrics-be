@@ -7,12 +7,12 @@ module Jobs
         "select distinct address from data_points where date = '#{date}'"
       ].count
 
-      parcels_visited = DATABASE_CONNECTION[
-        "select distinct coordinates from peer_stats where date = '#{date}'"
+      parcels_visited = FAT_BOY_DATABASE[
+        "select distinct coordinates from data_points where date = '#{date}'"
       ].count
 
-      scene_cids_on_date = DATABASE_CONNECTION[
-        "select distinct scene_cid from peer_stats where date = '#{date}'"
+      scene_cids_on_date = FAT_BOY_DATABASE[
+        "select distinct scene_cid from data_points where date = '#{date}'"
       ].all.flat_map(&:values).compact
 
       scenes_visited = Models::Scene.collect(scene_cids_on_date).count

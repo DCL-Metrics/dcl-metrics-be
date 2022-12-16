@@ -23,8 +23,8 @@ module Services
     attr_reader :date, :unique_users
 
     def cids
-      @cids ||= DATABASE_CONNECTION[
-        "select distinct scene_cid from peer_stats where date = '#{date}'"
+      @cids ||= FAT_BOY_DATABASE[
+        "select distinct scene_cid from data_points where date = '#{date}'"
       ].all.flat_map(&:values).compact
     end
   end

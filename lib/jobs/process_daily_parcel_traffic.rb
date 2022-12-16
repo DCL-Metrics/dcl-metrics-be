@@ -20,9 +20,9 @@ module Jobs
     def perform(date)
       Models::ParcelTraffic.where(date: date).delete
 
-      parcels_by_scene_cid = DATABASE_CONNECTION[
+      parcels_by_scene_cid = FAT_BOY_DATABASE[
         "select scene_cid, coordinates
-        from peer_stats
+        from data_points
         where date = '#{date}'
         group by scene_cid, coordinates"
       ].map(&:values)
