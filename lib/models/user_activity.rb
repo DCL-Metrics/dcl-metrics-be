@@ -17,6 +17,8 @@
 # add_index :user_activities, [:address]
 # add_index :user_activities, [:starting_coordinates]
 # add_index :user_activities, [:ending_coordinates]
+# add_index :user_activities, [:name, :address, :start_time, :end_time], unique: true
+# add_index :user_activities, [:date, :starting_coordinates, :name]
 
 module Models
   class UserActivity < Sequel::Model(FAT_BOY_DATABASE[:user_activities])

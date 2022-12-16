@@ -13,6 +13,8 @@
 # add_index :data_points, [:address]
 # add_index :data_points, [:coordinates]
 # add_index :data_points, [:date]
+# add_index :data_points, [:coordinates, :scene_cid, :date]
+# add_index :data_points, [:coordinates, :date]
 
 module Models
   class DataPoint < Sequel::Model(FAT_BOY_DATABASE[:data_points])
