@@ -28,8 +28,8 @@ module Services
     def addresses
       Models::DataPoint.
         where(coordinates: coordinates).
-        where(date: date).
         where(scene_cid: scene_cid).
+        where(date: date).
         select(:address).
         distinct.
         all.
