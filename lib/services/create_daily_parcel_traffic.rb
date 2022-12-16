@@ -41,7 +41,7 @@ module Services
         date: date,
         coordinates: coordinates,
         scene_cid: scene_cid
-      ).data
+      )&.data
     end
 
     def histogram_json
