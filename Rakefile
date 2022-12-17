@@ -81,11 +81,7 @@ namespace :compute do
   task :create_serialized_parcel_stats do
     require './lib/main'
 
-    data = Serializers::Parcels.
-      serialize(Models::DailyParcelStats.yesterday, include_heat_map_data: true).
-      to_json
-
-    Models::SerializedDailyParcelStats.create(date: Date.today - 1, data_json: data)
+    Jobs::SerializeDailyParcelStats.perform_async(Date.today - 1)
   end
 
   desc "serialize yesterday's scene stats"
