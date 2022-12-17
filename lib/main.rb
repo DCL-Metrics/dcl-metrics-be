@@ -49,7 +49,6 @@ require './lib/adapters/dcl/peers.rb'
 require './lib/adapters/dcl/scenes.rb'
 require './lib/adapters/dcl/user_profiles.rb'
 require './lib/adapters/dcl/nft_data.rb'
-require './lib/adapters/atlas_corp/daily_uers.rb'
 require './lib/adapters/atlas_corp/peers.rb'
 require './lib/adapters/telegram.rb'
 
