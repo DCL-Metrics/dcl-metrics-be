@@ -27,10 +27,10 @@ module Models
         active_parcels: total_active_parcels,
         active_scenes: total_active_scenes,
         users: {
-          guest: guest_users,
-          named: named_users,
-          new: new_users,
-          unique: unique_users
+          guest_users: guest_users,
+          named_users: named_users,
+          new_users: new_users,
+          unique_users: unique_users
         }
       }
     end
