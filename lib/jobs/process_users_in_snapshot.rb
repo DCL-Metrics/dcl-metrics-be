@@ -4,6 +4,7 @@ module Jobs
 
     def perform(snapshot_id)
       snapshot = Models::PeersDump[snapshot_id]
+      date = snapshot.created_at.to_date
       addresses = snapshot.data.flat_map { |x| x['address'] }.uniq
       already_processed = Models::User.
         select(:address).
