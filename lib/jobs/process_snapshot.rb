@@ -6,6 +6,9 @@ module Jobs
       snapshot = Models::PeersDump[snapshot_id]
       timestamp = snapshot.created_at
 
+      # process users
+      Jobs::ProcessUsersInSnapshot.perform_async(snapshot_id)
+
       snapshot.data.each do |visit|
         # NOTE: it seems like sometimes this has brackets around it
         # but i can't reliably reproduce it
