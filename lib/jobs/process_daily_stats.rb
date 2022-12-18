@@ -3,9 +3,14 @@ module Jobs
     sidekiq_options queue: 'processing'
 
     def perform(date)
-      unique_users = FAT_BOY_DATABASE[
+      addresses = FAT_BOY_DATABASE[
         "select distinct address from data_points where date = '#{date}'"
-      ].count
+      ].flat_map(&:values).compact
+
+      users = Models::User.where(address: addresses)
+      guest_users = users.where(guest: true).count
+      new_users = users.where(first_seen: date).count
+      named_users = Models::UserNfts.where(address: addresses, owns_dclens: true).count
 
       parcels_visited = FAT_BOY_DATABASE[
         "select distinct coordinates from data_points where date = '#{date}'"
@@ -19,9 +24,12 @@ module Jobs
 
       Models::DailyStats.create(
         date: date,
-        unique_users: unique_users,
+        guest_users: guest_users,
+        named_users: named_users,
+        new_users: new_users,
         total_active_parcels: parcels_visited,
-        total_active_scenes: scenes_visited
+        total_active_scenes: scenes_visited,
+        unique_users: addresses.count,
       )
 
       nil
