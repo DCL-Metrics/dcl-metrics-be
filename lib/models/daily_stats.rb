@@ -2,6 +2,9 @@
 #
 # Date    :date,                  null: false
 # Integer :unique_users,          null: false
+# Integer :guest_users
+# Integer :named_users
+# Integer :new_users
 # Integer :total_active_parcels,  null: false
 # Integer :total_active_scenes,  null: false
 #
@@ -21,9 +24,14 @@ module Models
 
     def serialize
       {
-        unique_users: unique_users,
         active_parcels: total_active_parcels,
-        active_scenes: total_active_scenes
+        active_scenes: total_active_scenes,
+        users: {
+          guest: guest_users,
+          named: named_users,
+          new: new_users,
+          unique: unique_users
+        }
       }
     end
 
