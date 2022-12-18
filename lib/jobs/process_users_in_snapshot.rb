@@ -4,7 +4,6 @@ module Jobs
 
     def perform(snapshot_id)
       snapshot = Models::PeersDump[snapshot_id]
-      date = snapshot.created_at.to_date.to_s
       addresses = snapshot.data.flat_map { |x| x['address'] }.uniq
       already_processed = Models::User.
         select(:address).
@@ -25,7 +24,7 @@ module Jobs
           # address, date, guest, name, avatar_url
           Jobs::ProcessUser.perform_async(
             address,
-            date,
+            snapshot.created_at.to_date.to_s,
             user.fetch(:guest) { true },
             user[:name],
             user[:avatar_url]
