@@ -1,12 +1,11 @@
 module Services
   class DailySceneStatsBuilder
-    def self.call(date:, unique_users:)
-      new(date, unique_users).call
+    def self.call(date:)
+      new(date).call
     end
 
-    def initialize(date, unique_users)
+    def initialize(date)
       @date = date
-      @unique_users = unique_users
     end
 
     def call
@@ -15,17 +14,23 @@ module Services
       Models::Scene.collect(cids).each do |(name, coordinates), data|
         # date, name, coordiantes, cids, total_unique_users
         Jobs::ProcessDailySceneStats.
-          perform_async(date, name, coordinates, data.flat_map(&:cid), unique_users)
+          perform_async(date, name, coordinates, data.flat_map(&:cid), user_count)
       end
     end
 
     private
-    attr_reader :date, :unique_users
+    attr_reader :date
 
     def cids
-      @cids ||= FAT_BOY_DATABASE[
+      FAT_BOY_DATABASE[
         "select distinct scene_cid from data_points where date = '#{date}'"
       ].all.flat_map(&:values).compact
+    end
+
+    def user_count
+      FAT_BOY_DATABASE[
+        "select distinct address from data_points where date = '#{date}'"
+      ].count
     end
   end
 end
