@@ -2,6 +2,9 @@
 #
 # Date    :date,                  null: false
 # Integer :unique_users,          null: false
+# Integer :guest_users
+# Integer :named_users
+# Integer :new_users
 # Integer :total_active_parcels,  null: false
 # Integer :total_active_scenes,  null: false
 #
