@@ -1,0 +1,51 @@
+2022-12-19: meeting with juan echazu (daleguane)
+
+dashboard product: information access to users
+
+first priority: get the infomation out :check:
+
+* can fail to be useful because not everyone will understand how to navigate the
+  site or how to use the data we're providing
+* second layer such as insights
+* third layer such as user defined metrics (what matters to *them*?)
+
+we're just displaying the data we have access to, but not designing around a use
+case (a task that a user wants to accomplish).
+
+* sample use case: someone from the goverance committee wants to know how much
+  of an impact a given grant proposal has had on in-world metrics (visitors, avg
+  time spent, percent of new users) and have a personalized dashboard of scenes
+  ranked against each other
+
+* first initiative is user research - interview users or have them fill out a
+  form. create segments of users and translate those segments into use cases -
+  tasks that this segment of users would like to accomplish by using dcl-metrics
+
+* data can be unopinionated but the site still nees to accommodate users who
+  have an agenda and want to get a certain kind of data / learn something
+* not just what users care about, but what do we *want* them to care about? (ie,
+  we can steer the narrative regarding what is important in the data we are
+  showing)
+
+1. grant committee member
+2. grantee
+   --- can we plug into the grant form?
+   --- put in your coordinates and we send the data
+3. someone just interested in the data generally
+4. data-savvy vs non-data-savvy users
+
+* what is the story that we're telling with this site?
+  --- unique visitors? how are they calculated? more definitions
+  --- what does it take for a parcel to be visited?
+  --- try to make every term self-explanatory and provide explanation/source
+
+* glossary of terms
+* how do i navigate to a scene intuitively
+
+* worry about a redesign after we have traction and a good understanding of how
+  people actually use the site
+
+* create a user form - can ask juan for feedback about it
+* task based interviews
+  --- if you want to understand how this scene is doing, how would you do it?
+  --- if you want to do x task, how would you do it?
