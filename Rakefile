@@ -1,4 +1,15 @@
-require "minitest/test_task"
+# only road test task in test environment
+if ENV['RACK_ENV'] == 'test'
+  require "minitest/test_task"
+  Minitest::TestTask.create(:spec) do |t|
+    t.libs << "lib"
+    t.libs << "spec"
+    t.warning = false
+    t.test_globs = ["spec/**/*_spec.rb"]
+  end
+
+  task :default => :spec
+end
 
 # load environment files if running locally
 if ENV['RACK_ENV'] == 'test' || ENV['RACK_ENV'] == 'development'
@@ -7,15 +18,6 @@ if ENV['RACK_ENV'] == 'test' || ENV['RACK_ENV'] == 'development'
     File.expand_path("../.env.#{ENV['RACK_ENV']}", __FILE__),
     File.expand_path('../.env', __FILE__),)
 end
-
-Minitest::TestTask.create(:spec) do |t|
-  t.libs << "lib"
-  t.libs << "spec"
-  t.warning = false
-  t.test_globs = ["spec/**/*_spec.rb"]
-end
-
-task :default => :spec
 
 namespace :heroku do
   desc "run tasks on application release"
