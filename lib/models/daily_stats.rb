@@ -24,9 +24,14 @@ module Models
 
     def serialize
       {
-        unique_users: unique_users,
         active_parcels: total_active_parcels,
-        active_scenes: total_active_scenes
+        active_scenes: total_active_scenes,
+        users: {
+          guest_users: guest_users,
+          named_users: named_users,
+          new_users: new_users,
+          unique_users: unique_users
+        }
       }
     end
 
