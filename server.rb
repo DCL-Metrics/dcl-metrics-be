@@ -39,6 +39,9 @@ class Server < Sinatra::Application
     }.to_json
   end
 
+  # TODO: use Models::SerializedDailySceneStats
+  # maybe need to add some additional rows for sorting / queries
+  # (concurrent users, addresses, etc)
   get '/scenes/top' do
     scenes = Models::DailySceneStats.yesterday.order(:unique_addresses).last(10)
 
@@ -70,6 +73,7 @@ class Server < Sinatra::Application
     Serializers::PeerStatus.serialize(api_responses).to_json
   end
 
+  # TODO: use Models::SerializedDailySceneStats
   get '/dashboard/:dashboard_name' do
     scenes = dashboard_mapping[params[:dashboard_name].to_sym].order(:date)
     serialized = Serializers::Scenes.serialize(scenes.all)
