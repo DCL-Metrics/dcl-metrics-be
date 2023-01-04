@@ -31,6 +31,10 @@ class BaseSpec < Minitest::Spec
     (DATABASE_CONNECTION.tables - [:schema_info, :schema_migrations]).each do |table|
       DATABASE_CONNECTION << "TRUNCATE #{table} CASCADE;"
     end
+
+    (FAT_BOY_DATABASE.tables - [:schema_info, :schema_migrations]).each do |table|
+      FAT_BOY_DATABASE << "TRUNCATE #{table} CASCADE;"
+    end
   end
 
   def create_random_peer_stats(date, count = 5)

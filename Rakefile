@@ -1,3 +1,5 @@
+require "minitest/test_task"
+
 # load environment files if running locally
 if ENV['RACK_ENV'] == 'test' || ENV['RACK_ENV'] == 'development'
   require 'dotenv'
@@ -6,12 +8,14 @@ if ENV['RACK_ENV'] == 'test' || ENV['RACK_ENV'] == 'development'
     File.expand_path('../.env', __FILE__),)
 end
 
-task :default => :test
-task :test do
-  require './spec/spec_helper'
-  Dir.glob('./spec/**/*_spec.rb').each { |file| require file}
-  Dir.glob('./spec/*_spec.rb').each { |file| require file}
+Minitest::TestTask.create(:spec) do |t|
+  t.libs << "lib"
+  t.libs << "spec"
+  t.warning = false
+  t.test_globs = ["spec/**/*_spec.rb"]
 end
+
+task :default => :spec
 
 namespace :heroku do
   desc "run tasks on application release"

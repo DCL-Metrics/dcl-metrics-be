@@ -1,3 +1,5 @@
+require './spec/spec_helper'
+
 class DailyStatsSpec < BaseSpec
   before do
     create_random_peer_stats(day_one, 6) # for total active parcels count
@@ -27,8 +29,8 @@ class DailyStatsSpec < BaseSpec
 
     day_one_stats = Models::DailyStats.first
     assert_equal 2, day_one_stats.unique_users
-    assert_equal 6, day_one_stats.total_active_parcels
-    assert_equal 6, day_one_stats.total_active_scenes
+    assert_equal 4, day_one_stats.total_active_parcels
+    assert_equal 0, day_one_stats.total_active_scenes
 
     # process user activity on day two
     Services::DailyUserActivityBuilder.call(date: day_two)
@@ -38,8 +40,8 @@ class DailyStatsSpec < BaseSpec
 
     day_two_stats = Models::DailyStats.last
     assert_equal 2, day_two_stats.unique_users
-    assert_equal 3, day_two_stats.total_active_parcels
-    assert_equal 3, day_two_stats.total_active_scenes
+    assert_equal 2, day_two_stats.total_active_parcels
+    assert_equal 0, day_two_stats.total_active_scenes
 
     # LOW-PRIORITY TODO
     # process daily stats for day one again

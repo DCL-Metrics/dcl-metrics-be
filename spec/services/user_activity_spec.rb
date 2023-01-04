@@ -1,3 +1,5 @@
+require './spec/spec_helper'
+
 class UserActivitySpec < BaseSpec
   before { create_data_points }
 

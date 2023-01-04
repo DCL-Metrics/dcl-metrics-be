@@ -1,3 +1,5 @@
+require './spec/spec_helper'
+
 class GlobalParcelsSpec < BaseSpec
   before do
     create_daily_parcel_stats(data)

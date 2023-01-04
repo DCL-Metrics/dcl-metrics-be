@@ -1,3 +1,5 @@
+require './spec/spec_helper'
+
 class GlobalDailyStatsSpec < BaseSpec
   before do
     create_daily_stats(data)
