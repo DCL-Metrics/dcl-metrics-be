@@ -85,10 +85,8 @@ module Jobs
           when prev_data_point[:coordinates] != visit[:coordinates]
             build_event('exit_parcel', visit)
             build_event('enter_parcel', visit)
-          # # NOTE: user can travel ~40 parcels / minute on foot and i'm taking a snapshot
-          # # currently every 2.5 minutes so it's unreliable to try to calculate
-          # # teleports currently
-          #   build_event('teleport', visit) if teleported?(prev_data_point, visit)
+            # TODO NOTE: experimental - detect teleports
+            # build_event('teleport', visit) if teleported?(prev_data_point, visit)
           end
         end
 
@@ -237,10 +235,20 @@ module Jobs
       ( t1 - t2 ).abs < ( delta * 60 )
     end
 
-    # def teleported?(visit_a, visit_b)
-    #   if separated_by_more_than_ten_minutes?(visit_a, visit_b)
-    #   else
-    #   end
-    # end
+    def teleported?(visit_a, visit_b)
+      return false unless within_time_delta?(visit_a[:timestamp], visit_b[:timestamp], 1)
+
+      positions_a = visit_a[:position].split(',').map(&:to_i)
+      positions_b = visit_b[:position].split(',').map(&:to_i)
+
+      x = (positions_b[0] - positions_a[0]).abs
+      y = (positions_b[2] - positions_a[2]).abs
+
+      return true if x > 250
+      return true if y > 250
+      return true if Math.sqrt(x ** 2 + y ** 2) > 250
+
+      false
+    end
   end
 end

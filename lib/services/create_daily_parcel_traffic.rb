@@ -17,7 +17,7 @@ module Services
         scene_cid: scene_cid,
         addresses_json: addresses.to_json,
         histogram_json: histogram_json,
-        max_concurrent_users: peer_stats_data&.values&.max || 1, # TODO
+        max_concurrent_users: peer_stats_data&.values&.max || 1,
         unique_addresses: addresses.count
       )
     end

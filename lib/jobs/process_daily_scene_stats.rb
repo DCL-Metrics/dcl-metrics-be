@@ -14,32 +14,9 @@ module Jobs
         starting_coordinates: coordinates
       )
 
-      # TODO: URGENT~~
-      # scene traffic and scene activities are showing pretty different data
-      # ex:
-      # scenes = Models::DailySceneStats.where(name: 'PeanutButta')
-      # date = '2022-11-02'
-      # coordinates = scenes.last.coordinates
-      # scene_activities.where(name: 'visit').count
-      # => 1
-      # scene_activities.where(name: 'visit_scene').count
-      # => 10
-      # scene_traffic.first.addresses.uniq.count
-      # => 83
-
-      # TODO: NEW
-      # sort scenes by unique visitors
-      # notify about the difference between visitors (people who stay for more
-      # than 90 seconds in the scene) and addresses (people who pop in and leave)
-
       visits = scene_activities.where(name: 'visit_scene')
       afk    = scene_activities.where(name: 'afk')
 
-      # NOTE: "total visitors" is not entirely correct.
-      # this is all visits within the parcels of the scene, so if i jump
-      # back and forth between coordinates within the scene 10 times
-      # that counts as ten visits but the borders should be if someone
-      # exits the scene as a whole
       total_visitors = visits.count
       unique_visitors = visits.distinct(:address).count
       unique_visitors_afk = afk.distinct(:address).count
@@ -65,13 +42,18 @@ module Jobs
           total_afk_duration_seconds / unique_visitors
         end
 
-        # TODO: this calculation is fucked up and i'm not sure why
-        # I think it must actually be a problem with user_activity calculation
-        # for example, how can this be:
+        # TODO: this calculation is fucked up
+        # my guess is that a afk users are just getting counted more than once
+        # for some reason (although i haven't been able to verify that) so that
+        # there is ending up a situation where there is, for example:
         #
-        # :unique_visitors=>159
-        # :unique_visitors_afk=>177
-        # :percent_of_users_afk=>111
+        # 2 unique visitors
+        # 3 unique visitors afk
+        # 150 percent of users afk
+        #
+        # this can also point to an error in the way that user activities are
+        # calculated - maybe not all visitors are being counted correctly, ie,
+        # the calculation for afk users is somehow more accurate ¯\_(ツ)_/¯
         #
         # % of afk users
         percent_of_users_afk = (unique_visitors_afk / unique_visitors.to_f) * 100
