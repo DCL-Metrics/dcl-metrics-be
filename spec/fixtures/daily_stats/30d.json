@@ -1,242 +1,332 @@
 [
     {
-        "id": 37,
-        "date": "2022-08-01",
-        "unique_users": 9392,
-        "total_active_parcels": 5130,
-        "total_active_scenes": 4857,
-        "created_at": "2022-08-03 00:52:26 UTC"
+        "id": 1114,
+        "date": "2022-12-08",
+        "unique_users": 7770,
+        "total_active_parcels": 6318,
+        "created_at": "2022-12-18 15:39:01 UTC",
+        "total_active_scenes": 1651,
+        "guest_users": 2520,
+        "named_users": 349,
+        "new_users": 1995
     },
     {
-        "id": 39,
-        "date": "2022-08-02",
-        "unique_users": 9379,
-        "total_active_parcels": 5548,
-        "total_active_scenes": 4887,
-        "created_at": "2022-08-04 00:53:46 UTC"
+        "id": 1118,
+        "date": "2022-12-09",
+        "unique_users": 7673,
+        "total_active_parcels": 8439,
+        "created_at": "2022-12-18 15:39:50 UTC",
+        "total_active_scenes": 1882,
+        "guest_users": 2682,
+        "named_users": 327,
+        "new_users": 2325
     },
     {
-        "id": 41,
-        "date": "2022-08-03",
-        "unique_users": 9144,
-        "total_active_parcels": 5427,
-        "total_active_scenes": 4457,
-        "created_at": "2022-08-05 00:53:46 UTC"
-    },
-    {
-        "id": 42,
-        "date": "2022-08-04",
-        "unique_users": 9255,
-        "total_active_parcels": 5233,
-        "total_active_scenes": 4858,
-        "created_at": "2022-08-06 01:08:12 UTC"
-    },
-    {
-        "id": 45,
-        "date": "2022-08-05",
-        "unique_users": 9000,
-        "total_active_parcels": 4844,
-        "total_active_scenes": 4157,
-        "created_at": "2022-08-07 00:56:23 UTC"
-    },
-    {
-        "id": 46,
-        "date": "2022-08-06",
-        "unique_users": 8351,
-        "total_active_parcels": 4249,
-        "total_active_scenes": 3857,
-        "created_at": "2022-08-08 01:04:45 UTC"
-    },
-    {
-        "id": 49,
-        "date": "2022-08-07",
-        "unique_users": 7792,
-        "total_active_parcels": 4400,
-        "total_active_scenes": 3947,
-        "created_at": "2022-08-09 00:55:49 UTC"
-    },
-    {
-        "id": 51,
-        "date": "2022-08-08",
-        "unique_users": 8740,
-        "total_active_parcels": 5153,
-        "total_active_scenes": 4857,
-        "created_at": "2022-08-10 01:14:28 UTC"
-    },
-    {
-        "id": 53,
-        "date": "2022-08-09",
-        "unique_users": 8831,
-        "total_active_parcels": 5252,
-        "total_active_scenes": 4857,
-        "created_at": "2022-08-11 00:53:40 UTC"
-    },
-    {
-        "id": 54,
-        "date": "2022-08-10",
-        "unique_users": 9065,
-        "total_active_parcels": 4996,
-        "total_active_scenes": 4347,
-        "created_at": "2022-08-12 00:51:47 UTC"
-    },
-    {
-        "id": 57,
-        "date": "2022-08-11",
-        "unique_users": 9820,
-        "total_active_parcels": 5815,
-        "total_active_scenes": 5157,
-        "created_at": "2022-08-13 01:15:28 UTC"
-    },
-    {
-        "id": 59,
-        "date": "2022-08-12",
-        "unique_users": 9241,
-        "total_active_parcels": 5529,
-        "total_active_scenes": 4857,
-        "created_at": "2022-08-14 01:15:23 UTC"
-    },
-    {
-        "id": 61,
-        "date": "2022-08-13",
-        "unique_users": 8393,
-        "total_active_parcels": 4542,
-        "total_active_scenes": 3857,
-        "created_at": "2022-08-15 01:15:39 UTC"
-    },
-    {
-        "id": 63,
-        "date": "2022-08-14",
-        "unique_users": 8201,
-        "total_active_parcels": 4550,
-        "total_active_scenes": 3856,
-        "created_at": "2022-08-16 01:15:41 UTC"
-    },
-    {
-        "id": 65,
-        "date": "2022-08-15",
-        "unique_users": 8786,
-        "total_active_parcels": 5310,
-        "total_active_scenes": 4857,
-        "created_at": "2022-08-17 01:15:28 UTC"
-    },
-    {
-        "id": 67,
-        "date": "2022-08-16",
-        "unique_users": 9355,
-        "total_active_parcels": 5863,
-        "total_active_scenes": 4857,
-        "created_at": "2022-08-18 01:15:36 UTC"
-    },
-    {
-        "id": 69,
-        "date": "2022-08-17",
-        "unique_users": 7822,
-        "total_active_parcels": 4494,
-        "total_active_scenes": 3857,
-        "created_at": "2022-08-19 01:15:29 UTC"
-    },
-    {
-        "id": 71,
-        "date": "2022-08-18",
-        "unique_users": 6592,
-        "total_active_parcels": 2006,
-        "total_active_scenes": 1257,
-        "created_at": "2022-08-20 01:15:20 UTC"
-    },
-    {
-        "id": 73,
-        "date": "2022-08-19",
-        "unique_users": 9209,
-        "total_active_parcels": 6298,
-        "total_active_scenes": 4857,
-        "created_at": "2022-08-21 01:15:19 UTC"
-    },
-    {
-        "id": 77,
-        "date": "2022-08-20",
-        "unique_users": 8394,
-        "total_active_parcels": 5302,
-        "total_active_scenes": 4857,
-        "created_at": "2022-08-22 11:22:00 UTC"
-    },
-    {
-        "id": 79,
-        "date": "2022-08-21",
-        "unique_users": 7829,
-        "total_active_parcels": 4603,
-        "total_active_scenes": 4157,
-        "created_at": "2022-08-23 01:15:18 UTC"
-    },
-    {
-        "id": 81,
-        "date": "2022-08-22",
-        "unique_users": 8417,
-        "total_active_parcels": 4974,
-        "total_active_scenes": 4217,
-        "created_at": "2022-08-24 01:16:03 UTC"
-    },
-    {
-        "id": 83,
-        "date": "2022-08-23",
-        "unique_users": 8852,
-        "total_active_parcels": 5884,
-        "total_active_scenes": 4857,
-        "created_at": "2022-08-25 01:15:20 UTC"
-    },
-    {
-        "id": 85,
-        "date": "2022-08-24",
-        "unique_users": 9760,
+        "id": 1117,
+        "date": "2022-12-10",
+        "unique_users": 6063,
         "total_active_parcels": 6581,
-        "total_active_scenes": 4857,
-        "created_at": "2022-08-26 01:20:23 UTC"
+        "created_at": "2022-12-18 15:39:48 UTC",
+        "total_active_scenes": 1462,
+        "guest_users": 1304,
+        "named_users": 313,
+        "new_users": 1100
     },
     {
-        "id": 87,
-        "date": "2022-08-25",
-        "unique_users": 9600,
+        "id": 1119,
+        "date": "2022-12-11",
+        "unique_users": 5847,
+        "total_active_parcels": 7134,
+        "created_at": "2022-12-18 15:39:51 UTC",
+        "total_active_scenes": 1696,
+        "guest_users": 1262,
+        "named_users": 288,
+        "new_users": 1173
+    },
+    {
+        "id": 1122,
+        "date": "2022-12-12",
+        "unique_users": 7635,
+        "total_active_parcels": 9040,
+        "created_at": "2022-12-18 15:40:00 UTC",
+        "total_active_scenes": 2108,
+        "guest_users": 2169,
+        "named_users": 326,
+        "new_users": 1768
+    },
+    {
+        "id": 1123,
+        "date": "2022-12-13",
+        "unique_users": 8387,
+        "total_active_parcels": 9345,
+        "created_at": "2022-12-18 15:40:03 UTC",
+        "total_active_scenes": 2124,
+        "guest_users": 2584,
+        "named_users": 333,
+        "new_users": 2113
+    },
+    {
+        "id": 1121,
+        "date": "2022-12-14",
+        "unique_users": 8058,
+        "total_active_parcels": 8610,
+        "created_at": "2022-12-18 15:39:59 UTC",
+        "total_active_scenes": 1845,
+        "guest_users": 2264,
+        "named_users": 326,
+        "new_users": 1831
+    },
+    {
+        "id": 1125,
+        "date": "2022-12-15",
+        "unique_users": 8978,
+        "total_active_parcels": 9293,
+        "created_at": "2022-12-18 15:40:06 UTC",
+        "total_active_scenes": 2073,
+        "guest_users": 2699,
+        "named_users": 350,
+        "new_users": 2364
+    },
+    {
+        "id": 1124,
+        "date": "2022-12-16",
+        "unique_users": 8148,
+        "total_active_parcels": 8551,
+        "created_at": "2022-12-18 15:40:05 UTC",
+        "total_active_scenes": 1825,
+        "guest_users": 2676,
+        "named_users": 350,
+        "new_users": 2203
+    },
+    {
+        "id": 1120,
+        "date": "2022-12-17",
+        "unique_users": 7304,
+        "total_active_parcels": 8012,
+        "created_at": "2022-12-18 15:39:56 UTC",
+        "total_active_scenes": 1778,
+        "guest_users": 2142,
+        "named_users": 341,
+        "new_users": 1851
+    },
+    {
+        "id": 1126,
+        "date": "2022-12-18",
+        "unique_users": 6904,
+        "total_active_parcels": 6850,
+        "created_at": "2022-12-19 01:14:11 UTC",
+        "total_active_scenes": 1528,
+        "guest_users": 2073,
+        "named_users": 280,
+        "new_users": 1242
+    },
+    {
+        "id": 1127,
+        "date": "2022-12-19",
+        "unique_users": 7288,
+        "total_active_parcels": 9604,
+        "created_at": "2022-12-20 01:16:28 UTC",
+        "total_active_scenes": 2141,
+        "guest_users": 2179,
+        "named_users": 360,
+        "new_users": 1400
+    },
+    {
+        "id": 1128,
+        "date": "2022-12-20",
+        "unique_users": 7141,
+        "total_active_parcels": 9010,
+        "created_at": "2022-12-21 01:16:29 UTC",
+        "total_active_scenes": 1921,
+        "guest_users": 2243,
+        "named_users": 360,
+        "new_users": 1408
+    },
+    {
+        "id": 1129,
+        "date": "2022-12-21",
+        "unique_users": 7746,
+        "total_active_parcels": 10076,
+        "created_at": "2022-12-22 01:18:12 UTC",
+        "total_active_scenes": 2231,
+        "guest_users": 2422,
+        "named_users": 351,
+        "new_users": 1471
+    },
+    {
+        "id": 1130,
+        "date": "2022-12-22",
+        "unique_users": 7313,
+        "total_active_parcels": 9445,
+        "created_at": "2022-12-23 01:17:20 UTC",
+        "total_active_scenes": 2231,
+        "guest_users": 2255,
+        "named_users": 373,
+        "new_users": 1355
+    },
+    {
+        "id": 1131,
+        "date": "2022-12-23",
+        "unique_users": 7246,
+        "total_active_parcels": 7434,
+        "created_at": "2022-12-24 01:16:59 UTC",
+        "total_active_scenes": 1547,
+        "guest_users": 2275,
+        "named_users": 334,
+        "new_users": 1444
+    },
+    {
+        "id": 1132,
+        "date": "2022-12-24",
+        "unique_users": 5619,
+        "total_active_parcels": 6162,
+        "created_at": "2022-12-25 01:11:40 UTC",
+        "total_active_scenes": 1359,
+        "guest_users": 1231,
+        "named_users": 295,
+        "new_users": 727
+    },
+    {
+        "id": 1133,
+        "date": "2022-12-25",
+        "unique_users": 6558,
+        "total_active_parcels": 6393,
+        "created_at": "2022-12-26 01:12:44 UTC",
+        "total_active_scenes": 1367,
+        "guest_users": 2290,
+        "named_users": 253,
+        "new_users": 681
+    },
+    {
+        "id": 1134,
+        "date": "2022-12-26",
+        "unique_users": 6284,
+        "total_active_parcels": 8690,
+        "created_at": "2022-12-27 01:14:36 UTC",
+        "total_active_scenes": 1577,
+        "guest_users": 1769,
+        "named_users": 257,
+        "new_users": 945
+    },
+    {
+        "id": 1135,
+        "date": "2022-12-27",
+        "unique_users": 6413,
+        "total_active_parcels": 8476,
+        "created_at": "2022-12-28 01:14:29 UTC",
+        "total_active_scenes": 1784,
+        "guest_users": 2093,
+        "named_users": 302,
+        "new_users": 1276
+    },
+    {
+        "id": 1136,
+        "date": "2022-12-28",
+        "unique_users": 6243,
+        "total_active_parcels": 8517,
+        "created_at": "2022-12-29 01:13:44 UTC",
+        "total_active_scenes": 1781,
+        "guest_users": 2078,
+        "named_users": 278,
+        "new_users": 1288
+    },
+    {
+        "id": 1137,
+        "date": "2022-12-29",
+        "unique_users": 6386,
+        "total_active_parcels": 7310,
+        "created_at": "2022-12-30 01:13:43 UTC",
+        "total_active_scenes": 1654,
+        "guest_users": 1937,
+        "named_users": 278,
+        "new_users": 1103
+    },
+    {
+        "id": 1138,
+        "date": "2022-12-30",
+        "unique_users": 6117,
+        "total_active_parcels": 7276,
+        "created_at": "2022-12-31 01:12:52 UTC",
+        "total_active_scenes": 1687,
+        "guest_users": 1803,
+        "named_users": 261,
+        "new_users": 1038
+    },
+    {
+        "id": 1139,
+        "date": "2022-12-31",
+        "unique_users": 5688,
+        "total_active_parcels": 5609,
+        "created_at": "2023-01-01 01:11:26 UTC",
+        "total_active_scenes": 1293,
+        "guest_users": 1337,
+        "named_users": 273,
+        "new_users": 680
+    },
+    {
+        "id": 1172,
+        "date": "2023-01-01",
+        "unique_users": 5208,
+        "total_active_parcels": 5350,
+        "created_at": "2023-01-02 01:10:38 UTC",
+        "total_active_scenes": 1169,
+        "guest_users": 1302,
+        "named_users": 263,
+        "new_users": 722
+    },
+    {
+        "id": 1173,
+        "date": "2023-01-02",
+        "unique_users": 6059,
         "total_active_parcels": 6548,
-        "total_active_scenes": 4857,
-        "created_at": "2022-08-27 01:19:12 UTC"
+        "created_at": "2023-01-03 01:12:01 UTC",
+        "total_active_scenes": 1378,
+        "guest_users": 1742,
+        "named_users": 241,
+        "new_users": 1044
     },
     {
-        "id": 89,
-        "date": "2022-08-26",
-        "unique_users": 9189,
-        "total_active_parcels": 6419,
-        "total_active_scenes": 4857,
-        "created_at": "2022-08-28 01:16:09 UTC"
+        "id": 1174,
+        "date": "2023-01-03",
+        "unique_users": 6551,
+        "total_active_parcels": 7427,
+        "created_at": "2023-01-04 01:11:25 UTC",
+        "total_active_scenes": 1471,
+        "guest_users": 2125,
+        "named_users": 267,
+        "new_users": 1209
     },
     {
-        "id": 90,
-        "date": "2022-08-27",
-        "unique_users": 8860,
-        "total_active_parcels": 5316,
-        "total_active_scenes": 4857,
-        "created_at": "2022-08-29 01:17:50 UTC"
+        "id": 1175,
+        "date": "2023-01-04",
+        "unique_users": 6768,
+        "total_active_parcels": 7410,
+        "created_at": "2023-01-05 01:13:42 UTC",
+        "total_active_scenes": 1616,
+        "guest_users": 2245,
+        "named_users": 288,
+        "new_users": 1346
     },
     {
-        "id": 93,
-        "date": "2022-08-28",
-        "unique_users": 8522,
-        "total_active_parcels": 5141,
-        "total_active_scenes": 4857,
-        "created_at": "2022-08-30 01:15:46 UTC"
+        "id": 1176,
+        "date": "2023-01-05",
+        "unique_users": 6417,
+        "total_active_parcels": 7171,
+        "created_at": "2023-01-06 01:15:22 UTC",
+        "total_active_scenes": 1768,
+        "guest_users": 2063,
+        "named_users": 315,
+        "new_users": 1093
     },
     {
-        "id": 94,
-        "date": "2022-08-29",
-        "unique_users": 9910,
-        "total_active_parcels": 5200,
-        "total_active_scenes": 4857,
-        "created_at": "2022-08-31 01:15:54 UTC"
-    },
-    {
-        "id": 95,
-        "date": "2022-08-30",
-        "unique_users": 9502,
-        "total_active_parcels": 5904,
-        "total_active_scenes": 4857,
-        "created_at": "2022-08-31 01:15:55 UTC"
+        "id": 1177,
+        "date": "2023-01-06",
+        "unique_users": 6483,
+        "total_active_parcels": 7224,
+        "created_at": "2023-01-07 01:15:13 UTC",
+        "total_active_scenes": 1813,
+        "guest_users": 2065,
+        "named_users": 301,
+        "new_users": 1206
     }
 ]

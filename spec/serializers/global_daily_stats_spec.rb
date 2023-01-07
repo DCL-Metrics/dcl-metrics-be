@@ -3,7 +3,7 @@ require './spec/spec_helper'
 class GlobalDailyStatsSpec < BaseSpec
   before do
     create_daily_stats(data)
-    Timecop.freeze(Time.utc(2022, 8, 31, 12))
+    Timecop.freeze(Time.utc(2023, 1, 07, 12))
   end
 
   after do
@@ -17,7 +17,7 @@ class GlobalDailyStatsSpec < BaseSpec
       parse(File.read('./spec/fixtures/expectations/serializers/global_daily_stats.json'))
   end
 
-  let(:expected_keys) { %i[unique_users active_parcels active_scenes degraded] }
+  let(:expected_keys) { %i[active_parcels active_scenes users degraded] }
 
   it 'serializes data and returns expected output' do
     result = Serializers::Global::DailyStats.serialize
@@ -29,6 +29,6 @@ class GlobalDailyStatsSpec < BaseSpec
     assert_equal expected, result.stringify_keys
 
     # ensure the format is as expected
-    assert_equal expected_keys, result['2022-08-01'].keys
+    assert_equal expected_keys, result['2023-01-01'].keys
   end
 end
