@@ -1,0 +1,18 @@
+search_term = 'a'
+
+Models::Scene.
+  distinct(:name).
+  where { Sequel.like(:name, "#{search_term}%") }.
+  select(:name).
+  first(10)
+=>
+[#<Models::Scene @values={:name=>"a"}>,
+ #<Models::Scene @values={:name=>"a55update"}>,
+ #<Models::Scene @values={:name=>"aazaz"}>,
+ #<Models::Scene @values={:name=>"abdi ibrahim"}>,
+ #<Models::Scene @values={:name=>"abelia III"}>,
+ #<Models::Scene @values={:name=>"adshares test new baner"}>,
+ #<Models::Scene @values={:name=>"a house that is very cool and."}>,
+ #<Models::Scene @values={:name=>"ai avatars"}>,
+ #<Models::Scene @values={:name=>"aland01"}>,
+ #<Models::Scene @values={:name=>"always remeber"}>]
