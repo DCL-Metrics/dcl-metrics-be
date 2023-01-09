@@ -19,7 +19,8 @@
 module Models
   class UserNfts < Sequel::Model(FAT_BOY_DATABASE[:user_nfts])
     def self.stale
-      where { updated_at <= Date.today - 3 }
+      # where { updated_at <= Date.today - 3 }
+      where { updated_at <= Date.today - 10 }
     end
 
     def user

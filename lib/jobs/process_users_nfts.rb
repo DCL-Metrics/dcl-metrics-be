@@ -16,7 +16,14 @@ module Jobs
         where(guest: false).
         map(&:address)
 
-      addresses_not_recently_updated = Models::UserNfts.stale.map(&:address)
+      # addresses_not_recently_updated = Models::UserNfts.stale.order(:updatemap(&:address)
+      # TODO NOTE: need to catch up on this so just do the oldest ones each day
+      # TODO: when this is changed, update the definition of UserNfts#stale
+      addresses_not_recently_updated = Models::UserNfts.
+                                       stale.
+                                       order(:updated_at).
+                                       first(10000).
+                                       map(&:address)
 
       [
         addresses_not_recently_updated,
