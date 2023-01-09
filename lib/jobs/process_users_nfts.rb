@@ -14,7 +14,7 @@ module Jobs
       first_seen_today = Models::User.
         where(first_seen: Date.today - 1).
         where(guest: false).
-        map(&:addresses)
+        map(&:address)
 
       addresses_not_recently_updated = Models::UserNfts.stale.map(&:address)
 
