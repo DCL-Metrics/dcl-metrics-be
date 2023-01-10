@@ -44,12 +44,10 @@ jobs:
 
       - name: Setup database
         env:
-          DATABASE_USER: postgres
-          DATABASE_ENV: test
           DATABASE_URL: "postgres://postgres:postgres@localhost:5432/dclund-test"
           PGPASSWORD: postgres
         run: |
-          bundle exec rake db:create
+          createdb -h localhost -p 5432 -U postgres dclund-test
           bundle exec rake db:migrate
 
       - name: Run tests
