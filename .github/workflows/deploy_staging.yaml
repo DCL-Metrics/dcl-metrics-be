@@ -31,9 +31,9 @@ jobs:
     env:
       DATABASE_ENV: test
       DATABASE_POOL_TIMEOUT: 10
-      DATABASE_URL: postgres://postgres@postgres:5432/dclund-test
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/dclund-test
       DATABASE_USER: postgres
-      FAT_BOY_DATABASE_URL: postgres://postgres@postgres:5432/dclund-test
+      FAT_BOY_DATABASE_URL: postgres://postgres:postgres@postgres:5432/dclund-test
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       RACK_ENV: test
