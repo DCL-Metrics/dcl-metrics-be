@@ -39,14 +39,14 @@ jobs:
           ruby-version: 3.1.2
           bundler-cache: true
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
 
       - name: Setup database
         env:
           DATABASE_USER: postgres
           DATABASE_ENV: test
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/dclund-test
+          DATABASE_URL: "postgres://postgres:postgres@localhost:5432/dclund-test"
           PGPASSWORD: postgres
         run: |
           bundle exec rake db:create
