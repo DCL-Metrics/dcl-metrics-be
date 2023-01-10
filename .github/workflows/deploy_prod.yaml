@@ -73,6 +73,9 @@ jobs:
             Repo: ${{ github.repository }}
             Author: ${{ github.actor }}
             Commit: <a href="${{ github.event.head_commit.url }}">${{ github.event.head_commit.message }}</a>
+
+      - name Exit with failure status
+        if: steps.run-tests.status != 'success'
         run: exit 1
 
   deploy:
