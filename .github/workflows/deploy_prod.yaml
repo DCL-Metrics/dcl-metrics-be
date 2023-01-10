@@ -7,6 +7,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      RAKE_ENV: test
+
     services:
       postgres:
         image: postgres:12.5
@@ -31,13 +34,12 @@ jobs:
       - name: Setup database
         env:
           DATABASE_USER: postgres
+          DATABASE_ENV: test
         run: |
           bundle exec rake db:create
           bundle exec rake db:migrate
 
       - name: Run tests
-        env:
-          RAKE_ENV: test
         run: bundle exec rake
 
       # TODO: notify failure to telegram
