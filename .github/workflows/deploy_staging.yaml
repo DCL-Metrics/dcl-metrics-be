@@ -41,7 +41,9 @@ jobs:
           bundler-cache: true
 
       - name: Connect to PostgreSQL
-        run: bundle exec rake db:reset
+        run: |
+          bundle exec rake db:create
+          bundle exec rake db:migrate
         env:
           DATABASE_ENV: test
           DATABASE_URL: postgres://postgres@localhost:5432/dclund-test
