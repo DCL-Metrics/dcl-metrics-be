@@ -28,7 +28,7 @@ jobs:
       fail-fast: true
 
     env:
-      RACK_ENV: 'test'
+      RACK_ENV: test
 
     steps:
       - name: Check out repository code
