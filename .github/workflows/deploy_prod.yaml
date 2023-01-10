@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      RAKE_ENV: test
+      RACK_ENV: test
 
     services:
       database:
