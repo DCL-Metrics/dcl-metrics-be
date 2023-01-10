@@ -7,9 +7,6 @@ on:
         required: true
 
 jobs:
-  run-test-suite:
-    uses: ./.github/workflows/run_test_suite.yaml
-
   deploy:
     runs-on: ubuntu-latest
     steps:

@@ -1,4 +1,9 @@
 name: Run Test Suite
+on:
+  workflow_run:
+    workflows: ["Deploy Staging", "Deploy Production"]
+    types: [requested]
+
 jobs:
   run-test-suite:
     runs-on: ubuntu-latest
