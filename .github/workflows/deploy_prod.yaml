@@ -15,6 +15,7 @@ jobs:
         image: postgres:12.5
         env:
           POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
 
@@ -41,7 +42,7 @@ jobs:
           DATABASE_USER: postgres
           DATABASE_ENV: test
         run: |
-          bundle exec rake db:create
+          createdb -p 5432 -U postgres dclund-test password postgres
           bundle exec rake db:migrate
 
       - name: Run tests
