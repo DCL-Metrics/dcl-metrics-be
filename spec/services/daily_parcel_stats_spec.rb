@@ -34,7 +34,10 @@ class DailyParcelStatsSpec < BaseSpec
   let(:address_two) { '0xabc2d0041d6d9e7ec6865ca06292af8d5fb0abcd' }
 
   let(:day_one) { '2022-04-10' }
+  let(:day_one_coordinates) { ['20,24', '20,25', '20,23', '120,-25'].sort }
+
   let(:day_two) { '2022-04-11' }
+  let(:day_two_coordinates) { ['22,25', '12,-5'].sort }
 
   it 'processes data with expected flow and results' do
 
@@ -50,7 +53,7 @@ class DailyParcelStatsSpec < BaseSpec
 
     day_one_stats = Models::DailyParcelStats.where(date: day_one)
     assert_equal 4, day_one_stats.count
-    assert_equal ['20,24', '20,25', '20,23', '120,-25'], day_one_stats.map(&:coordinates)
+    assert_equal day_one_coordinates, day_one_stats.map(&:coordinates).sort
 
     assert_equal '20,24', day_one_stats.first.coordinates
     assert_equal 120, day_one_stats.first.avg_time_spent
@@ -61,7 +64,7 @@ class DailyParcelStatsSpec < BaseSpec
 
     day_two_stats = Models::DailyParcelStats.where(date: day_two)
     assert_equal 2, day_two_stats.count
-    assert_equal ['22,25', '12,-5'], day_two_stats.map(&:coordinates)
+    assert_equal day_two_coordinates, day_two_stats.map(&:coordinates).sort
 
     assert_equal '12,-5', day_two_stats.last.coordinates
     assert_equal 900, day_two_stats.last.avg_time_spent

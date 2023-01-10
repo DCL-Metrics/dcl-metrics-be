@@ -67,6 +67,7 @@ module Serializers
         data.
         all.
         last(10).
+        sort_by { |x| [x[:attribute], x[:name]] }. # this is mainly to fix a flapping test
         reverse
       end
 
