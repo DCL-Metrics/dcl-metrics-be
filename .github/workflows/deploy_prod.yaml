@@ -51,6 +51,7 @@ jobs:
           DATABASE_USER: postgres
           FAT_BOY_DATABASE_URL: 'postgres://postgres:postgres@postgres:5432/dclund-test'
         run: |
+          docker ps
           bundle exec rake db:create
           bundle exec rake db:migrate
 
