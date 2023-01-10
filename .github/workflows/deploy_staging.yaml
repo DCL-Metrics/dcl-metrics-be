@@ -7,11 +7,11 @@ on:
         required: true
 
 jobs:
-  # TODO: test:
+  run-test-suite:
+    uses: ./.github/workflows/run_test_suite.yaml
 
   deploy:
     runs-on: ubuntu-latest
-    # needs: [test]
     steps:
       - uses: actions/checkout@v2
         with:

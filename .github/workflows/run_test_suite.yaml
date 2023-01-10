@@ -1,0 +1,13 @@
+name: Run Test Suite
+jobs:
+  run-test-suite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          # runs 'bundle install' and caches installed gems automatically
+          bundler-cache: true
+      - name: Run tests
+        run: RACK_ENV=test rake
