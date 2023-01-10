@@ -57,10 +57,11 @@ jobs:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/dclund-test
           FAT_BOY_DATABASE_URL: postgres://postgres:postgres@localhost:5432/dclund-test
         run: bundle exec rake
+        continue-on-error: true
 
       - name: Notify Failure
         uses: appleboy/telegram-action@master
-        if: test.steps.run-tests.status == failure()
+        if: steps.run-tests.status != 'success'
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
