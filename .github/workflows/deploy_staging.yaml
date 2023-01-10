@@ -10,12 +10,16 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
     services:
       postgres:
         image: postgres
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
         # Set health checks to wait until postgres has started
@@ -27,16 +31,6 @@ jobs:
 
     strategy:
       fail-fast: true
-
-    env:
-      DATABASE_ENV: test
-      DATABASE_POOL_TIMEOUT: 10
-      DATABASE_URL: postgres://postgres:postgres@postgres:5432/dclund-test
-      DATABASE_USER: postgres
-      FAT_BOY_DATABASE_URL: postgres://postgres:postgres@postgres:5432/dclund-test
-      POSTGRES_HOST: localhost
-      POSTGRES_PORT: 5432
-      RACK_ENV: test
 
     steps:
       - name: Check out repository code
@@ -56,11 +50,18 @@ jobs:
         run: sudo echo "127.0.0.1 postgres" | sudo tee -a /etc/hosts
 
       - name: Connect to PostgreSQL
+        env:
+          DATABASE_ENV: test
+          DATABASE_URL: 'postgres://postgres:postgres@postgres:5432/dclund-test'
+          DATABASE_USER: postgres
+          FAT_BOY_DATABASE_URL: 'postgres://postgres:postgres@postgres:5432/dclund-test'
         run: |
           bundle exec rake db:create
           bundle exec rake db:migrate
 
       - name: Run tests
+        env:
+          RACK_ENV: test
         run: bundle exec rake
 
       # TODO: notify failure to telegram
