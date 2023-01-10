@@ -4,6 +4,7 @@ on:
     branches: [master]
 
 jobs:
+  # https://danielabaron.me/blog/debug-github-action/
   test:
     runs-on: ubuntu-latest
 
@@ -11,23 +12,26 @@ jobs:
       RAKE_ENV: test
 
     services:
-      postgres:
-        image: postgres:12.5
+      database:
+        image: postgres:13
         env:
-          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
         ports:
           - 5432:5432
-        # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+          --name database
 
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
+
+      - name: Create database role
+        run: docker exec database bash -c "PGPASSWORD=postgres psql -U postgres -c \"create role admin with createdb login password 'admin'\""
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -35,27 +39,25 @@ jobs:
           ruby-version: 3.1.2
           bundler-cache: true
 
-      - name: Install dependencies
-        run: bundle install --jobs 4 --retry 3
-
-      # - name: Spin up PSQL service
-      #   run: |
-      #     sudo systemctl start postgresql.service
-      #     pg_isready
-
       - name: Setup database
         env:
           DATABASE_USER: postgres
           DATABASE_ENV: test
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/dclund-test
           PGPASSWORD: postgres
         run: |
-          createdb -p 5432 -U postgres dclund-test
+          bundle exec rake db:create
           bundle exec rake db:migrate
 
       - name: Run tests
+        env:
+          DATABASE_ENV: test
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/dclund-test
+          FAT_BOY_DATABASE_URL: postgres://postgres:postgres@localhost:5432/dclund-test
         run: bundle exec rake
 
-      # TODO: notify failure to telegram
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
 
   deploy:
     runs-on: ubuntu-latest
@@ -73,7 +75,11 @@ jobs:
           heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
 
-      - name: Notify deployment
+  notify-outcome:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send outcome to telegram
         uses: appleboy/telegram-action@master
         if: always()
         with:
