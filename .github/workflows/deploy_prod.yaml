@@ -6,7 +6,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    container: node:10.18-jessie
 
     services:
       postgres:
@@ -29,10 +28,10 @@ jobs:
     env:
       DATABASE_ENV: test
       DATABASE_POOL_TIMEOUT: 10
-      DATABASE_URL: postgres://postgres@localhost:5432/dclund-test
+      DATABASE_URL: postgres://postgres@postgres:5432/dclund-test
       DATABASE_USER: postgres
-      FAT_BOY_DATABASE_URL: postgres://postgres@localhost:5432/dclund-test
-      POSTGRES_HOST: localhost
+      FAT_BOY_DATABASE_URL: postgres://postgres@postgres:5432/dclund-test
+      POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       RACK_ENV: test
 
@@ -48,6 +47,10 @@ jobs:
 
       - name: Install PostgreSQL client
         run: sudo apt-get -yqq install libpq-dev
+
+      # https://stackoverflow.com/a/66982842/2128691
+      - name: Add hosts to /etc/hosts
+        run: sudo echo "127.0.0.1 postgres" | sudo tee -a /etc/hosts
 
       - name: Connect to PostgreSQL
         run: |
