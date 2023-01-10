@@ -33,7 +33,7 @@ jobs:
       DATABASE_URL: postgres://postgres@localhost:5432/dclund-test
       DATABASE_USER: postgres
       FAT_BOY_DATABASE_URL: postgres://postgres@localhost:5432/dclund-test
-      POSTGRES_HOST: postgres
+      POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
       RACK_ENV: test
 
