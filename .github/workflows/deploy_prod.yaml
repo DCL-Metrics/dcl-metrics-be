@@ -47,8 +47,9 @@ jobs:
         env:
           DATABASE_USER: postgres
           DATABASE_ENV: test
+          PGPASSWORD: postgres
         run: |
-          createdb -p 5432 -U postgres dclund-test password postgres
+          createdb -p 5432 -U postgres dclund-test
           bundle exec rake db:migrate
 
       - name: Run tests
