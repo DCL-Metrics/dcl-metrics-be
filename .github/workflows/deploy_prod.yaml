@@ -51,11 +51,26 @@ jobs:
           bundle exec rake db:migrate
 
       - name: Run tests
+        id: run-tests
         env:
           DATABASE_ENV: test
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/dclund-test
           FAT_BOY_DATABASE_URL: postgres://postgres:postgres@localhost:5432/dclund-test
         run: bundle exec rake
+
+      - name: Notify Failure
+        uses: appleboy/telegram-action@master
+        if: test.steps.run-tests.status == failure()
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          disable_web_page_preview: true
+          format: html
+          message: |
+            Prod deployment failed due to failing tests
+            Repo: ${{ github.repository }}
+            Author: ${{ github.actor }}
+            Commit: <a href="${{ github.event.head_commit.url }}">${{ github.event.head_commit.message }}</a>
 
   deploy:
     runs-on: ubuntu-latest
@@ -73,11 +88,6 @@ jobs:
           heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
 
-  notify-outcome:
-    runs-on: ubuntu-latest
-    needs: ['test', 'deploy']
-
-    steps:
       - name: Send outcome to telegram
         uses: appleboy/telegram-action@master
         if: always()
