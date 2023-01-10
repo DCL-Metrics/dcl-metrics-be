@@ -68,10 +68,12 @@ jobs:
           disable_web_page_preview: true
           format: html
           message: |
-            Prod deployment failed due to failing tests
+            Prod deployment failed ❌
+            Reason: Failing test suite
             Repo: ${{ github.repository }}
             Author: ${{ github.actor }}
             Commit: <a href="${{ github.event.head_commit.url }}">${{ github.event.head_commit.message }}</a>
+        run: exit 1
 
   deploy:
     runs-on: ubuntu-latest
@@ -99,6 +101,7 @@ jobs:
           format: html
           message: |
             Prod deployment ${{ steps.deploy.outcome == 'success' && 'succeeded ✅' || 'failed ❌' }}
+            Reason: Deployment error
             Repo: ${{ github.repository }}
             Author: ${{ github.actor }}
             Commit: <a href="${{ github.event.head_commit.url }}">${{ github.event.head_commit.message }}</a>
