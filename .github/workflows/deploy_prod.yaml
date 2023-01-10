@@ -31,6 +31,11 @@ jobs:
       - name: Install dependencies
         run: bundle install --jobs 4 --retry 3
 
+      - name: Spin up PSQL service
+        run: |
+          sudo systemctl start postgresql.service
+          pg_isready
+
       - name: Setup database
         env:
           DATABASE_USER: postgres
