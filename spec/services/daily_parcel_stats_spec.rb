@@ -65,18 +65,18 @@ class DailyParcelStatsSpec < BaseSpec
     assert_equal 1, day_one_stats.first.logins
     assert_equal 1, day_one_stats.first.logouts
 
-    day_two_stats = Models::DailyParcelStats.where(date: day_two)
+    day_two_stats = Models::DailyParcelStats.where(date: day_two).sort_by(&:coordinates)
     assert_equal 2, day_two_stats.count
     assert_equal day_two_coordinates, day_two_stats.map(&:coordinates).sort
     assert_equal [1, 900], day_two_stats.map(&:avg_time_spent).sort
     assert_equal [0, 900], day_two_stats.map(&:avg_time_spent_afk).sort
     assert_equal [1, 1], day_two_stats.map(&:unique_visitors).sort
 
-    assert_equal '12,-5', day_two_stats.last.coordinates
-    assert_equal 900, day_two_stats.last.avg_time_spent
-    assert_equal 900, day_two_stats.last.avg_time_spent_afk
-    assert_equal 1, day_two_stats.last.unique_visitors
-    assert_equal 1, day_two_stats.last.logins
-    assert_equal 1, day_two_stats.last.logouts
+    assert_equal '12,-5', day_two_stats.first.coordinates
+    assert_equal 900, day_two_stats.first.avg_time_spent
+    assert_equal 900, day_two_stats.first.avg_time_spent_afk
+    assert_equal 1, day_two_stats.first.unique_visitors
+    assert_equal 1, day_two_stats.first.logins
+    assert_equal 1, day_two_stats.first.logouts
   end
 end
