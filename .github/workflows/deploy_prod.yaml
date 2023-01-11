@@ -61,7 +61,7 @@ jobs:
 
       - name: Notify Failure
         uses: appleboy/telegram-action@master
-        if: steps.run-tests.status != 'success'
+        if: steps.run-tests.outcome != 'success'
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
