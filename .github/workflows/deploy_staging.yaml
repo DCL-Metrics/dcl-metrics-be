@@ -10,59 +10,75 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      RACK_ENV: test
+
     services:
-      postgres:
-        image: postgres
+      database:
+        image: postgres:13
         env:
-          POSTGRES_HOST: localhost
-          POSTGRES_PORT: 5432
-          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
         ports:
           - 5432:5432
-        # Set health checks to wait until postgres has started
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -U postgres"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
-    strategy:
-      fail-fast: true
+          --name database
 
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
 
+      - name: Create database role
+        run: docker exec database bash -c "PGPASSWORD=postgres psql -U postgres -c \"create role admin with createdb login password 'admin'\""
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          # runs 'bundle install' and caches installed gems automatically
+          ruby-version: 3.1.2
           bundler-cache: true
 
-      - name: Install PostgreSQL client
-        run: sudo apt-get -yqq install libpq-dev
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
 
-      # https://stackoverflow.com/a/66982842/2128691
-      - name: Add hosts to /etc/hosts
-        run: sudo echo "127.0.0.1 postgres" | sudo tee -a /etc/hosts
-
-      - name: Connect to PostgreSQL
+      - name: Setup database
         env:
-          DATABASE_ENV: test
-          DATABASE_URL: 'postgres://postgres:postgres@postgres:5432/dclund-test'
-          DATABASE_USER: postgres
-          FAT_BOY_DATABASE_URL: 'postgres://postgres:postgres@postgres:5432/dclund-test'
+          DATABASE_URL: "postgres://postgres:postgres@localhost:5432/dclund-test"
+          PGPASSWORD: postgres
         run: |
-          bundle exec rake db:create
+          createdb -h localhost -p 5432 -U postgres dclund-test
           bundle exec rake db:migrate
 
       - name: Run tests
+        id: run-tests
         env:
-          RACK_ENV: test
+          DATABASE_ENV: test
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/dclund-test
+          FAT_BOY_DATABASE_URL: postgres://postgres:postgres@localhost:5432/dclund-test
         run: bundle exec rake
+        continue-on-error: true
 
-      # TODO: notify failure to telegram
+      - name: Notify Failure
+        uses: appleboy/telegram-action@master
+        if: steps.run-tests.outcome != 'success'
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          disable_web_page_preview: true
+          format: html
+          message: |
+            Staging deployment failed ❌
+            Reason: Failing test suite
+            Repo: ${{ github.repository }}
+            Author: ${{ github.actor }}
+            Commit: <a href="${{ github.event.head_commit.url }}">${{ github.event.head_commit.message }}</a>
+
+      - name: Exit with failure status
+        if: steps.run-tests.outcome != 'success'
+        run: exit 1
 
   deploy:
     runs-on: ubuntu-latest
@@ -92,6 +108,7 @@ jobs:
           format: html
           message: |
             Staging deployment ${{ steps.deploy.outcome == 'success' && 'succeeded ✅' || 'failed ❌' }}
+          Reason: Deployment error
             Repo: ${{ github.repository }}
             Author: ${{ github.actor }}
             Branch: ${{ inputs.branch }}
