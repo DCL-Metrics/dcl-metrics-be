@@ -19,7 +19,7 @@ module Adapters
         rooms_data = rooms_service_response.success
 
         {
-          worlds_count: content_data['worldsCount'],
+          world_count: content_data['worldsCount'],
           total_user_count: rooms_data['users'].to_i,
           total_rooms: rooms_data['rooms'].to_i
         }
