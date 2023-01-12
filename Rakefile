@@ -247,6 +247,13 @@ namespace :dcl do
       Jobs::FetchPeerStats.perform_in(delay)
     end
   end
+
+  desc "fetch worlds data"
+  task :fetch_worlds_data do
+    require './lib/main'
+
+    Jobs::FetchWorldsData.perform_async
+  end
 end
 
 namespace :db do
