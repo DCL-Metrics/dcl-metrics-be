@@ -39,6 +39,22 @@ class Server < Sinatra::Application
     }.to_json
   end
 
+  get '/global/daily' do
+    Serializers::Global::DailyStats.serialize.to_json
+  end
+
+  get '/global/parcels' do
+    Serializers::Global::Parcels.serialize.to_json
+  end
+
+  get '/global/scenes' do
+    Serializers::Global::Scenes.serialize.to_json
+  end
+
+  get '/global/users' do
+    Serializers::Global::Users.serialize.to_json
+  end
+
   # TODO: use Models::SerializedDailySceneStats
   # maybe need to add some additional rows for sorting / queries
   # (concurrent users, addresses, etc)
