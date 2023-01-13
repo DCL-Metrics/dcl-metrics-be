@@ -36,6 +36,7 @@ The expected response, as json:
       "total_count":961
     }
   ],
-  "stats/parcels": []
+  "stats/parcels": [],
+  // ...
 }
 ```
