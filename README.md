@@ -1,3 +1,7 @@
+## Documentation
+
+Endpoint documentation can be found in the [docs directory](../docs)
+
 ## Proposed Roadmap TODO's
 
 **2022 Q4**
