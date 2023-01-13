@@ -30,15 +30,6 @@ class Server < Sinatra::Application
     { msg: 'Please contact an admin to use the api' }.to_json
   end
 
-  get '/global' do
-    {
-      global: Serializers::Global::DailyStats.serialize,
-      parcels: Serializers::Global::Parcels.serialize,
-      scenes: Serializers::Global::Scenes.serialize,
-      users: Serializers::Global::Users.serialize
-    }.to_json
-  end
-
   get '/global/daily' do
     Serializers::Global::DailyStats.serialize.to_json
   end
