@@ -15,7 +15,7 @@ Returns the last 90 days of global user stats computed once per day, currently a
       {
         "address":"0x8ef0d5f32de97a92e073d0a687d9d72acedbe3a9",
         "parcels_visited":188,
-        "avatar_url":nil,
+        "avatar_url":null,
         "guest_user":true,
         "name":"Guest User",
         "verified_user":false
@@ -34,7 +34,7 @@ Returns the last 90 days of global user stats computed once per day, currently a
       {
         "address":"0x8ef0d5f32de97a92e073d0a687d9d72acedbe3a9",
         "scenes_visited":54,
-        "avatar_url":nil,
+        "avatar_url":null,
         "guest_user":true,
         "name":"Guest User",
         "verified_user":false
@@ -42,7 +42,7 @@ Returns the last 90 days of global user stats computed once per day, currently a
       {
         "address":"0xd231e488b740526c6335bf279eecc23e80e6df5c",
         "scenes_visited":53,
-        "avatar_url":nil,
+        "avatar_url":null,
         "guest_user":true,
         "name":"Guest User",
         "verified_user":false
