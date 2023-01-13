@@ -48,7 +48,7 @@ Time is always returned in seconds
       "-101,127": 1358,
       "-29,55": 1159
     },
-    :max_concurrent_users: {
+    "max_concurrent_users": {
       "-100,127": 78,
       "-101,127": 56,
       "-101,129": 37,
