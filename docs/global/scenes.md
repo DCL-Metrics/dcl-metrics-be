@@ -51,7 +51,7 @@ Time is always returned in seconds
       },
       // + 3 more results
     },
-    time_spent_afk": {
+    "time_spent_afk": {
       "grab-objects": {
         "avg_time_spent_afk": 70323,
         "map_url": "xxx"
