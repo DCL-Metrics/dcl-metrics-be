@@ -80,18 +80,6 @@ class Server < Sinatra::Application
     Serializers::PeerStatus.serialize(api_responses).to_json
   end
 
-  # TODO: use Models::SerializedDailySceneStats
-  get '/dashboard/:dashboard_name' do
-    scenes = dashboard_mapping[params[:dashboard_name].to_sym].order(:date)
-    serialized = Serializers::Scenes.serialize(scenes.all)
-
-    {
-      available_dates: serialized.map { |scene| scene[:date] }.sort,
-      daily_users: serialized.map { |scene| [scene[:date], scene[:visitors]] }.to_h,
-      result: serialized.map { |scene| [scene[:date], scene] }.to_h
-    }.to_json
-  end
-
   get '/reports/:scene_name' do
     scenes = Models::DailySceneStats.
       where(name: params[:scene_name]).
@@ -126,43 +114,5 @@ class Server < Sinatra::Application
 
   def notify_telegram(lvl, msg)
     Services::TelegramOperator.notify(level: lvl, message: msg)
-  end
-
-  def dashboard_mapping
-    {
-      edifice: fetch_scene_stats(edifice_coordinates, 'Edifice Metaversal'),
-      goldfish: fetch_scene_stats(goldfish_coordinates, 'DCL Scene'),
-      ups_store: fetch_scene_stats(ups_store_coordinates, 'The UPS Store')
-    }
-  end
-
-  def fetch_scene_stats(coordinates, name)
-    Models::DailySceneStats.where(coordinates: coordinates, name: name)
-  end
-
-  def edifice_coordinates
-    [
-      "10,-37", "10,-38", "10,-39", "11,-33", "11,-34", "11,-35", "11,-36",
-      "11,-37", "11,-38", "11,-39", "12,-33", "12,-34", "12,-35", "12,-36",
-      "12,-37", "12,-38", "12,-39", "2,-39", "3,-39", "4,-39", "4,-40",
-      "4,-41", "4,-42", "5,-39", "5,-42", "6,-39", "6,-42", "6,-43", "6,-44",
-      "6,-45", "6,-46", "7,-37", "7,-38", "7,-39", "7,-40", "7,-41", "7,-42",
-      "8,-37", "8,-38", "8,-39", "9,-37", "9,-38", "9,-39"
-    ].sort.join(';')
-  end
-
-  def goldfish_coordinates
-    [
-      "102,-141","103,-141","104,-141","105,-141","106,-141","107,-141",
-      "102,-142","103,-142","104,-142","105,-142","106,-142","107,-142",
-      "102,-143","103,-143","104,-143","105,-143","106,-143","107,-143",
-      "102,-144","103,-144","104,-144","105,-144","106,-144","107,-144",
-      "102,-145","103,-145","104,-145","105,-145","106,-145","107,-145",
-      "102,-146","103,-146","104,-146","105,-146","106,-146","107,-146"
-    ].sort.join(';')
-  end
-
-  def ups_store_coordinates
-    ["-25,-8","-24,-8","-25,-9","-24,-9"].sort.join(';')
   end
 end
