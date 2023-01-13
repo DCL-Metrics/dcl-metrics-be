@@ -1,6 +1,6 @@
 ## Documentation
 
-Endpoint documentation can be found in the [docs directory](../docs)
+Endpoint documentation can be found in the [docs directory](https://github.com/DCL-Metrics/dcl-metrics-be/tree/master/docs)
 
 ## Proposed Roadmap TODO's
 
