@@ -19,3 +19,7 @@ Endpoint documentation can be found in the [docs directory](https://github.com/D
   * Wearables
   * POAPs
   * DAO activity
+
+## License
+
+This repository is protected with a standard Apache 2 license. See the terms and conditions in the [LICENSE](https://github.com/DCL-Metrics/dcl-metrics-be/tree/master/LICENSE) file.
