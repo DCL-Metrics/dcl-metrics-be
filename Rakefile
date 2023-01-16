@@ -97,13 +97,6 @@ namespace :compute do
     Jobs::SerializeDailySceneStats.perform_async(Date.today - 1)
   end
 
-  desc "compile user data"
-  task :create_user_data do
-    require './lib/main'
-
-    Jobs::ProcessUsers.perform_async(Date.today - 1)
-  end
-
   desc "compile user nft data"
   task :fetch_user_nfts do
     require './lib/main'
