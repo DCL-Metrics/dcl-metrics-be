@@ -12,16 +12,17 @@ module Adapters
     end
 
     def get
-      response = Faraday.get(url, params)
-
-      Services::RequestLogger.call(status: response.status, url: url, params: params)
-      return Failure('request was not successful') unless response.status == 200
-
       begin
+        response = Faraday.get(url, params)
+
+        Services::RequestLogger.call(status: response.status, url: url, params: params)
+        return Failure('request was not successful') unless response.status == 200
+
         data = JSON.parse(response.body)
-      rescue JSON::ParserError => e
-        print "parser error when fetching from '#{url}'\n"
-        return Failure('malformed json response')
+      rescue JSON::ParserError, Faraday::ConnectionFailed => e
+        Services::RequestLogger.call(status: 500, url: url, params: params)
+        print "error when fetching from '#{url}'\n"
+        return Failure(e.message)
       end
 
       Success(data)
