@@ -3,7 +3,7 @@ module Jobs
     sidekiq_options queue: 'processing'
 
     # only_create: no updates are done (i don't want to update last_seen in some cases)
-    def perform(addresses, only_create = false)
+    def perform(addresses, datestamp, only_create = false)
       user_data = Adapters::Dcl::UserProfiles.call(addresses: addresses)
 
       addresses.each do |address|
@@ -13,7 +13,7 @@ module Jobs
         # address, date, guest, name, avatar_url, only_create
         Jobs::ProcessUser.perform_async(
           address,
-          snapshot.created_at.to_date.to_s,
+          datestamp,
           user.fetch(:guest) { true },
           user[:name],
           user[:avatar_url],

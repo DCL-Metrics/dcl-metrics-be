@@ -4,6 +4,7 @@ module Jobs
 
     def perform(snapshot_id)
       snapshot = Models::PeersDump[snapshot_id]
+      datestamp = snapshot.created_at.to_date.to_s
       addresses = snapshot.data.flat_map { |x| x['address'] }.uniq
       already_processed = Models::User.
         select(:address).
@@ -15,7 +16,7 @@ module Jobs
       print "#{self.class.name}: processing #{processable.count} users\n"
 
       processable.each_slice(40) do |address_batch|
-        Jobs::ProcessUsersByAddressBatch.perform_async(address_batch)
+        Jobs::ProcessUsersByAddressBatch.perform_async(address_batch, datestamp)
       end
     end
   end
