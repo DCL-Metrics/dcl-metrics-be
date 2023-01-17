@@ -1,0 +1,74 @@
+planning meeting 2023-01-17
+
+roadmap check-in
+- concurrent users histogram
+--- global component
+- rentals and sales data / metrics
+--- find what we can display?
+- personalized dashboards <-- cancel this // ask about in user interviews
+- more details for parcel / scene metrics
+--- z-axis
+--- share of new users / named users / etc
+--- historical metrics
+--- date range of when it was online
+- user analytics
+--- wearables
+--- DAO activity
+--- dao + in-world activity + assets (wearables, names, etc)
+
+-----------------------------------------------
+
+- PLAN.io <-- start using in standups
+
+- dev blog
+--- grant updates
+--- genesis.city bot
+--- heatmaps (collecting data, calculating intensity, displaying, etc)
+--- new component announcements / user documentation
+
+- user data endpoint
+--- use anywhere there is a user address
+--- debanked scaper
+
+- how to search for scenes
+--- qualify by coordinates (filter)
+--- qualify by date online (filter)
+
+- user research / build use cases
+--- what do we want to show?
+--- do some research about how to conduct user interview planning
+--- user interviews
+------ sort components into their own pages first
+------ personalized dashboards
+------ what kind of things should we ask about?
+
+- other metaverses <-- later
+
+-----------------------------------------------
+
+- new charts / components
+--- on the fly components // for now doesn't make sense
+--- sortable list component for users / scenes
+------ searchable
+------ links to user profile or scene component
+
+--- first acquired at (all-time)
+------ aws bucket
+------ collate by week
+
+--- all-time data
+------ past 90 days show by week
+
+--- users profile page
+
+--- worlds data as global component
+
+
+# TODO:
+
+- sort components into their own pages before user interviews
+- do some research about how to conduct user interview planning
+- PLAN.io: start using in standups
+- sortable list component for users / scenes
+- blog
+- cut out auth on private dashboards
