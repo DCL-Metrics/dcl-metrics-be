@@ -1,5 +1,6 @@
 print "##############################\n\n"
-print "Using DATABASE:  #{ENV['DATABASE_URL']}\n\n"
+print "DATABASE:  #{ENV['DATABASE_URL']}\n"
+print "FAT_BOY_DATABASE:  #{ENV['FAT_BOY_DATABASE_URL']}\n\n"
 print "##############################\n"
 
 require 'sequel'
