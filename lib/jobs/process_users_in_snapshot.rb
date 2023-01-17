@@ -15,7 +15,7 @@ module Jobs
       print "#{self.class.name}: processing #{processable.count} users\n"
 
       processable.each_slice(40) do |address_batch|
-        Jobs::ProcessUsersByAddressBatch.peform_async(address_batch)
+        Jobs::ProcessUsersByAddressBatch.perform_async(address_batch)
       end
     end
   end
