@@ -15,21 +15,7 @@ module Jobs
       print "#{self.class.name}: processing #{processable.count} users\n"
 
       processable.each_slice(40) do |address_batch|
-        user_data = Adapters::Dcl::UserProfiles.call(addresses: address_batch)
-
-        address_batch.each do |address|
-          next if address.nil?
-          user = user_data.detect { |x| address == x[:address] } || {}
-
-          # address, date, guest, name, avatar_url
-          Jobs::ProcessUser.perform_async(
-            address,
-            snapshot.created_at.to_date.to_s,
-            user.fetch(:guest) { true },
-            user[:name],
-            user[:avatar_url]
-          )
-        end
+        Jobs::ProcessUsersByAddressBatch.peform_async(address_batch)
       end
     end
   end
