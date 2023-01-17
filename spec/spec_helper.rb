@@ -133,6 +133,10 @@ class BaseSpec < Minitest::Spec
     end
   end
 
+  def parse_json_fixture(path)
+    JSON.parse(File.read("./spec/fixtures/#{path}"))
+  end
+
   def expand_path(path)
     File.expand_path(path, __FILE__)
   end

@@ -10,11 +10,10 @@ class GlobalParcelsSpec < BaseSpec
     Timecop.return
   end
 
-  let(:data) { JSON.parse(File.read('./spec/fixtures/daily_parcel_stats/7d.json')) }
+  let(:data) { parse_json_fixture('daily_parcel_stats/7d.json') }
 
   let(:expected) do
-    JSON.
-      parse(File.read('./spec/fixtures/expectations/serializers/global_parcels.json')).
+    parse_json_fixture('expectations/serializers/global_parcels.json').
       transform_keys(&:to_sym)
   end
 

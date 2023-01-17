@@ -10,11 +10,10 @@ class GlobalDailyStatsSpec < BaseSpec
     Timecop.return
   end
 
-  let(:data) { JSON.parse(File.read('./spec/fixtures/daily_stats/30d.json')) }
+  let(:data) { parse_json_fixture('daily_stats/30d.json') }
 
   let(:expected) do
-    JSON.
-      parse(File.read('./spec/fixtures/expectations/serializers/global_daily_stats.json'))
+    parse_json_fixture('expectations/serializers/global_daily_stats.json')
   end
 
   let(:expected_keys) { %i[active_parcels active_scenes users degraded] }

@@ -11,12 +11,10 @@ class GlobalUsersSpec < BaseSpec
     Timecop.return
   end
 
-  let(:data) { JSON.parse(File.read('./spec/fixtures/daily_user_stats/7d.json')) }
+  let(:data) { parse_json_fixture('daily_user_stats/7d.json') }
 
   let(:expected) do
-    JSON.
-      parse(File.read('./spec/fixtures/expectations/serializers/global_users.json')).
-      symbolize_keys
+    parse_json_fixture('expectations/serializers/global_users.json').symbolize_keys
   end
 
   let(:expected_parcels_visted_keys) do
