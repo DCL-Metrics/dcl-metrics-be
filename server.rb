@@ -55,6 +55,15 @@ class Server < Sinatra::Application
     Serializers::Scenes.serialize(scenes).to_json
   end
 
+  get '/scenes/:cid' do
+    scene = Models::DailySceneStats.
+      where { Sequel.like(:cids, "%#{params[:cid]}%") }.
+      where(date: Date.today - 1).
+      first
+
+    Serializers::Scenes.serialize([scene]).first.to_json
+  end
+
   get '/parcels/all' do
     # TODO:
     # for individual parcels (different endpoint)
