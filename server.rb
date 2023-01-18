@@ -56,12 +56,13 @@ class Server < Sinatra::Application
   end
 
   get '/scenes/:cid' do
-    scene = Models::DailySceneStats.
-      where { Sequel.like(:cids, "%#{params[:cid]}%") }.
-      where(date: Date.today - 1).
-      first
+    scene = DATABASE_CONNECTION[
+      "select * from daily_scene_stats
+      where '#{params[:cid]} in (cids)
+      and date = '#{Date.today - 1}'"
+    ].all
 
-    Serializers::Scenes.serialize([scene]).first.to_json
+    Serializers::Scenes.serialize(scene).first.to_json
   end
 
   get '/parcels/all' do
