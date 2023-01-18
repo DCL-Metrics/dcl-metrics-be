@@ -58,7 +58,7 @@ class Server < Sinatra::Application
   get '/scenes/:cid' do
     scene = DATABASE_CONNECTION[
       "select * from daily_scene_stats
-      where '#{params[:cid]} in (cids)
+      where '#{params[:cid]}' in (cids)
       and date = '#{Date.today - 1}'"
     ].all
 
