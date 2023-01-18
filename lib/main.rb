@@ -21,6 +21,7 @@ FAT_BOY_DATABASE = Sequel.connect(
 PUBLIC_ROADS = JSON.parse(File.read('./lib/static/roads.json'))
 
 # misc
+require 'csv'
 require 'dry/monads'
 require './lib/monkey_patches.rb'
 
@@ -54,6 +55,14 @@ require './lib/adapters/dcl/nft_data.rb'
 require './lib/adapters/dcl/worlds.rb'
 require './lib/adapters/atlas_corp/peers.rb'
 require './lib/adapters/telegram.rb'
+require './lib/adapters/dcl/dao_transparency/activity_wrapper.rb'
+require './lib/adapters/dcl/dao_transparency/kpis.rb'
+require './lib/adapters/dcl/dao_transparency/members.rb'
+require './lib/adapters/dcl/dao_transparency/votes.rb'
+require './lib/adapters/dcl/dao_transparency/proposals.rb'
+require './lib/adapters/dcl/dao_transparency/grants.rb'
+require './lib/adapters/dcl/dao_transparency/collections.rb'
+require './lib/adapters/dcl/dao_transparency/team.rb'
 
 # require services
 require './lib/services/telegram_operator.rb'
@@ -127,3 +136,4 @@ require './lib/jobs/export_data_to_staging_db.rb'
 require './lib/jobs/serialize_daily_parcel_stats.rb'
 require './lib/jobs/serialize_daily_scene_stats.rb'
 require './lib/jobs/serialize_daily_scene_stat.rb'
+require './lib/jobs/process_users_dao_activity.rb'
