@@ -108,7 +108,6 @@ jobs:
           format: html
           message: |
             Staging deployment ${{ steps.deploy.outcome == 'success' && 'succeeded ✅' || 'failed ❌' }}
-            Reason: Deployment error
             Repo: ${{ github.repository }}
             Author: ${{ github.actor }}
             Branch: ${{ inputs.branch }}
