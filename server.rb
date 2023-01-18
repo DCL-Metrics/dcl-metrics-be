@@ -56,7 +56,7 @@ class Server < Sinatra::Application
   end
 
   get '/scenes/:cid' do
-    scene = Models::Scene.find(cid: cid)
+    scene = Models::Scene.find(cid: params[:cid])
     stats = Models::DailySceneStats.where(
       coordinates: scene.parcels.sort.join(';'),
       date: Date.today - 1,
