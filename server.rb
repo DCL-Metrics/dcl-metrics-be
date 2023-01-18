@@ -57,11 +57,16 @@ class Server < Sinatra::Application
 
   get '/scenes/:cid' do
     scene = Models::Scene.find(cid: params[:cid])
+
+    not_found_msg = "Can't find scene with cid #{params[:cid]}"
+    return { msg: not_found_msg }.to_json, status: 404 if scene.nil?
+
     stats = Models::DailySceneStats.where(
       coordinates: scene.parcels.sort.join(';'),
       date: Date.today - 1,
       name: scene.name
     ).first
+    return { msg: not_found_msg }.to_json, status: 404 if stats.nil?
 
     Serializers::Scenes.serialize([stats]).first.to_json
   end
