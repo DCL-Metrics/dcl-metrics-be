@@ -60,7 +60,7 @@ class Server < Sinatra::Application
       date: Date.today - 1,
       scene_disambiguation_uuid: params[:uuid]
     )
-    return [404, { msg: not_found_msg }.to_json] if stats.nil?
+    return [404, { msg: "Can't find scene with uuid #{params[:uuid]}" }.to_json] if stats.nil?
 
     Serializers::Scenes.serialize([stats]).first.to_json
   end
