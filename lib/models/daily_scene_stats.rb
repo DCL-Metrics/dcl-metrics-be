@@ -4,6 +4,7 @@
 # String  :name,            null: false
 # String  :coordinates,     null: false
 # String  :cids,            null: false
+# String  :scene_disambiguation_uuid
 # Integer :total_visitors
 # Integer :unique_visitors
 # Integer :unique_visitors_afk

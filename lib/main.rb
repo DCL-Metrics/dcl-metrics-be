@@ -43,6 +43,7 @@ require './lib/models/serialized_daily_parcel_stats.rb'
 require './lib/models/user.rb'
 require './lib/models/user_dao_activity.rb'
 require './lib/models/user_nfts.rb'
+require './lib/models/scene_disambiguation.rb'
 
 # require adapters
 require 'faraday'

@@ -1,0 +1,11 @@
+unique_scenes = DATABASE_CONNECTION[
+  "select name, parcels_json from scenes group by name, parcels_json"
+].uniq { |x| [x[:name], JSON.parse(x[:parcels_json]).sort] }
+
+unique_scenes.each do |scene|
+  Models::SceneDisambiguation.create(
+    coordinates: JSON.parse(scene[:parcels_json]).sort.join(';'),
+    name: scene[:name],
+    uuid: SecureRandom.uuid
+  )
+end

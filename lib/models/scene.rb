@@ -1,9 +1,11 @@
 # primary_key :id
 #
 # String  :cid, null: false, unique: true
+# String  :scene_disambiguation_uuid
 # String  :name
+# String  :coordinates
 # String  :owner
-# Jsonb   :parcels_json, null: false
+# Jsonb   :parcels_json, null: false # TODO: remove when coordinates is populated
 # Time    :first_seen_at
 # Date    :first_seen_on
 #

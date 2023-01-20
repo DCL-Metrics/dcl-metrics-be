@@ -37,18 +37,35 @@ module Services
 
     def find_or_create_scene(scene)
       begin
+        name = scene['metadata']['display']['title']
+        # TODO: can be sorted/joined here after parcels_json is deprecated
+        coordinates = scene['pointers']
+        scene_disambiguation_uuid = find_or_create_scene_uuid(name, coordinates)
+
         model = Models::Scene.find_or_create(cid: scene['id']) do |s|
-          s.name          = scene['metadata']['display']['title']
-          s.owner         = scene['metadata']['owner']
-          s.parcels_json  = scene['pointers'].to_json
-          s.first_seen_at = current_time
-          s.first_seen_on = current_time.to_date.to_s
+          s.name                      = name
+          s.owner                     = scene['metadata']['owner']
+          s.parcels_json              = coordinates.to_json
+          s.coordinates               = coordinates.sort.join(';')
+          s.first_seen_at             = current_time
+          s.first_seen_on             = current_time.to_date.to_s
+          s.scene_disambiguation_uuid = scene_disambiguation_uuid
         end
 
         scenes.push(model)
       rescue Sequel::UniqueConstraintViolation
         scenes.push(Models::Scene.find(cid: scene['id']))
       end
+    end
+
+    def find_or_create_scene_uuid(name, coordinates)
+      params = { name: name, coordinates: coordinates.sort.join(';') }
+
+      model = Models::SceneDisambiguation.find_or_create(params) do |sd|
+        s.uuid = SecureRandom.uuid
+      end
+
+      model.uuid
     end
   end
 end
