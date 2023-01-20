@@ -14,7 +14,7 @@
 module Models
   class Scene < Sequel::Model
     def self.collect(cids)
-      where(cid: cids).reject(&:public_road?).uniq(&:scene_disambiguation_uuid)
+      where(cid: cids).reject(&:public_road?).group_by(&:scene_disambiguation_uuid)
     end
 
     def scene_disambiguation

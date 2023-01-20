@@ -11,11 +11,11 @@ module Services
     def call
       Models::DailySceneStats.where(date: date).delete
 
-      Models::Scene.collect(cids).each do |scenes|
+      Models::Scene.collect(cids).each do |uuid, scenes|
         # date, scene_disambiguation_uuid, cids, total_unique_users
         Jobs::ProcessDailySceneStats.perform_async(
           date,
-          scenes.first.scene_disambiguation_uuid,
+          uuid,
           scenes.flat_map(&:cid),
           user_count
         )
