@@ -62,7 +62,7 @@ module Services
       params = { name: name, coordinates: coordinates.sort.join(';') }
 
       model = Models::SceneDisambiguation.find_or_create(params) do |sd|
-        s.uuid = SecureRandom.uuid
+        sd.uuid = SecureRandom.uuid
       end
 
       model.uuid
