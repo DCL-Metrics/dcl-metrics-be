@@ -5,7 +5,7 @@ module Jobs
     def perform(date, scene_disambiguation_uuid, cids, total_global_users)
       scene_disambiguation = Models::SceneDisambiguation.find(uuid: scene_disambiguation_uuid)
       name = scene_disambiguation.name
-      coordinates = scene_disambiguation.coordinates
+      coordinates = scene_disambiguation.coordinates.split(';')
 
       scene_traffic =  Models::ParcelTraffic.where(
         coordinates: coordinates,
