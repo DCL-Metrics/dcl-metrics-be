@@ -10,7 +10,7 @@
 module Models
   class SceneDisambiguation < Sequel::Model
     def first_deployed_at
-      scenes.order(:first_seen_at).first
+      scenes.order(:first_seen_at).first.first_seen_at
     end
 
     def scenes
