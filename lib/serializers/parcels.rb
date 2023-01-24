@@ -76,6 +76,8 @@ module Serializers
       return if scene_cid.nil?
 
       scene = Models::Scene.find(cid: scene_cid)
+      return if scene.public_road?
+
       scene_disambiguation = scene.scene_disambiguation
 
       {
