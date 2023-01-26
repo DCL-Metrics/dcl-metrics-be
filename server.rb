@@ -57,12 +57,22 @@ class Server < Sinatra::Application
 
   get '/scenes/:uuid' do
     stats = Models::DailySceneStats.find(
-      date: Date.today - 1,
+      date: params[:date] || Date.today - 1,
       scene_disambiguation_uuid: params[:uuid]
     )
     return [404, { msg: "Can't find scene with uuid #{params[:uuid]}" }.to_json] if stats.nil?
 
     Serializers::Scenes.serialize([stats]).first.to_json
+  end
+
+  get '/scenes/:uuid/history' do
+    DATABASE_CONNECTION[
+      "select date, unique_visitors
+      from daily_scene_stats
+      where scene_disambiguation_uuid = '#{params[:uuid]}'
+      order by date desc
+      limit 90"
+    ].all.to_json
   end
 
   get '/parcels/all' do
@@ -90,11 +100,11 @@ class Server < Sinatra::Application
     Serializers::PeerStatus.serialize(api_responses).to_json
   end
 
-  get '/reports/:scene_name' do
+  get '/reports/:uuid' do
     scenes = Models::DailySceneStats.
-      where(name: params[:scene_name]).
+      where(scene_disambiguation_uuid: params[:uuid]).
       order(:date).
-      select(:date, :unique_addresses, :avg_time_spent)
+      select(:date, :unique_addresses, :avg_time_spent, :avg_time_spent_afk)
 
     reporting_params = { url: "api.dcl-metrics.com/reports", params: params }
 
@@ -106,7 +116,7 @@ class Server < Sinatra::Application
     data = scenes.
       last(30).
       map { |x| [x.date.to_s, x.unique_addresses, x.avg_time_spent] }.
-      prepend(%w[date visitors avg_time_spent_in_seconds])
+      prepend(%w[date visitors avg_time_spent_in_seconds avg_time_spent_afk_in_seconds])
 
     filename = "#{params[:scene_name]}.csv"
     file = Tempfile.new(filename)
