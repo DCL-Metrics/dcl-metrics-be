@@ -71,8 +71,8 @@ class Server < Sinatra::Application
       from daily_scene_stats
       where scene_disambiguation_uuid = '#{params[:uuid]}'
       order by date desc
-      limit 90"
-    ].all.to_json
+      limit 91"
+    ].all.reverse.to_json
   end
 
   get '/parcels/all' do
