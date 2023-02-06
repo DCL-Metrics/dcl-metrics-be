@@ -30,7 +30,7 @@ module Serializers
           avg_complete_session_duration: scene.avg_complete_session_duration,
         }
 
-        next base if basic_data_only?
+        next base if basic_data_only
 
         base.merge({
           marathon_users: serialize_marathon_users(scene.marathon_users, enriched_users),
