@@ -14,7 +14,7 @@ module Services
       Models::Scene.collect(cids).each do |uuid, scenes|
         # date, scene_disambiguation_uuid, cids, total_unique_users
         Jobs::ProcessDailySceneStats.perform_async(
-          date,
+          date.to_s,
           uuid,
           scenes.flat_map(&:cid),
           user_count
