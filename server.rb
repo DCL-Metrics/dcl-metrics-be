@@ -50,9 +50,9 @@ class Server < Sinatra::Application
   # maybe need to add some additional rows for sorting / queries
   # (concurrent users, addresses, etc)
   get '/scenes/top' do
-    scenes = Models::DailySceneStats.yesterday.order(:unique_addresses).last(10)
+    scenes = Models::DailySceneStats.yesterday.order(:unique_addresses).last(50)
 
-    Serializers::Scenes.serialize(scenes).to_json
+    Serializers::Scenes.serialize(scenes, basic_data_only: true).to_json
   end
 
   get '/scenes/:uuid' do
