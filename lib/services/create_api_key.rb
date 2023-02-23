@@ -10,11 +10,13 @@ module Services
     end
 
     def call
-      Models::ApiKey.create(
+      api_key = Models::ApiKey.create(
         key: SecureRandom.uuid,
         expires_at: Date.today + duration_days,
         permissions_json: build_permissions.to_json
       )
+
+      api_key.key
     end
 
     private
