@@ -153,13 +153,17 @@ class Server < Sinatra::Application
       query_params_json: params.to_json
     }
 
-    expired_msg = "Your API key '#{key}' has expired"
-    Models::ApiKeyAccessLog.create(log_params.merge(response: 498))
-    return halt 498, { msg: expired_msg }.to_json if api_key.expired?
+    if api_key.expired?
+      expired_msg = "Your API key '#{key}' has expired"
+      Models::ApiKeyAccessLog.create(log_params.merge(response: 498))
+      halt 498, { msg: expired_msg }.to_json
+    end
 
-    unauthorized_msg = "Your API key '#{key}' is not authorized to access #{endpoint}"
-    Models::ApiKeyAccessLog.create(log_params.merge(response: 401))
-    return halt 401, { msg: unauthorized_msg }.to_json unless api_key.permitted?(endpoint)
+    unless api_key.permitted?(endpoint)
+      unauthorized_msg = "Your API key '#{key}' is not authorized to access #{endpoint}"
+      Models::ApiKeyAccessLog.create(log_params.merge(response: 401))
+      halt 401, { msg: unauthorized_msg }.to_json
+    end
 
     # TODO: requests per time period
     # rate_limited_msg = "Your API key '#{key}' has made too many requests and is timed out"
