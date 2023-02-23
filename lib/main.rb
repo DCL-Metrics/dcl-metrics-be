@@ -44,6 +44,8 @@ require './lib/models/user.rb'
 require './lib/models/user_dao_activity.rb'
 require './lib/models/user_nfts.rb'
 require './lib/models/scene_disambiguation.rb'
+require './lib/models/api_key.rb'
+require './lib/models/api_key_access_log.rb'
 
 # require adapters
 require 'faraday'
@@ -69,6 +71,7 @@ require './lib/services/create_daily_parcel_traffic.rb'
 require './lib/services/request_logger.rb'
 require './lib/services/daily_data_assessor.rb'
 require './lib/services/enrich_user_data.rb'
+require './lib/services/create_api_key.rb'
 
 # require serializers
 require './lib/serializers/global/daily_stats.rb'

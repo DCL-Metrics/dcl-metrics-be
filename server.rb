@@ -3,17 +3,19 @@ require 'sinatra'
 class Server < Sinatra::Application
   ALLOWED_ACCESS_IP = %w[99.80.183.117 99.81.135.32 95.90.237.179]
 
-  # Ensure all requests come from a fixed IP
+  # Extremely sophisticated access management
   before do
     # don't limit endpoints unless they are on production
     return unless ENV['RACK_ENV'] == 'production'
+
+    requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR']
+    api_key = fetch_valid_api_key(request.env, requesting_ip)
+    return if api_key
 
     # don't limit the reports namespace
     return if request.env["REQUEST_PATH"].split('/')[1] == 'reports'
 
     # handle IP based blocking
-    requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR']
-
     unless ALLOWED_ACCESS_IP.include?(requesting_ip)
       halt 403, { msg: "I'm afraid I can't let you do that, #{requesting_ip}" }.to_json
     end
@@ -134,5 +136,38 @@ class Server < Sinatra::Application
 
   def notify_telegram(lvl, msg)
     Services::TelegramOperator.notify(level: lvl, message: msg)
+  end
+
+  def fetch_valid_api_key(env, ip_address)
+    key = env["HTTP_API_KEY"]
+    return unless key
+
+    api_key = Models::ApiKey.find(key: key)
+    return unless api_key
+
+    endpoint = env["REQUEST_PATH"]
+    log_params = {
+      endpoint: endpoint,
+      ip_address: ip_address,
+      key: key,
+      query_params_json: params.to_json
+    }
+
+    expired_msg = "Your API key '#{key}' has expired"
+    Models::ApiKeyAccessLog.create(log_params.merge(response: 498))
+    return halt 498, { msg: expired_msg }.to_json if api_key.expired?
+
+    unauthorized_msg = "Your API key '#{key}' is not authorized to access #{endpoint}"
+    Models::ApiKeyAccessLog.create(log_params.merge(response: 401))
+    return halt 401, { msg: unauthorized_msg }.to_json unless api_key.permitted?(endpoint)
+
+    # TODO: requests per time period
+    # rate_limited_msg = "Your API key '#{key}' has made too many requests and is timed out"
+    # return halt 403, { msg: rate_limited_msg }.to_json if api_key.rate_limited?
+
+    # log api_key usage
+    Models::ApiKeyAccessLog.create(log_params.merge(response: 200))
+
+    true
   end
 end
