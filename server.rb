@@ -17,7 +17,7 @@ class Server < Sinatra::Application
 
     # handle IP based blocking
     unless ALLOWED_ACCESS_IP.include?(requesting_ip)
-      halt 403, { msg: "I'm afraid I can't let you do that, #{requesting_ip}" }.to_json
+      failure(403, "I'm afraid I can't let you do that, #{requesting_ip}")
     end
   end
 
@@ -52,24 +52,70 @@ class Server < Sinatra::Application
   # maybe need to add some additional rows for sorting / queries
   # (concurrent users, addresses, etc)
   get '/scenes/top' do
-    scenes = Models::DailySceneStats.yesterday.order(:unique_addresses).last(50)
+    scenes = Models::DailySceneStats.
+      yesterday.
+      basic_data.
+      order(:unique_addresses).
+      last(50)
 
     Serializers::Scenes.serialize(scenes, basic_data_only: true).to_json
   end
 
+  get '/scenes/search' do
+    data = Models::Scene.
+      distinct(:name).
+      select(
+        :coordinates,
+        :first_seen_at,
+        :name,
+        Sequel.as(:scene_disambiguation_uuid, :uuid)
+      )
+
+    data = data.where { Sequel.like(:name, "%#{params[:name]}%") } if params[:name]
+    data = data.where { Sequel.like(:coordinates, "%#{params[:coordinates]}%") } if params[:coordinates]
+
+    data.first(10).map(&:values).to_json
+  end
+
   get '/scenes/:uuid' do
-    stats = Models::DailySceneStats.find(
+    basic_data_only = params[:basic_data_only] || false
+    data = basic_data_only ? Models::DailySceneStats.basic_data : Models::DailySceneStats
+
+    stats = data.find(
       date: params[:date] || Date.today - 1,
       scene_disambiguation_uuid: params[:uuid]
     )
-    return [404, { msg: "Can't find scene with uuid #{params[:uuid]}" }.to_json] if stats.nil?
+    failure(404, "Can't find scene with uuid #{params[:uuid]}") if stat.nil?
 
-    Serializers::Scenes.serialize([stats]).first.to_json
+    Serializers::Scenes.serialize([stats], basic_data_only: basic_data_only).first.to_json
   end
 
   get '/scenes/:uuid/history' do
+    offset = params[:offset] || 0
+    limit = params[:limit] || 30
+    failure(400, "Max limit is 30 scenes") if limit > 30
+
+    basic_data_only = params[:basic_data_only] || false
+    data = basic_data_only ? Models::DailySceneStats.basic_data : Models::DailySceneStats
+    stats = data.
+      where(scene_disambiguation_uuid: params[:uuid]).
+      order(:date)
+    failure(404, "Can't find scene with uuid #{params[:uuid]}") if stat.empty?
+
+    serialized = Serializers::Scenes.serialize(
+      stats.limit(limit).offset(offset).all,
+      basic_data_only: basic_data_only
+    )
+
+    {
+      total: stats.count,
+      data: serialized
+    }.to_json
+  end
+
+  get '/scenes/:uuid/visitor_history' do
     DATABASE_CONNECTION[
-      "select date, unique_visitors
+      "select date, unique_visitors as visitors
       from daily_scene_stats
       where scene_disambiguation_uuid = '#{params[:uuid]}'
       order by date desc
@@ -109,10 +155,11 @@ class Server < Sinatra::Application
       select(:date, :unique_addresses, :avg_time_spent, :avg_time_spent_afk)
 
     reporting_params = { url: "api.dcl-metrics.com/reports", params: params }
+    scene_name = params[:scene_name] || scenes.last&.name || 'unknown scene'
 
     if scenes.empty?
       Services::RequestLogger.call(**reporting_params.merge(status: 404))
-      halt 404, { msg: "I can't find data about '#{params[:scene_name]}'" }.to_json
+      failure(404, "Can't find data about '#{scene_name}'")
     end
 
     data = scenes.
@@ -120,7 +167,7 @@ class Server < Sinatra::Application
       map { |x| [x.date.to_s, x.unique_addresses, x.avg_time_spent] }.
       prepend(%w[date visitors avg_time_spent_in_seconds avg_time_spent_afk_in_seconds])
 
-    filename = "#{params[:scene_name]}.csv"
+    filename = "#{scene_name}.csv"
     file = Tempfile.new(filename)
     file.write(data)
     file.rewind
@@ -133,6 +180,10 @@ class Server < Sinatra::Application
   end
 
   private
+
+  def failure(status_code, msg)
+    halt [status_code, { msg: msg}.to_json]
+  end
 
   def notify_telegram(lvl, msg)
     Services::TelegramOperator.notify(level: lvl, message: msg)
