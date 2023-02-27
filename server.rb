@@ -85,7 +85,7 @@ class Server < Sinatra::Application
       date: params[:date] || Date.today - 1,
       scene_disambiguation_uuid: params[:uuid]
     )
-    failure(404, "Can't find scene with uuid #{params[:uuid]}") if stat.nil?
+    failure(404, "Can't find scene with uuid #{params[:uuid]}") if stats.nil?
 
     Serializers::Scenes.serialize([stats], basic_data_only: basic_data_only).first.to_json
   end
@@ -100,7 +100,7 @@ class Server < Sinatra::Application
     stats = data.
       where(scene_disambiguation_uuid: params[:uuid]).
       order(:date)
-    failure(404, "Can't find scene with uuid #{params[:uuid]}") if stat.empty?
+    failure(404, "Can't find scene with uuid #{params[:uuid]}") if stats.empty?
 
     serialized = Serializers::Scenes.serialize(
       stats.limit(limit).offset(offset).all,
