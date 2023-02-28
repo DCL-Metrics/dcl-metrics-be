@@ -48,13 +48,10 @@ class Server < Sinatra::Application
     Serializers::Global::Users.serialize.to_json
   end
 
-  # TODO: use Models::SerializedDailySceneStats
-  # maybe need to add some additional rows for sorting / queries
-  # (concurrent users, addresses, etc)
   get '/scenes/top' do
     scenes = Models::DailySceneStats.
-      yesterday.
       basic_data.
+      where(date: params[:date] || Date.today - 1)
       order(:unique_addresses).
       last(50)
 

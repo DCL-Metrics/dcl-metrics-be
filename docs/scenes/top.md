@@ -6,6 +6,10 @@ Data about yesterday's top scenes
 
 ### `https://api.dcl-metrics.com/scenes/top`
 
+## QUERY PARAMS
+
+* **date**: Date to return top scenes for. Defaults to yesterday if not given, format `YYYY-MM-DD`
+
 #### SAMPLE DATA
 
 The expected response, as json:
@@ -25,7 +29,7 @@ The expected response, as json:
     "total_logouts":2872,
     "unique_logouts":2147,
     "complete_sessions":2596,
-    "avg_complete_session_duration":10111,
+    "avg_complete_session_duration":10111
   },
   {
     // additional scenes
