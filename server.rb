@@ -51,7 +51,7 @@ class Server < Sinatra::Application
   get '/scenes/top' do
     scenes = Models::DailySceneStats.
       basic_data.
-      where(date: params[:date] || Date.today - 1)
+      where(date: params[:date] || Date.today - 1).
       order(:unique_addresses).
       last(50)
 
