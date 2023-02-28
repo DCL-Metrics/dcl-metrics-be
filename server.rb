@@ -127,7 +127,7 @@ class Server < Sinatra::Application
     # parcels = Models::DailyParcelStats.yesterday.where(coordinates: coordinates)
     # result = Serializers::Parcels.serialize(parcels)
 
-    date = Date.today - 1
+    date = params[:date] || Date.today - 1
     Models::SerializedDailyParcelStats.find(date: date)&.data_json
   end
 

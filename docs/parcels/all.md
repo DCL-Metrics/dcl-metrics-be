@@ -7,6 +7,10 @@ currently around 3MB!
 
 ### `https://api.dcl-metrics.com/parcels/all`
 
+## QUERY PARAMS
+
+* **date**: Date to return data for. Defaults to yesterday if not given, format `YYYY-MM-DD`
+
 #### SAMPLE DATA
 
 Time is always returned in seconds
