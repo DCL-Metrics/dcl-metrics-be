@@ -48,6 +48,25 @@ module Models
       previous_x_days(90)
     end
 
+    def self.basic_data
+      select(
+        :name,
+        :scene_disambiguation_uuid,
+        :date,
+        :coordinates,
+        :unique_addresses,
+        :share_of_global_visitors,
+        :avg_time_spent,
+        :avg_time_spent_afk,
+        :total_logins,
+        :unique_logins,
+        :total_logouts,
+        :unique_logouts,
+        :complete_sessions,
+        :avg_complete_session_duration
+      )
+    end
+
     def marathon_users
       JSON.parse(visitors_by_total_time_spent_json).
         sort_by(&:last).
