@@ -78,7 +78,7 @@ class Server < Sinatra::Application
     basic_data_only = params[:basic_data_only] || false
     data = basic_data_only ? Models::DailySceneStats.basic_data : Models::DailySceneStats
 
-    stats = data.find(
+    stats = data.first(
       date: params[:date] || Date.today - 1,
       scene_disambiguation_uuid: params[:uuid]
     )
