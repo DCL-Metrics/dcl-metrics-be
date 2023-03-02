@@ -59,16 +59,12 @@ class Server < Sinatra::Application
   end
 
   get '/scenes/search' do
-    data = Models::Scene.
-      distinct(:name).
-      select(
-        :coordinates,
-        :first_seen_at,
-        :name,
-        Sequel.as(:scene_disambiguation_uuid, :uuid)
-      )
-
-    p params: params
+    query = "select distinct on (name)
+              coordinates,
+              first_seen_at,
+              name,
+              scene_disambiguation_uuid as uuid
+            from scenes"
 
     # NOTE: for some reason there is different behavior between dev environments
     # and prod when using "Sequel.like" - in dev environments (and on prod
@@ -80,14 +76,14 @@ class Server < Sinatra::Application
     #
     # dev: WHERE (\"coordinates\" LIKE '%-70,-124%')">
     # prod: WHERE (\"coordinates\" LIKE '%#<Sequel::SQL::QualifiedIdentifier:0x..>%')"
-    data = data.where { Sequel.like(:name, "%#{params['name']}%") } if params['name']
-    data = data.where { Sequel.like(:coordinates, "%#{params['coordinates']}%") } if params['coordinates']
+    #
+    # calling #qualify on the resulting dataset doesn't make a difference, so
+    # for now will just write the sql directly
 
-    p data: data
-    p qualified: data.qualify
+    query += " where coordinates LIKE '%#{params['coordinates']}%'" if params['coordinates']
+    query += " where name LIKE '%#{params['name']}%'" if params['name']
 
-
-    data.first(10).map(&:values).to_json
+    DATABASE_CONNECTION[query].first(10).to_json
   end
 
   get '/scenes/:uuid' do
