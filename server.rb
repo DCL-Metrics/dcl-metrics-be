@@ -70,10 +70,22 @@ class Server < Sinatra::Application
 
     p params: params
 
+    # NOTE: for some reason there is different behavior between dev environments
+    # and prod when using "Sequel.like" - in dev environments (and on prod
+    # console...wtf) the query is formatted as SQL as expected. based on logs,
+    # in prod this is *not* happening, and instead it renders a
+    # "QualifiedIdentifier" class
+    #
+    # example:
+    #
+    # dev: WHERE (\"coordinates\" LIKE '%-70,-124%')">
+    # prod: WHERE (\"coordinates\" LIKE '%#<Sequel::SQL::QualifiedIdentifier:0x..>%')"
     data = data.where { Sequel.like(:name, "%#{params['name']}%") } if params['name']
     data = data.where { Sequel.like(:coordinates, "%#{params['coordinates']}%") } if params['coordinates']
 
     p data: data
+    p qualified: data.qualify
+
 
     data.first(10).map(&:values).to_json
   end
