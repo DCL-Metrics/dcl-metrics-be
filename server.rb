@@ -68,6 +68,8 @@ class Server < Sinatra::Application
         Sequel.as(:scene_disambiguation_uuid, :uuid)
       )
 
+    p params: params
+
     data = data.where { Sequel.like(:name, "%#{params[:name]}%") } if params[:name]
     data = data.where { Sequel.like(:coordinates, "%#{params[:coordinates]}%") } if params[:coordinates]
 
