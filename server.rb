@@ -58,6 +58,8 @@ class Server < Sinatra::Application
     Serializers::Scenes.serialize(scenes, basic_data_only: true).to_json
   end
 
+  # TODO: select the first date when there are multiple results (so lose distinct)
+  # if the first result for first_seen_at is nil, find the first daily_scene model?
   get '/scenes/search' do
     query = "select distinct on (name)
               coordinates,
@@ -80,8 +82,14 @@ class Server < Sinatra::Application
     # calling #qualify on the resulting dataset doesn't make a difference, so
     # for now will just write the sql directly
 
-    query += " where coordinates LIKE '%#{params['coordinates']}%'" if params['coordinates']
-    query += " where name LIKE '%#{params['name']}%'" if params['name']
+      case
+      when params['coordinates'] && params['name']
+        query += " where coordinates LIKE '%#{params['coordinates']}%' and name LIKE '%#{params['name']}%'"
+      when params['coordinates']
+        query += " where coordinates LIKE '%#{params['coordinates']}%'"
+      when params['name']
+        query += " where name LIKE '%#{params['name']}%'"
+      end
 
     DATABASE_CONNECTION[query].first(10).to_json
   end
