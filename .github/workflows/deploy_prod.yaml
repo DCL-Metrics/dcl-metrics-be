@@ -104,7 +104,6 @@ jobs:
           format: html
           message: |
             Prod deployment ${{ steps.deploy.outcome == 'success' && 'succeeded ✅' || 'failed ❌' }}
-            Reason: Deployment error
             Repo: ${{ github.repository }}
             Author: ${{ github.actor }}
             Commit: <a href="${{ github.event.head_commit.url }}">${{ github.event.head_commit.message }}</a>

@@ -2,7 +2,11 @@ module Jobs
   class ProcessDailySceneStats < Job
     sidekiq_options queue: 'processing'
 
-    def perform(date, name, coordinates, cids, total_global_users)
+    def perform(date, scene_disambiguation_uuid, cids, total_global_users)
+      scene_disambiguation = Models::SceneDisambiguation.find(uuid: scene_disambiguation_uuid)
+      name = scene_disambiguation.name
+      coordinates = scene_disambiguation.coordinates.split(';')
+
       scene_traffic =  Models::ParcelTraffic.where(
         coordinates: coordinates,
         date: date,
@@ -122,6 +126,7 @@ module Jobs
         date: date,
         name: name,
         coordinates: coordinates.sort.join(';'),
+        scene_disambiguation_uuid: scene_disambiguation_uuid,
         cids: cids.sort.join(','),
         total_visitors: total_visitors,
         unique_visitors: unique_visitors,

@@ -76,12 +76,17 @@ module Serializers
       return if scene_cid.nil?
 
       scene = Models::Scene.find(cid: scene_cid)
+      return if scene.public_road?
+
+      scene_disambiguation = scene.scene_disambiguation
 
       {
-        cid: scene.cid,
+        cid: scene.cid, # TODO: drop this from output
+        scene_uuid: scene_disambiguation.uuid,
+        first_deployed_at: scene_disambiguation.first_deployed_at,
         last_deployed_at: scene.first_seen_at,
         name: scene.name,
-        parcels: scene.parcels
+        parcels: scene.coordinates.split(';')
       }
     end
   end

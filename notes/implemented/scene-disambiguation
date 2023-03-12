@@ -1,0 +1,18 @@
+unique_scenes = DATABASE_CONNECTION[
+  "select name, coordinates from scenes group by name, coordinates"
+].uniq { |x| [x[:name], x[:coordinates]] }
+
+scenes.each do |scene|
+  params = {
+    coordinates: scene[:coordinates],
+    name: scene[:name]
+  }
+
+  scene_disambiguation = Models::SceneDisambiguation.find_or_create(params) do |sd|
+    sd.uuid = SecureRandom.uuid
+  end
+
+  scene.update(scene_disambiguation_uuid: scene_disambiguation.uuid)
+
+  print '.'
+end
