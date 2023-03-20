@@ -8,8 +8,6 @@ class GrantsSpec < BaseSpec
   it 'returns the data in an expected format' do
     assert_equal(414, subject.count)
 
-    binding.pry
-
     first = subject.first
     assert_equal(11, first.keys.count)
     assert_equal('c28e0b10-8830-11ed-bd37-2b7f3eae6b63', first[:proposal_id])

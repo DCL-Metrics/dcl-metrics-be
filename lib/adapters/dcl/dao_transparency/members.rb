@@ -17,6 +17,7 @@ module Adapters
             {
               address: row[0].downcase,
               vp: row[1].gsub(',','').to_i,
+              delegated_vp: row[5].gsub(',','').to_i,
               delegate: delegate,
               delegators: row[10].split(',').map(&:downcase)
             }
