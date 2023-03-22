@@ -6,8 +6,8 @@ module Jobs
       def perform
         data = JSON.parse(Models::DaoGovernance.last.proposals_json)
 
-        data.group_by { |x| x[:created_by] }.each do |address, user_data|
-          UserDaoActivities.update_or_create(address: address) do |uda|
+        data.group_by { |x| x['created_by'] }.each do |address, user_data|
+          Models::UserDaoActivity.update_or_create(address: address) do |uda|
             uda.proposals_json = user_data.to_json
             uda.proposals_count = user_data.count
           end

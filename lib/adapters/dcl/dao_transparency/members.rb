@@ -12,14 +12,14 @@ module Adapters
 
         def call
           data[1..-1].map do |row|
-            delegate = row[7].empty? ? nil : row[7].downcase
+            delegate = row[9].empty? ? nil : row[9].downcase
 
             {
               address: row[0].downcase,
               vp: row[1].gsub(',','').to_i,
               delegated_vp: row[5].gsub(',','').to_i,
               delegate: delegate,
-              delegators: row[10].split(',').map(&:downcase)
+              delegators: row[12].split(',').map(&:downcase)
             }
           end
         end

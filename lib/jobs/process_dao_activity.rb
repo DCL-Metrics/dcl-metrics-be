@@ -9,7 +9,7 @@ module Jobs
 
       if data != existing_data
         governance.update("#{sheet_name.downcase}_json" => data)
-        Jobs::UserDaoActivities.const_get(sheet_name).perform_async
+        Jobs::UserDaoActivities.const_get(sheet_name).perform_async if sheet_name != 'KPIs'
       end
 
       # either way update the relevant DaoGovernance#updated_at column

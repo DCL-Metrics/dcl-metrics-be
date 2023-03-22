@@ -6,15 +6,15 @@ module Jobs
       def perform
         data = JSON.parse(Models::DaoGovernance.last.grants_json)
 
-        data.group_by { |x| x[:created_by] }.each do |address, user_data|
-          UserDaoActivities.update_or_create(address: address) do |uda|
+        data.group_by { |x| x['created_by'] }.each do |address, user_data|
+          Models::UserDaoActivity.update_or_create(address: address) do |uda|
             uda.grants_authored_json = user_data.to_json
             uda.grants_authored_count = user_data.count
           end
         end
 
-        data.group_by { |x| x[:beneficiary] }.each do |address, user_data|
-          UserDaoActivities.update_or_create(address: address) do |uda|
+        data.group_by { |x| x['beneficiary'] }.each do |address, user_data|
+          Models::UserDaoActivity.update_or_create(address: address) do |uda|
             uda.grants_beneficiary_json = user_data.to_json
             uda.grants_beneficiary_count = user_data.count
           end
