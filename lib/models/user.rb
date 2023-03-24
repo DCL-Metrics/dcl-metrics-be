@@ -16,11 +16,11 @@
 module Models
   class User < Sequel::Model(FAT_BOY_DATABASE[:users])
     def user_nfts
-      Models::UserNfts.find(address: address)
+      @user_nfts ||= Models::UserNfts.find(address: address)
     end
 
     def user_dao_activity
-      Models::UserDaoActivity.find(address: address)
+      @user_dao_activity ||= Models::UserDaoActivity.find(address: address)
     end
 
     def name
@@ -33,6 +33,10 @@ module Models
 
     def verified?
       !!user_nfts&.owns_dclens
+    end
+
+    def dao_member?
+      !!user_dao_activity
     end
   end
 end
