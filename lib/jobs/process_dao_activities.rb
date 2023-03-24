@@ -19,7 +19,7 @@ module Jobs
     def perform
       SHEETS_TO_PULL.each do |sheet|
         Jobs::ProcessDaoActivity.perform_async(sheet)
-        return if sheet_name == 'KPIs'
+        next if sheet == 'KPIs'
 
         Jobs::UserDaoActivities.const_get(sheet_name).perform_in(600)
       end
