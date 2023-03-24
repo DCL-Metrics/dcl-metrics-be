@@ -17,9 +17,6 @@
 #
 # Jsonb   :team_json
 # Time    :team_updated_at
-#
-# Jsonb   :votes_json
-# Time    :votes_updated_at
 
 module Models
   class DaoGovernance < Sequel::Model(FAT_BOY_DATABASE[:dao_governance])
@@ -45,10 +42,6 @@ module Models
 
     def team
       @team ||= JSON.parse(team_json)
-    end
-
-    def votes
-      @votes ||= JSON.parse(votes_json)
     end
   end
 end

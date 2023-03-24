@@ -23,6 +23,7 @@ Sequel.migration do
       Jsonb   :team_json
       Time    :team_updated_at
 
+      # TODO: can be dropped
       Jsonb   :votes_json
       Time    :votes_updated_at
     end

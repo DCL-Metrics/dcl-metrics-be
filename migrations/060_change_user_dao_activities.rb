@@ -7,7 +7,6 @@ Sequel.migration do
     rename_column :user_dao_activities, :proposals_authored, :proposals_count
     rename_column :user_dao_activities, :memberships_json, :teams_json
 
-    add_column :user_dao_activities, :votes_json, 'jsonb'
     add_column :user_dao_activities, :proposals_json, 'jsonb'
     add_column :user_dao_activities, :collections_json, 'jsonb'
     add_column :user_dao_activities, :grants_authored_json, 'jsonb'

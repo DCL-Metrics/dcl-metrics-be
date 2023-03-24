@@ -7,7 +7,6 @@
 # String    :delegators
 # String    :delegate
 #
-# Jsonb     :votes_json
 # Integer   :votes_count
 # Time      :first_vote_cast_at
 # Time      :latest_vote_cast_at
@@ -38,6 +37,10 @@ module Models
   class UserDaoActivity < Sequel::Model(FAT_BOY_DATABASE[:user_dao_activities])
     def user
       Models::User.find(address: address)
+    end
+
+    def votes
+      Models::DaoVote.where(address: address)
     end
 
     def recently_active?

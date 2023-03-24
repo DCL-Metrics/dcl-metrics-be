@@ -17,7 +17,12 @@ module Jobs
     # then overwrite that column and run the job to update user_dao_activities
     # which rely on that data, otherwise do nothing.
     def perform
-      SHEETS_TO_PULL.each { |sheet| Jobs::ProcessDaoActivity.perform_async(sheet) }
+      SHEETS_TO_PULL.each do |sheet|
+        Jobs::ProcessDaoActivity.perform_async(sheet)
+        return if sheet_name == 'KPIs'
+
+        Jobs::UserDaoActivities.const_get(sheet_name).perform_in(600)
+      end
     end
   end
 end
