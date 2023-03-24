@@ -137,6 +137,10 @@ class BaseSpec < Minitest::Spec
     JSON.parse(File.read("./spec/fixtures/#{path}"))
   end
 
+  def parse_csv_fixture(path)
+    CSV.read("./spec/fixtures/#{path}", liberal_parsing: true)
+  end
+
   def expand_path(path)
     File.expand_path(path, __FILE__)
   end

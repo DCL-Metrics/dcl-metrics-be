@@ -1,0 +1,10 @@
+# for grants
+# result = subject.group_by { |x| x[:beneficiary] }
+result = subject.group_by { |x| x[:created_by] }
+created = result.map do |address, values|
+  {
+    beneficiary: address,
+    grants: values.map { |grant| { name: grant[:title], status: grant[:status], amount: grant[:amount] } },
+    awarded: values.map { |grant| next if grant[:status] == 'rejected'; grant[:amount] }.compact.sum
+  }
+end

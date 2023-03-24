@@ -5,18 +5,26 @@
 # Integer   :total_vp
 # Integer   :delegated_vp
 # String    :delegators
-# String    :delegate_address
+# String    :delegate
 #
-# Integer   :votes_cast
+# Integer   :votes_count
 # Time      :first_vote_cast_at
 # Time      :latest_vote_cast_at
 #
-# Integer   :proposals_authored
+# Jsonb     :grants_authored_json
+# Integer   :grants_authored_count
 #
+# Jsonb     :grants_beneficiary_json
+# Integer   :grants_beneficiary_count
+#
+# Jsonb     :proposals_json
+# Integer   :proposals_count
+#
+# Jsonb     :collections_json
 # TrueClass :collection_creator
 #
 # TrueClass :active_dao_committee_member
-# Jsonb     :memberships_json
+# Jsonb     :teams_json
 #
 # Time    :created_at,      null: false
 # Time    :updated_at,      null: false
@@ -29,6 +37,10 @@ module Models
   class UserDaoActivity < Sequel::Model(FAT_BOY_DATABASE[:user_dao_activities])
     def user
       Models::User.find(address: address)
+    end
+
+    def votes
+      Models::DaoVote.where(address: address)
     end
 
     def recently_active?
