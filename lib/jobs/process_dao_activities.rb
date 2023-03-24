@@ -21,7 +21,7 @@ module Jobs
         Jobs::ProcessDaoActivity.perform_async(sheet)
         next if sheet == 'KPIs'
 
-        Jobs::UserDaoActivities.const_get(sheet).perform_in(600)
+        Jobs::UserDaoActivities.const_get(sheet).perform_in(300) # 5 minutes
       end
     end
   end
