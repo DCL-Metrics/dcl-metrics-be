@@ -4,7 +4,7 @@ module Jobs
       sidekiq_options queue: 'processing'
 
       def perform
-        addresses = Models::DaoVote.distinct(:address).all
+        addresses = Models::DaoVote.select(:address).distinct.map(&:address)
 
         addresses.each do |address|
           user_data = Models::DaoVote.where(address: address).order(:timestamp)
