@@ -96,6 +96,13 @@ namespace :compute do
 
     Jobs::ProcessUsersNfts.perform_async
   end
+
+  desc "pull dao activities"
+  task :fetch_dao_activities do
+    require './lib/main'
+
+    Jobs::ProcessDaoActivities.perform_async
+  end
 end
 
 namespace :data_preservation do
