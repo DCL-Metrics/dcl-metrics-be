@@ -6,7 +6,7 @@ class ProposalsSpec < BaseSpec
   let(:data) { parse_csv_fixture('dao_transparency/proposals.csv') }
 
   it 'returns the data in an expected format' do
-    assert_equal(1511, subject.count)
+    assert_equal(10, subject.count)
 
     first = subject.first
     assert_equal('e8de87c0-957a-11ed-ae61-5f6dd0bf8358', first[:proposal_id])

@@ -20,7 +20,7 @@ class MembersSpec < BaseSpec
   end
 
   it 'returns the data in an expected format' do
-    assert_equal(4898, subject.count)
+    assert_equal(10, subject.count)
 
     first = subject.first
     assert_equal('0x30b1f4bd5476906f38385b891f2c09973196b742', first[:address])
