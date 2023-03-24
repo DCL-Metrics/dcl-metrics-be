@@ -11,8 +11,8 @@ module Jobs
 
           Models::UserDaoActivity.update_or_create(address: address) do |uda|
             uda.votes_count = user_data.count
-            uda.first_vote_cast_at = by_date.first.timestamp
-            uda.latest_vote_cast_at = by_date.last.timestamp
+            uda.first_vote_cast_at = user_data.first.timestamp
+            uda.latest_vote_cast_at = user_data.last.timestamp
           end
         end
 
