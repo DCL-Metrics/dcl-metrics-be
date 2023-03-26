@@ -161,8 +161,8 @@ class Server < Sinatra::Application
       avatar_url: user.avatar_url,
       first_seen: user.first_seen.to_s,
       last_seen: user.last_seen.to_s,
-      guest: user.guest?
-      verified: user.verified?
+      guest: user.guest?,
+      verified: user.verified?,
       dao_member: user.dao_member?
     }.to_json
   end
