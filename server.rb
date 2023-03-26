@@ -186,7 +186,7 @@ class Server < Sinatra::Application
           owns_land: nfts.owns_land,
           owns_wearables: nfts.owns_wearables,
           total_dclens: nfts.total_dclens,
-          total_land: nfts.total_land,
+          total_lands: nfts.total_lands,
           total_wearables: nfts.total_wearables,
           first_dclens_acquired_at: nfts.first_dclens_acquired_at.to_s,
           first_land_acquired_at: nfts.first_land_acquired_at.to_s,
@@ -222,7 +222,7 @@ class Server < Sinatra::Application
           delegate: dao_activity.delegate,
           total_votes: dao_activity.votes_count,
           first_vote_cast_at: dao_activity.first_vote_cast_at.to_s,
-          last_vote_cast_at: dao_activity.last_vote_cast_at.to_s,
+          latest_vote_cast_at: dao_activity.latest_vote_cast_at.to_s,
         }.to_json
       )
     else
