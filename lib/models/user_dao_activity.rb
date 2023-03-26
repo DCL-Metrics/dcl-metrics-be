@@ -43,8 +43,21 @@ module Models
       Models::DaoVote.where(address: address)
     end
 
+    def title
+      vp_titles = Models::DaoGovernance.last.kpis['vp_distribution']
+
+      case total_vp
+      when > vp_titles['whales']['minimum_vp'], then 'whale'
+      when > vp_titles['sharks']['minimum_vp'], then 'shark'
+      when > vp_titles['dolphin']['minimum_vp'], then 'dolphin'
+      when > vp_titles['fish']['minimum_vp'], then 'fish'
+      when > vp_titles['crab']['minimum_vp'], then 'crab'
+      else 'shrimp'
+      end
+    end
+
     def recently_active?
-      # dao_latest_vote_at < x days ago
+      latest_vote_cast_at > Date.today - 7
     end
   end
 end

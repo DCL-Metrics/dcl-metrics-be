@@ -151,6 +151,86 @@ class Server < Sinatra::Application
     Models::SerializedDailyParcelStats.find(date: date)&.data_json
   end
 
+  get '/users/:address' do
+    user = User.find(address: params[:adddress].downcase)
+    failure(404, "Can't find user with address #{params[:address]}") if user.nil?
+
+    {
+      address: params[:address],
+      name: user.name,
+      avatar_url: user.avatar_url,
+      first_seen: user.first_seen.to_s,
+      last_seen: user.last_seen.to_s,
+      guest: user.guest?
+      verified: user.verified?
+      dao_member: user.dao_member?
+    }.to_json
+  end
+
+  get 'users/:address/nfts' do
+    user = User.find(address: params[:adddress].downcase)
+    failure(404, "Can't find user with address #{params[:address]}") if user.nil?
+
+
+    nfts = user.nfts
+    base_attributes = {
+      address: params[:address],
+      name: user.name,
+      avatar_url: user.avatar_url,
+    }
+
+    if nfts
+      base_attributes.merge(
+        {
+          owns_nfts: true,
+          owns_dclens: nfts.owns_dclens,
+          owns_land: nfts.owns_land,
+          owns_wearables: nfts.owns_wearables,
+          total_dclens: nfts.total_dclens,
+          total_land: nfts.total_land,
+          total_wearables: nfts.total_wearables,
+          first_dclens_acquired_at: nfts.first_dclens_acquired_at.to_s,
+          first_land_acquired_at: nfts.first_land_acquired_at.to_s,
+          first_wearable_acquired_at: nfts.first_wearable_acquired_at.to_s,
+          participant_in_genesis_auction: nfts.participated_in_genesis_auction?,
+          og_user: nfts.og?
+        }.to_json
+      )
+    else
+      base_attributes.merge({ owns_nfts: false }.to_json)
+    end
+  end
+
+  get 'users/:address/dao_activity' do
+    user = User.find(address: params[:adddress].downcase)
+    failure(404, "Can't find user with address #{params[:address]}") if user.nil?
+
+    dao_activity = user.dao_activity
+    base_attributes = {
+      address: params[:address],
+      name: user.name,
+      avatar_url: user.avatar_url
+    }
+
+    if dao_activity
+      base_attributes.merge(
+        {
+          dao_member: true,
+          title: dao_activity.title,
+          total_vp: dao_activity.total_vp,
+          delegated_vp: dao_activity.delegated_vp,
+          delegators: dao_activity.delegators.split(';'),
+          delegate: dao_activity.delegate,
+          total_votes: dao_activity.votes_count,
+          first_vote_cast_at: dao_activity.first_vote_cast_at.to_s,
+          last_vote_cast_at: dao_activity.last_vote_cast_at.to_s,
+        }.to_json
+      )
+    else
+      base_attributes.merge({ dao_member: false }.to_json)
+    end
+  end
+
   get '/peer_status' do
     # NOTE: maybe we want to provide more dates later
     # but for now just use yesterday's data

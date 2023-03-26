@@ -15,12 +15,12 @@
 
 module Models
   class User < Sequel::Model(FAT_BOY_DATABASE[:users])
-    def user_nfts
-      @user_nfts ||= Models::UserNfts.find(address: address)
+    def nfts
+      @nfts ||= Models::UserNfts.find(address: address)
     end
 
-    def user_dao_activity
-      @user_dao_activity ||= Models::UserDaoActivity.find(address: address)
+    def dao_activity
+      @dao_activity ||= Models::UserDaoActivity.find(address: address)
     end
 
     def name
