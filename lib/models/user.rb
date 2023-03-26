@@ -32,11 +32,11 @@ module Models
     end
 
     def verified?
-      !!user_nfts&.owns_dclens
+      !!nfts&.owns_dclens
     end
 
     def dao_member?
-      !!user_dao_activity
+      !!dao_activity
     end
   end
 end
