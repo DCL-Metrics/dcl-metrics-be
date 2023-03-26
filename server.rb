@@ -167,10 +167,9 @@ class Server < Sinatra::Application
     }.to_json
   end
 
-  get 'users/:address/nfts' do
+  get '/users/:address/nfts' do
     user = Models::User.find(address: params[:address].downcase)
     failure(404, "Can't find user with address #{params[:address]}") if user.nil?
-
 
     nfts = user.nfts
     base_attributes = {
@@ -201,7 +200,7 @@ class Server < Sinatra::Application
     end
   end
 
-  get 'users/:address/dao_activity' do
+  get '/users/:address/dao_activity' do
     user = Models::User.find(address: params[:address].downcase)
     failure(404, "Can't find user with address #{params[:address]}") if user.nil?
 
