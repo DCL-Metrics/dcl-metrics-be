@@ -46,13 +46,14 @@ module Models
     def title
       vp_titles = Models::DaoGovernance.last.kpis['vp_distribution']
 
-      case total_vp
-      when > vp_titles['whales']['minimum_vp'], then 'whale'
-      when > vp_titles['sharks']['minimum_vp'], then 'shark'
-      when > vp_titles['dolphin']['minimum_vp'], then 'dolphin'
-      when > vp_titles['fish']['minimum_vp'], then 'fish'
-      when > vp_titles['crab']['minimum_vp'], then 'crab'
-      else 'shrimp'
+      case
+      when total_vp > vp_titles['whales']['minimum_vp'] then 'whale'
+      when total_vp > vp_titles['sharks']['minimum_vp'] then 'shark'
+      when total_vp > vp_titles['dolphin']['minimum_vp'] then 'dolphin'
+      when total_vp > vp_titles['fish']['minimum_vp'] then 'fish'
+      when total_vp > vp_titles['crab']['minimum_vp'] then 'crab'
+      else
+        'shrimp'
       end
     end
 
