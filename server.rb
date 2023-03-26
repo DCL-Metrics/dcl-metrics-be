@@ -193,10 +193,10 @@ class Server < Sinatra::Application
           first_wearable_acquired_at: nfts.first_wearable_acquired_at.to_s,
           participant_in_genesis_auction: nfts.participated_in_genesis_auction?,
           og_user: nfts.og?
-        }.to_json
-      )
+        }
+      ).to_json
     else
-      base_attributes.merge({ owns_nfts: false }.to_json)
+      base_attributes.merge({ owns_nfts: false }).to_json
     end
   end
 
@@ -223,10 +223,10 @@ class Server < Sinatra::Application
           total_votes: dao_activity.votes_count,
           first_vote_cast_at: dao_activity.first_vote_cast_at.to_s,
           latest_vote_cast_at: dao_activity.latest_vote_cast_at.to_s,
-        }.to_json
-      )
+        }
+      ).to_json
     else
-      base_attributes.merge({ dao_member: false }.to_json)
+      base_attributes.merge({ dao_member: false }).to_json
     end
   end
 
