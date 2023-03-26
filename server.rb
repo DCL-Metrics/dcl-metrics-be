@@ -152,7 +152,7 @@ class Server < Sinatra::Application
   end
 
   get '/users/:address' do
-    user = User.find(address: params[:adddress].downcase)
+    user = Models::User.find(address: params[:adddress].downcase)
     failure(404, "Can't find user with address #{params[:address]}") if user.nil?
 
     {
@@ -168,7 +168,7 @@ class Server < Sinatra::Application
   end
 
   get 'users/:address/nfts' do
-    user = User.find(address: params[:adddress].downcase)
+    user = Models::User.find(address: params[:adddress].downcase)
     failure(404, "Can't find user with address #{params[:address]}") if user.nil?
 
 
@@ -202,7 +202,7 @@ class Server < Sinatra::Application
   end
 
   get 'users/:address/dao_activity' do
-    user = User.find(address: params[:adddress].downcase)
+    user = Models::User.find(address: params[:adddress].downcase)
     failure(404, "Can't find user with address #{params[:address]}") if user.nil?
 
     dao_activity = user.dao_activity
