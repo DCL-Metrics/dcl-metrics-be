@@ -36,12 +36,20 @@ module Models
 
     def og?
       return true if participated_in_genesis_auction?
-      return true if first_dclens_acquired_at < LAUNCH_DATE
-      return true if first_wearable_acquired_at < LAUNCH_DATE
+      return true if acquired_before?(first_dclens_acquired_at, LAUNCH_DATE)
+      return true if acquired_before?(first_wearable_acquired_at, LAUNCH_DATE)
     end
 
     def participated_in_genesis_auction?
-      first_land_acquired_at < TERRAFORM_DISPERSAL_DATE
+      acquired_before?(first_land_acquired_at, TERRAFORM_DISPERSAL_DATE)
+    end
+
+    private
+
+    def acquired_before?(method, date)
+      return false if method.nil?
+
+      method < date
     end
   end
 end
