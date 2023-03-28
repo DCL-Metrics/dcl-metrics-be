@@ -49,9 +49,9 @@ module Models
       case
       when total_vp > vp_titles['whales']['minimum_vp'] then 'whale'
       when total_vp > vp_titles['sharks']['minimum_vp'] then 'shark'
-      when total_vp > vp_titles['dolphin']['minimum_vp'] then 'dolphin'
+      when total_vp > vp_titles['dolphins']['minimum_vp'] then 'dolphin'
       when total_vp > vp_titles['fish']['minimum_vp'] then 'fish'
-      when total_vp > vp_titles['crab']['minimum_vp'] then 'crab'
+      when total_vp > vp_titles['crabs']['minimum_vp'] then 'crab'
       else
         'shrimp'
       end
