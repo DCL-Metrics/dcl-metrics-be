@@ -226,15 +226,14 @@ class Server < Sinatra::Application
           first_vote_cast_at: dao_activity.first_vote_cast_at.to_s,
           latest_vote_cast_at: dao_activity.latest_vote_cast_at.to_s,
           grants_authored_count: dao_activity.grants_authored_count,
-          grants_authored: JSON.parse(dao_activity.grants_authored_json),
           grants_beneficiary_count: dao_activity.grants_beneficiary_count,
-          grants_beneficiary: JSON.parse(dao_activity.grants_beneficiary_json),
+          grants_data: dao_activity.grants,
           proposals_count: dao_activity.proposals_count,
-          proposals: JSON.parse(dao_activity.proposals_json),
+          proposals: JSON.parse(dao_activity.proposals_json || '[]'),
           active_dao_committee_member: dao_activity.active_dao_committee_member,
-          teams: JSON.parse(dao_activity.teams_json),
+          teams: JSON.parse(dao_activity.teams_json || '[]'),
           collection_creator: dao_activity.collection_creator,
-          collections: JSON.parse(dao_activity.collections_json),
+          collections: JSON.parse(dao_activity.collections_json || '[]')
         }
       ).to_json
     else

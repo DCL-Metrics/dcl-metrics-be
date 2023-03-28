@@ -57,6 +57,13 @@ module Models
       end
     end
 
+    def grants
+      {
+        authored: JSON.parse(grants_authored_json || '[]'),
+        beneficiary: JSON.parse(grants_beneficiary_json || '[]')
+      }
+    end
+
     def recently_active?
       latest_vote_cast_at > Date.today - 7
     end
