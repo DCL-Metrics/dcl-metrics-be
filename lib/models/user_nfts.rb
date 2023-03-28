@@ -38,6 +38,8 @@ module Models
       return true if participated_in_genesis_auction?
       return true if acquired_before?(first_dclens_acquired_at, LAUNCH_DATE)
       return true if acquired_before?(first_wearable_acquired_at, LAUNCH_DATE)
+
+      false
     end
 
     def participated_in_genesis_auction?
