@@ -25,8 +25,8 @@ module Jobs
 
             uda.grants_beneficiary_json = user_data.to_json
             uda.grants_beneficiary_count = user_data.count
-            uda.total_grants_beneficiary_requested_usd = requested
-            uda.total_grants_beneficiary_enacted_usd = enacted
+            uda.total_beneficiary_grants_requested_usd = requested
+            uda.total_beneficiary_grants_enacted_usd = enacted
           end
         end
 
