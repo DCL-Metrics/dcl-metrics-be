@@ -16,6 +16,10 @@
 #
 # Jsonb     :grants_beneficiary_json
 # Integer   :grants_beneficiary_count
+# Integer   :total_authored_grants_requested_usd
+# Integer   :total_authored_grants_enacted_usd
+# Integer   :total_beneficiary_grants_requested_usd
+# Integer   :total_beneficiary_grants_enacted_usd
 #
 # Jsonb     :proposals_json
 # Integer   :proposals_count
@@ -59,8 +63,18 @@ module Models
 
     def grants
       {
-        authored: JSON.parse(grants_authored_json || '[]'),
-        beneficiary: JSON.parse(grants_beneficiary_json || '[]')
+        authored: {
+          count: grants_authored_count || 0,
+          total_requested_usd: total_authored_grants_requested_usd,
+          total_enacted_usd: total_authored_grants_enacted_usd,
+          data: JSON.parse(grants_authored_json || '[]')
+        },
+        beneficiary: {
+          count: grants_beneficiary_count || 0,
+          total_requested_usd: total_beneficiary_grants_requested_usd,
+          total_enacted_usd: total_beneficiary_grants_enacted_usd,
+          data: JSON.parse(grants_beneficiary_json || '[]')
+        }
       }
     end
 

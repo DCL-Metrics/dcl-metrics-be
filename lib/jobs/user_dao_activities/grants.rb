@@ -8,7 +8,9 @@ module Jobs
 
         data.group_by { |x| x['created_by'] }.each do |address, user_data|
           requested = user_data.sum { |x| x['amount'].to_i }
-          enacted = user_data.select { |x| x['enacted'] }.sum { |x| x['amount'].to_i }
+          enacted = user_data.
+            select { |x| x['status'] == 'enacted' }.
+            sum { |x| x['amount'].to_i }
 
           Models::UserDaoActivity.update_or_create(address: address) do |uda|
             uda.grants_authored_json = user_data.to_json
@@ -21,7 +23,9 @@ module Jobs
         data.group_by { |x| x['beneficiary'] }.each do |address, user_data|
           Models::UserDaoActivity.update_or_create(address: address) do |uda|
             requested = user_data.sum { |x| x['amount'].to_i }
-            enacted = user_data.select { |x| x['enacted'] }.sum { |x| x['amount'].to_i }
+            enacted = user_data.
+              select { |x| x['status'] == 'enacted' }.
+              sum { |x| x['amount'].to_i }
 
             uda.grants_beneficiary_json = user_data.to_json
             uda.grants_beneficiary_count = user_data.count
