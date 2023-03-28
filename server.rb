@@ -211,6 +211,8 @@ class Server < Sinatra::Application
       avatar_url: user.avatar_url
     }
 
+    # TODO: this pattern of parsing json just to immediately
+    # turn it back to json is fucking insane. surely there's a better way
     if dao_activity
       base_attributes.merge(
         {
@@ -223,6 +225,16 @@ class Server < Sinatra::Application
           total_votes: dao_activity.votes_count,
           first_vote_cast_at: dao_activity.first_vote_cast_at.to_s,
           latest_vote_cast_at: dao_activity.latest_vote_cast_at.to_s,
+          grants_authored_count: dao_activity.grants_authored_count,
+          grants_authored: JSON.parse(dao_activity.grants_authored_json),
+          grants_beneficiary_count: dao_activity.grants_beneficiary_count,
+          grants_beneficiary: JSON.parse(dao_activity.grants_beneficiary_json),
+          proposals_count: dao_activity.proposals_count,
+          proposals: JSON.parse(dao_activity.proposals_json),
+          active_dao_committee_member: dao_activity.active_dao_committee_member,
+          teams: JSON.parse(dao_activity.teams_json),
+          collection_creator: dao_activity.collection_creator,
+          collections: JSON.parse(dao_activity.collections_json),
         }
       ).to_json
     else
