@@ -29,7 +29,7 @@ module Services
         scenes: permissions[:all] || permissions[:scenes],
         parcels: permissions[:all] || permissions[:parcels],
         peer_status: permissions[:all] || permissions[:status],
-        reports: permissions[:all] || permissions[:reports]
+        users: permissions[:all] || permissions[:users]
       }
     end
   end
