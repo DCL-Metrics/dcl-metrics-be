@@ -15,13 +15,23 @@ module Jobs
 
       begin
         CSV.open(csv_dumpfile, 'wb') do |csv|
-          csv << data_points.last.values.keys
+          # create headers row
+          csv << %w[
+            address
+            coordinates
+            date
+            position
+            timestamp
+            scene_cid
+          ]
 
           data_points.each_slice(1000) do |batch|
             batch.each do |row|
               csv << row.values.values.tap do |x|
+                x[0] = nil  # id
                 x[3] = date
-                x[4] = nil
+                x[4] = nil  # peer_id
+                x[7] = nil  # created_at
               end.compact
             end
           end
