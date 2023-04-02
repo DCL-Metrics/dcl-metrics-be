@@ -17,7 +17,7 @@ module Jobs
         CSV.open(csv_dumpfile, 'wb') do |csv|
           csv << data_points.last.values.keys
 
-          data_points.each_slice(500) do |batch|
+          data_points.each_slice(1000) do |batch|
             batch.each do |row|
               csv << row.values.values.tap do |x|
                 x[3] = date
