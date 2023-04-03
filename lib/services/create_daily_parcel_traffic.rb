@@ -16,8 +16,8 @@ module Services
         date: date,
         scene_cid: scene_cid,
         addresses_json: addresses.to_json,
-        histogram_json: histogram_json,
-        max_concurrent_users: peer_stats_data&.values&.max || 1,
+        histogram_json: histogram.to_json,
+        max_concurrent_users: max_concurrent_users,
         unique_addresses: addresses.count
       )
     end
@@ -44,9 +44,15 @@ module Services
       )&.data
     end
 
-    def histogram_json
+    def histogram
+      return @histogram if defined?(@histogram)
+
       query = scene_cid.nil? ? histo_query_with_no_cid : histo_query_with_cid
-      FAT_BOY_DATABASE[query].all.to_json
+      @histogram = FAT_BOY_DATABASE[query].all
+    end
+
+    def max_concurrent_users
+      peer_stats_data&.values&.max || histogram.max_by { |x| x['count'] }['count'],
     end
 
     def histo_query_with_cid

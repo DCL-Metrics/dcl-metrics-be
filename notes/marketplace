@@ -1,0 +1,72 @@
+https://nft-api.decentraland.org/v1/volume/day
+https://nft-api.decentraland.org/v1/volume/week
+https://nft-api.decentraland.org/v1/volume/month
+https://nft-api.decentraland.org/v1/volume/quarter
+https://nft-api.decentraland.org/v1/volume/year (ytd)
+
+# format
+{
+  "data": {
+    "sales":211874,
+    "volume":"358234606579220132431767232",
+    "creatorsEarnings":"1194441369264629121005000",
+    "daoEarnings":"5487579274315503310794672"
+  }
+}
+
+
+https://nft-api.decentraland.org/v1/rankings/x/[time] (day/week/etc)
+
+x = creators
+sortBy=most_volume | most_sales
+
+# format
+
+[
+  {
+    "id":"0x6ae03d1d3a9b161ec264c76ad73999ee25abec5a",
+    "sales":4666,
+    "earned":"80325375000000000000000",
+    "uniqueCollectors":2168,
+    "collections":3
+  },
+  {
+    "id":"0x0d56d0a03dd1b45d5021f46a63233683a9964a46",
+    "sales":55,
+    "earned":"58012500000000000000000",
+    "uniqueCollectors":27,
+    "collections":1
+  },
+  ...
+]
+
+https://github.com/decentraland/nft-server#accounts
+https://nft-api.decentraland.org/v1/accounts?address=x
+
+# format
+
+{
+  "data":[
+    {
+      "id":"0x98b7e1ac3ad42d4e7bc974db1bad77328ef60696",
+      "address":"0x98b7e1ac3ad42d4e7bc974db1bad77328ef60696",
+      "sales":175,
+      "purchases":0,
+      "spent":"0",
+      "earned":"4731850500000000000000",
+      "royalties":"7975500000000000000",
+      "collections":8
+    },
+    {
+      "id":"0x98b7e1ac3ad42d4e7bc974db1bad77328ef60696",
+      "address":"0x98b7e1ac3ad42d4e7bc974db1bad77328ef60696",
+      "sales":0,
+      "purchases":0,
+      "spent":"0",
+      "earned":"0",
+      "royalties":"0",
+      "collections":0
+    }
+  ],
+  "total":2
+}
