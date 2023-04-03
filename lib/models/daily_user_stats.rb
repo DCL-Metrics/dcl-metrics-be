@@ -4,6 +4,7 @@
 # String  :address,         null: false
 # Integer :time_spent,      null: false
 # Integer :parcels_visited, null: false
+# Integer :scenes_visited,  null: false
 #
 # Time    :created_at,      null: false
 #

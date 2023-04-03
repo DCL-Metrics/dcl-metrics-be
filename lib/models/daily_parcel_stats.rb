@@ -10,7 +10,6 @@
 # Integer :deploy_count
 # Integer ::max_concurrent_users
 # Integer :scene_cid
-
 #
 # Time    :created_at,      null: false
 #
