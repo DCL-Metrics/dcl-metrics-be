@@ -52,7 +52,7 @@ module Services
     end
 
     def max_concurrent_users
-      peer_stats_data&.values&.max || histogram.max_by { |x| x['count'] }['count'],
+      peer_stats_data&.values&.max || histogram.max_by { |x| x['count'] }['count']
     end
 
     def histo_query_with_cid
