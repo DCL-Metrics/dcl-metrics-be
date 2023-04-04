@@ -3,6 +3,7 @@
 # Date    :date,            null: false
 # String  :address,         null: false
 # Integer :time_spent,      null: false
+# Integer :time_spent_afk,  null: false
 # Integer :parcels_visited, null: false
 # Integer :scenes_visited,  null: false
 #
