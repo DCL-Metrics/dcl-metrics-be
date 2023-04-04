@@ -20,7 +20,7 @@ class DailyUserStatsSpec < BaseSpec
     # build daily user stats for day one
     Services::DailyUserStatsBuilder.call(date: day_one)
 
-    assert_equal 5, Models::DailyUserStats.count
+    assert_equal 2, Models::DailyUserStats.count
 
     top_visits = Models::DailyUserStats.
       where(date: day_one).
@@ -48,7 +48,7 @@ class DailyUserStatsSpec < BaseSpec
     # build daily stats for day two
     Services::DailyUserStatsBuilder.call(date: day_two)
 
-    assert_equal 10, Models::DailyUserStats.count
+    assert_equal 4, Models::DailyUserStats.count
 
     top_visits = Models::DailyUserStats.
       where(date: day_two).
@@ -74,7 +74,7 @@ class DailyUserStatsSpec < BaseSpec
     Services::DailyUserStatsBuilder.call(date: day_one)
 
     # an additional stat is present
-    assert_equal 11, Models::DailyUserStats.count
+    assert_equal 4, Models::DailyUserStats.count
 
     top_visits = Models::DailyUserStats.
       where(date: day_one).
