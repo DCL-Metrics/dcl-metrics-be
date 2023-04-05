@@ -71,9 +71,15 @@ module Jobs
           end
         end
 
+        # include year and date as directories for sorting purposes
+        date_object = Date.parse(date)
+        year = date_object.strftime('%Y')
+        month = date_object.strftime('%m')
+        file_to_upload = "#{year}/#{month}/#{tarfile}"
+
         response = Faraday.post(upload_data['uploadUrl']) do |request|
           request.headers['Authorization'] = upload_data['authorizationToken']
-          request.headers['X-Bz-File-Name'] = tarfile
+          request.headers['X-Bz-File-Name'] = file_to_upload
           request.headers['Content-Type'] = 'application/gzip'
           request.headers['X-Bz-Content-Sha1'] = sha1.hexdigest
           request.headers['X-Bz-Info-Author'] = 'dcl-metrics'
@@ -81,8 +87,7 @@ module Jobs
         end
 
         if response.success?
-          # delete data_points from db
-          # TODO: data_points.delete
+          data_points.delete
         else
           raise FileUploadError, "Failed to upload #{tarfile}: #{response.body}"
         end
