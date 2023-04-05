@@ -24,7 +24,7 @@ module Jobs
         coordinates: coordinates,
         date: date,
         deploy_count: models.map(&:scene_cid).uniq.count - 1,
-        scene_cid: models.max_by(&:created_at).scene_cid,
+        scene_cid: models.max_by(&:created_at)&.scene_cid,
         logins: logins.count,
         logouts: logouts.count,
         max_concurrent_users: models.max_by(&:max_concurrent_users).max_concurrent_users,
