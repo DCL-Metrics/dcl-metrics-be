@@ -3,7 +3,7 @@ module Jobs
     sidekiq_options queue: 'processing'
 
     def perform(date, coordinates)
-      models = Models::ParcelTraffic.where(date: date, coordinates: coordinates).all
+      @models = Models::ParcelTraffic.where(date: date, coordinates: coordinates).all
 
       # user activities
       visits = Models::UserActivity.
@@ -27,12 +27,24 @@ module Jobs
         scene_cid: models.max_by(&:created_at)&.scene_cid,
         logins: logins.count,
         logouts: logouts.count,
-        max_concurrent_users: models.max_by(&:max_concurrent_users).max_concurrent_users,
-        unique_visitors: models.map(&:unique_addresses).sum,
+        max_concurrent_users: max_concurrent_users,
+        unique_visitors: unique_visitors
       )
     end
 
     private
+    attr_reader :models
+
+    def max_concurrent_users
+      max = models.max_by(&:max_concurrent_users)&.max_concurrent_users
+      return max unless max.nil?
+
+      unique_visitors.zero? ? 0 : 1
+    end
+
+    def unique_visitors
+      @unique_visitors ||= models.map(&:unique_addresses).sum
+    end
 
     def calculate_time_spent(time_spent)
       time_spent.nan? ? 0 : time_spent.round
