@@ -38,6 +38,7 @@ module Jobs
         group_by { |x| x[:address] }
 
       grouped.each do |address, rows|
+        next if address.nil?
         data = Hash.new.merge(*rows)
 
         Models::DailyUserStats.create(

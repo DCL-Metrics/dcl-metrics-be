@@ -14,6 +14,11 @@
 
 module Models
   class DailyUserStats < Sequel::Model
+    def validate
+      super
+      validates_unique([:date, :address])
+    end
+
     def self.yesterday
       previous_x_days(1)
     end
