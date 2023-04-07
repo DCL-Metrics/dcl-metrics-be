@@ -13,7 +13,7 @@
 # add_index :daily_user_stats, [:address]
 
 module Models
-  class DailyUserStats < Sequel::Model
+  class DailyUserStats < Sequel::Model(FAT_BOY_DATABASE[:daily_user_stats])
     def validate
       super
       validates_unique([:date, :address])
