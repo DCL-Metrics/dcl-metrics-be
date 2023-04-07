@@ -34,11 +34,10 @@ class DailyUserStatsSpec < BaseSpec
 
     top_time_spent = Models::DailyUserStats.
       where(date: day_one).
-      exclude(time_spent: nil).
       order(Sequel.desc(:time_spent)).
       all
 
-    assert_equal 1, top_time_spent.count
+    assert_equal 2, top_time_spent.count
     assert_equal address_one, top_time_spent[0].address
     assert_equal 720, top_time_spent[0].time_spent
 
@@ -60,11 +59,10 @@ class DailyUserStatsSpec < BaseSpec
 
     top_time_spent = Models::DailyUserStats.
       where(date: day_two).
-      exclude(time_spent: nil).
       order(Sequel.desc(:time_spent)).
       all
 
-    assert_equal 1, top_time_spent.count
+    assert_equal 2, top_time_spent.count
     assert_equal address_one, top_time_spent[0].address
     assert_equal 900, top_time_spent[0].time_spent
 
