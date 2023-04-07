@@ -43,8 +43,8 @@ module Jobs
         Models::DailyUserStats.create(
           date: date,
           address: address,
-          time_spent: data[:time_spent],
-          time_spent_afk: data[:time_spent_afk],
+          time_spent: data[:time_spent] || 1,
+          time_spent_afk: data[:time_spent_afk] || 0,
           parcels_visited: data[:parcels_visited],
           scenes_visited: data[:scenes_visited]
         )
