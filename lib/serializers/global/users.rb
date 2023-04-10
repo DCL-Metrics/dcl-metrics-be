@@ -51,7 +51,7 @@ module Serializers
       def calculate_top(attribute, period)
         date = calculate_start_of_period(period)
 
-        result = DATABASE_CONNECTION[
+        result = FAT_BOY_DATABASE[
           "select address, sum(#{attribute}) as #{attribute}
           from daily_user_stats
           where date >= '#{date}'
