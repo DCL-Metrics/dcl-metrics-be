@@ -106,6 +106,19 @@ namespace :compute do
 end
 
 namespace :data_preservation do
+  desc "archive data points after 3 days"
+  task :archive_data_points, [:date] do |task, args|
+    require './lib/main'
+
+    date = args[:date] || (Date.today - 3).to_s
+
+    if Date.today.to_s == date
+      raise ArgumentError.new("Can't archive data points from today")
+    else
+      Jobs::ArchiveDataPoints.perform_async(date)
+    end
+  end
+
   # ex: rake data_preservation:daily_parcel_traffic['2022-07-20']
   desc "save enriched peers dump data per day by parcel"
   task :daily_parcel_traffic, [:date] do |task, args|
