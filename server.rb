@@ -222,13 +222,25 @@ requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR'
     # TODO: this pattern of parsing json just to immediately
     # turn it back to json is fucking insane. surely there's a better way
     if dao_activity
+      delegators = dao_activity.delegators.split(';').map do |d|
+        d_user = Models::User.find(address: d.downcase)
+
+        {
+          address: d,
+          dao_user: d_user&.dao_member? || false,
+          name: d_user&.name,
+          avatar_url: d_user&.avatar_url,
+          vp: d_user&.dao_activity&.total_vp
+        }
+      end
+
       base_attributes.merge(
         {
           dao_member: true,
           title: dao_activity.title,
           total_vp: dao_activity.total_vp,
           delegated_vp: dao_activity.delegated_vp,
-          delegators: dao_activity.delegators.split(';'),
+          delegators: delegators,
           delegate: dao_activity.delegate,
           votes: {
             total_votes: dao_activity.votes_count || 0,
