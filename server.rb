@@ -7,8 +7,7 @@ class Server < Sinatra::Application
   before do
     # don't limit endpoints unless they are on production
     return unless ENV['RACK_ENV'] == 'production'
-
-    requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR']
+requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR']
     api_key = fetch_valid_api_key(request.env, requesting_ip)
     return if api_key
 
