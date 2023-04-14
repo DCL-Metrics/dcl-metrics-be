@@ -119,7 +119,8 @@ class GlobalUsersSpec < BaseSpec
 
     # ensure the format is as expected
     yesterday = result[:yesterday]
-    assert_equal %i[parcels_visited scenes_visited time_spent], result[:yesterday].keys
+    expected_keys = %i[parcels_visited scenes_visited time_spent time_spent_afk]
+    assert_equal expected_keys, result[:yesterday].keys
     assert_equal expected_parcels_visted_keys, yesterday[:parcels_visited][0].keys
     assert_equal expected_time_spent_keys, yesterday[:time_spent][0].keys
   end
