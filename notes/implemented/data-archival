@@ -1,0 +1,74 @@
+p daily_parcel_stats: Models::DailyParcelStats.order(:date).first.date
+p daily_scene_stats: Models::DailySceneStats.order(:date).first.date
+p daily_stats: Models::DailyStats.order(:date).first.date
+p daily_user_stats: Models::DailyUserStats.order(:date).first.date
+p parcel_traffic: Models::ParcelTraffic.order(:date).first.date
+p user_activity: Models::UserActivity.order(:date).first.date
+
+FAT_BOY_DATABASE[
+  "SELECT pg_size_pretty( pg_total_relation_size('data_points') )"
+].all
+
+FAT_BOY_DATABASE[
+  "select count(id), date_trunc('day', date) as day
+  from data_points
+  where date > '2023-01-01'
+  group by day
+  order by 2"
+].all
+
+# table count estimate
+FAT_BOY_DATABASE[
+  "SELECT schemaname,relname,n_live_tup
+  FROM pg_stat_user_tables
+  ORDER BY n_live_tup DESC"
+].all
+
+
+parcel_traffic: good!
+user_activity: good!
+daily_stats: good!
+daily_user_stats: good!
+daily_parcel_stats: good!
+daily_scene_stats: good!
+
+TODO: make archiving datapoints automatic after three days
+
+# ex
+1.upto(31).with_index do |x, i |
+  day = sprintf('%02i', x)
+  Services::DailyUserStatsBuilder.call(date: "2023-03-#{day}")
+end
+
+# TODO: NEXT TO RUN
+1.upto(31).with_index do |x, i |
+  day = sprintf('%02i', x)
+  Jobs::ArchiveDataPoints.perform_in(i * 120, "2023-03-#{day}")
+end
+
+1.upto(30).with_index do |x, i |
+  day = sprintf('%02i', x)
+  Services::DailyParcelStatsBuilder.call(date: "2022-11-#{day}")
+end
+
+
+## move daily user stats to fat boy db:
+target = FAT_BOY_DATABASE[:daily_user_stats]
+source = DATABASE_CONNECTION[:daily_user_stats]
+columns = source.columns
+
+# source.order(:date).each_slice(1000) do |batch|
+#   values.tap { |x| x[1] = x[1].to_s; x[5] = x[5].to_s }
+
+
+to_copy = source.where { date >= '2023-01-01' }.where { date < '2023-02-01' }
+
+to_copy.lazy.each_slice(1000) do |batch|
+  data = batch.map(&:values)
+  target.import(source.columns, data)
+end
+
+to_copy.delete
+
+FAT_BOY_DATABASE["SELECT setval('daily_user_stats_id_seq', (SELECT MAX(id) FROM daily_user_stats)+1)"]
+FAT_BOY_DATABASE["SELECT nextVal('daily_user_stats_id_seq')"].all
