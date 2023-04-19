@@ -65,11 +65,11 @@ module Models
     # TODO: formatting needs to match daily stats serializers to fit charts / consistency
     def scenes_visited_histogram
       FAT_BOY_DATABASE[
-        "select count(id), date_trunc('day', date)::date as day
+        "select count(id), date_trunc('day', date)::date as date
         from user_activities
         where name = 'visit_scene'
         and address = '#{address}'
-        group by day
+        group by date
         order by 2"
       ].all
     end
@@ -77,11 +77,11 @@ module Models
     # TODO subtract time afk from this calculation
     def time_spent_histogram
       FAT_BOY_DATABASE[
-        "select sum(duration) as time_spent, date_trunc('day', date)::date as day
+        "select sum(duration) as time_spent, date_trunc('day', date)::date as date
         from user_activities
         where name = 'session'
         and address = '#{address}'
-        group by day
+        group by date
         order by 2"
       ].all
     end
