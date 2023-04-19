@@ -166,13 +166,25 @@ requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR'
     }.to_json
   end
 
-  # or /stats?
-  get '/users/:address/activity' do
+  get '/users/:address/activity/top_scenes' do
     user = Models::User.find(address: params[:address].downcase)
     failure(404, "Can't find user with address #{params[:address]}") if user.nil?
 
-    # mostly (entirely?) pulled from daily user stats
-    # need to implement something similar to lib/serializers/global/users.rb
+    user.top_scenes_visited.to_json
+  end
+
+  get '/users/:address/activity/scenes_visited' do
+    user = Models::User.find(address: params[:address].downcase)
+    failure(404, "Can't find user with address #{params[:address]}") if user.nil?
+
+    user.scenes_visited_histogram.to_json
+  end
+
+  get '/users/:address/activity/time_spent' do
+    user = Models::User.find(address: params[:address].downcase)
+    failure(404, "Can't find user with address #{params[:address]}") if user.nil?
+
+    user.time_spent_histogram.to_json
   end
 
   get '/users/:address/nfts' do
