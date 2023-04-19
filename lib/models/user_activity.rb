@@ -28,5 +28,11 @@ module Models
       super
       validates_unique([:name, :address, :start_time, :end_time])
     end
+
+    def scene
+      return if scene_cid.nil?
+
+      @scene ||= Models::Scene.find(cid: scene_cid)
+    end
   end
 end
