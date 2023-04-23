@@ -234,7 +234,10 @@ requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR'
     # TODO: this pattern of parsing json just to immediately
     # turn it back to json is fucking insane. surely there's a better way
     if dao_activity
-      delegators = dao_activity.delegators.split(';').map do |d|
+      # it can be the user has a dao_activity model but no actual activity.
+      # this happens (as far as i have seen) in cases where the user is a
+      # collection creator but has never voted / taken other actions
+      (user.dao_activity&.delegators || "").split(';').map do |d|
         d_user = Models::User.find(address: d.downcase)
 
         {
