@@ -237,7 +237,7 @@ requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR'
       # it can be the user has a dao_activity model but no actual activity.
       # this happens (as far as i have seen) in cases where the user is a
       # collection creator but has never voted / taken other actions
-      (user.dao_activity&.delegators || "").split(';').map do |d|
+      delegators = (user.dao_activity&.delegators || "").split(';').map do |d|
         d_user = Models::User.find(address: d.downcase)
 
         {
@@ -253,8 +253,8 @@ requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR'
         {
           dao_member: true,
           title: dao_activity.title,
-          total_vp: dao_activity.total_vp,
-          delegated_vp: dao_activity.delegated_vp,
+          total_vp: dao_activity.total_vp || 0,
+          delegated_vp: dao_activity.delegated_vp || 0,
           delegators: delegators,
           delegate: dao_activity.delegate,
           votes: {

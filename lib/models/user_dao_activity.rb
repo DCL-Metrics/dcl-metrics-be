@@ -48,6 +48,8 @@ module Models
     end
 
     def title
+      return 'plankton' if total_vp.nil?
+
       vp_titles = Models::DaoGovernance.last.kpis['vp_distribution']
 
       case
@@ -64,15 +66,15 @@ module Models
     def grants
       {
         authored: {
-          count: grants_authored_count || 0,
-          total_requested_usd: total_authored_grants_requested_usd,
-          total_enacted_usd: total_authored_grants_enacted_usd,
+          count: grants_authored_count.to_i,
+          total_requested_usd: total_authored_grants_requested_usd.to_i,
+          total_enacted_usd: total_authored_grants_enacted_usd.to_i,
           data: JSON.parse(grants_authored_json || '[]')
         },
         beneficiary: {
-          count: grants_beneficiary_count || 0,
-          total_requested_usd: total_beneficiary_grants_requested_usd,
-          total_enacted_usd: total_beneficiary_grants_enacted_usd,
+          count: grants_beneficiary_count.to_i,
+          total_requested_usd: total_beneficiary_grants_requested_usd.to_i,
+          total_enacted_usd: total_beneficiary_grants_enacted_usd.to_i,
           data: JSON.parse(grants_beneficiary_json || '[]')
         }
       }
