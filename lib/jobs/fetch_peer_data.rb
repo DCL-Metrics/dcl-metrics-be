@@ -12,7 +12,7 @@ module Jobs
       data.each do |d|
         next unless d['parcel']
 
-        scene = scenes.detect { |s| s.parcels.include?(d['parcel'].join(',')) }
+        scene = scenes.detect { |s| s.coordinates.split(';').include?(d['parcel'].join(',')) }
         next if scene.nil? # empty parcel
         d['scene_cid'] = scene.cid
       end
