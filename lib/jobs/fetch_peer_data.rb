@@ -11,8 +11,9 @@ module Jobs
       # enrich peer data with scene cid
       data.each do |d|
         next unless d['parcel']
+        parcels = d['parcel'].join(',')
 
-        scene = scenes.detect { |s| s.coordinates.split(';').include?(d['parcel'].join(',')) }
+        scene = scenes.detect { |s| s.coordinates.split(';').include?(parcels) }
         next if scene.nil? # empty parcel
         d['scene_cid'] = scene.cid
       end
