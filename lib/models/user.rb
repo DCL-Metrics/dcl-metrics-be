@@ -34,7 +34,8 @@ module Models
         from user_activities t1
         left outer join scenes t2 on t1.scene_cid = t2.cid
         where t1.address = '#{address}'
-        and t1.name = 'visit_scene' and t2.name is not null
+        and t1.name = 'visit_scene'
+        and t2.name is not null
         group by
           t2.scene_disambiguation_uuid,
           t2.name
