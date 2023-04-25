@@ -27,39 +27,20 @@ module Models
       @stats ||= Models::DailyUserStats.where(address: user.address)
     end
 
-    # TODO: need to move scenes table to fat_boy_db and then can do a join
-    # FAT_BOY_DATABASE[
-    #   "select t1.scene_cid, t1.duration,
-    #           t2.name as name, t2.scene_disambiguation_uuid as uuid
-    #   from user_activities t1
-    #   left outer join scenes t2 on t1.scene_cid = t2.cid
-    #   where t1.address = '#{address}'
-    #   and t1.name = 'visit_scene'"
-    # ].count
     def top_scenes_visited
       FAT_BOY_DATABASE[
-        "select scene_cid, duration from user_activities
-        where address = '#{address}'
-        and name = 'visit_scene'"
-      ].
-      all.
-      map { |a| [Models::Scene.find(cid: a[:scene_cid]), a[:duration]] }.
-      group_by { |scene, duration| scene&.scene_disambiguation_uuid }.
-      map do |uuid, data|
-        scene_name = data.first.first&.name
-        next if scene_name.nil?
-
-        {
-          scene_uuid: uuid,
-          scene_name: scene_name,
-          map_url: map_url(data.first.first&.coordinates),
-          duration: data.first.last
-        }
-      end.
-      compact.
-      sort_by { |x| x[:duration] }.
-      last(20).
-      reverse
+        "select SUM(t1.duration) as duration,
+                t2.name as name, t2.scene_disambiguation_uuid as uuid
+        from user_activities t1
+        left outer join scenes t2 on t1.scene_cid = t2.cid
+        where t1.address = '#{address}'
+        and t1.name = 'visit_scene' and t2.name is not null
+        group by
+          t2.scene_disambiguation_uuid,
+          t2.name
+        order by duration DESC
+        LIMIT 20"
+      ].all
     end
 
     # TODO: formatting needs to match daily stats serializers to fit charts / consistency
