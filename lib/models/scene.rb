@@ -12,7 +12,7 @@
 # add_index :scenes, [:cid]
 
 module Models
-  class Scene < Sequel::Model
+  class Scene < Sequel::Model(FAT_BOY_DATABASE[:scenes])
     def self.collect(cids)
       where(cid: cids).reject(&:public_road?).group_by(&:scene_disambiguation_uuid)
     end
