@@ -23,7 +23,7 @@ module Jobs
 
       # enrich data with scene cid
       formatted_data.each do |coordinates, data|
-        scene = scenes.detect { |s| s.parcels.include?(coordinates) }
+        scene = scenes.detect { |s| s.coordinates.split(';').include?(coordinates) }
         next if scene.nil? # empty parcel
 
         data['scene_cid'] = scene.cid
