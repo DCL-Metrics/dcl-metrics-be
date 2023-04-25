@@ -5,7 +5,6 @@
 # String  :name
 # String  :coordinates
 # String  :owner
-# Jsonb   :parcels_json, null: false # TODO: remove when coordinates is populated
 # Time    :first_seen_at
 # Date    :first_seen_on
 #
@@ -19,11 +18,6 @@ module Models
 
     def scene_disambiguation
       Models::SceneDisambiguation.find(uuid: scene_disambiguation_uuid)
-    end
-
-    # TODO: remove
-    def parcels
-      JSON.parse(parcels_json)
     end
 
     def public_road?

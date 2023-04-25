@@ -86,7 +86,7 @@ class BaseSpec < Minitest::Spec
       Models::Scene.create(
         cid: ps.scene_cid,
         name: "Scene #{ps.scene_cid}",
-        parcels_json: [random_parcel].to_json
+        coordinates: [random_parcel].join(';')
       )
     end
   end
