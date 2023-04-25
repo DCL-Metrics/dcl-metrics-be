@@ -30,7 +30,9 @@ module Models
     def top_scenes_visited
       FAT_BOY_DATABASE[
         "select SUM(t1.duration) as duration,
-                t2.name as name, t2.scene_disambiguation_uuid as uuid
+                t2.name as name,
+                t2.scene_disambiguation_uuid as uuid,
+                t2.coordinates as coordinates
         from user_activities t1
         left outer join scenes t2 on t1.scene_cid = t2.cid
         where t1.address = '#{address}'
@@ -38,10 +40,18 @@ module Models
         and t2.name is not null
         group by
           t2.scene_disambiguation_uuid,
-          t2.name
+          t2.name,
+          t2.coordinates
         order by duration DESC
         LIMIT 20"
-      ].all
+      ].all.map do |scene|
+        {
+          scene_uuid: scene[:uuid],
+          scene_name: scene[:name],
+          map_url: map_url(scene[:coordinates]),
+          duration: scene[:duration]
+        }
+      end
     end
 
     # TODO: formatting needs to match daily stats serializers to fit charts / consistency
