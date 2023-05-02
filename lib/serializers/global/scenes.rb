@@ -92,7 +92,11 @@ module Serializers
       end
 
       def build_output_hash(attribute, data)
-        { attribute.to_sym => data[attribute], map_url: map_url(data[:coordinates])}
+        {
+          attribute.to_sym => data[attribute],
+          uuid: data[:uuid],
+          map_url: map_url(data[:coordinates])
+        }
       end
 
       def map_url(coordinates)
