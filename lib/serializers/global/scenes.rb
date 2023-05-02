@@ -49,7 +49,7 @@ module Serializers
         result = DATABASE_CONNECTION[
           "select name,
                   coordinates,
-                  scene_disambiguation_uuuid as uuid,
+                  scene_disambiguation_uuid as uuid,
                   #{operation}(#{attribute}) as #{attribute}
           from daily_scene_stats
           where date >= '#{date}'
