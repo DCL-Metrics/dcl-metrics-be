@@ -87,7 +87,8 @@ namespace :compute do
   task :create_serialized_parcel_stats do
     require './lib/main'
 
-    Jobs::SerializeDailyParcelStats.perform_async(Date.today - 1)
+    date = (Date.today - 1).to_s
+    Jobs::SerializeDailyParcelStats.perform_async(date)
   end
 
   desc "compile user nft data"
