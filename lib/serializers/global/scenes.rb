@@ -47,13 +47,16 @@ module Serializers
         date = calculate_start_of_period(period)
 
         result = DATABASE_CONNECTION[
-          "select name, coordinates, #{operation}(#{attribute}) as #{attribute}
+          "select name,
+                  coordinates,
+                  scene_disambiguation_uuuid as uuid,
+                  #{operation}(#{attribute}) as #{attribute}
           from daily_scene_stats
           where date >= '#{date}'
           and #{attribute} is not null
           and #{attribute} != 0
-          group by name, coordinates
-          order by 3"
+          group by name, coordinates, uuid
+          order by 4"
         ]
 
         wrap_data(result, attribute)
