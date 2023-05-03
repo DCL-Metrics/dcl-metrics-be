@@ -97,10 +97,11 @@ requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR'
     basic_data_only = params[:basic_data_only] || false
     data = basic_data_only ? Models::DailySceneStats.basic_data : Models::DailySceneStats
 
-    stats = data.first(
-      date: params[:date] || Date.today - 1,
-      scene_disambiguation_uuid: params[:uuid]
-    )
+    stats = data.where(scene_disambiguation_uuid: params[:uuid])
+    failure(404, "Can't find scene with uuid #{params[:uuid]}") if stats.nil?
+
+    # return stats for the given date or the most recent daily stats available
+    stats = params[:date] ? stats.first(date: params[:date]) : stats.order(:date).last
     failure(404, "Can't find scene with uuid #{params[:uuid]}") if stats.nil?
 
     Serializers::Scenes.serialize([stats], basic_data_only: basic_data_only).first.to_json
