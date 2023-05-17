@@ -1,6 +1,8 @@
 require 'sinatra'
 
 class Server < Sinatra::Application
+  # TODO: check with JW if this can be removed - are we using api keys
+  # everywhere now?
   ALLOWED_ACCESS_IP = %w[99.80.183.117 99.81.135.32 95.90.237.179]
 
   # Extremely sophisticated access management
@@ -11,6 +13,7 @@ requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR'
     api_key = fetch_valid_api_key(request.env, requesting_ip)
     return if api_key
 
+    # TODO: are reports being used anymore? Can this be removed?
     # don't limit the reports namespace
     return if request.env["REQUEST_PATH"].split('/')[1] == 'reports'
 
