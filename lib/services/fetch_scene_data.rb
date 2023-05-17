@@ -13,16 +13,15 @@ module Services
     end
 
     def call
-      coordinates.sort.each_slice(40) do |batch|
+      coordinates.sort.each do |c|
         # check if coordinates are part of an existing scene
-        existing_coordinates = scenes.flat_map { |x| x.coordinates.split(';') }.uniq
-        coordinates_to_fetch = batch - existing_coordinates
-        next if coordinates_to_fetch.empty?
+        existing_coordinates = @scenes.flat_map { |x| x.coordinates.split(';') }.uniq
+        next if existing_coordinates.include?(c)
 
-        Adapters::Dcl::Scenes.call(coordinates: coordinates_to_fetch).each do |scene|
+        Adapters::Dcl::Scenes.call(coordinates: c).each do |scene|
           next if scene.nil?
           next if scene.empty?
-          next if scenes.detect { |s| s.cid == scene['id'] }
+          next if @scenes.detect { |s| s.cid == scene['id'] }
 
           # create scene if unknown and add to result collection
           find_or_create_scene(scene)
@@ -51,9 +50,9 @@ module Services
           s.scene_disambiguation_uuid = scene_disambiguation_uuid
         end
 
-        scenes.push(model)
+        @scenes.push(model)
       rescue Sequel::UniqueConstraintViolation
-        scenes.push(Models::Scene.find(cid: scene['id']))
+        @scenes.push(Models::Scene.find(cid: scene['id']))
       end
     end
 
