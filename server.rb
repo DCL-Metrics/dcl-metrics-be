@@ -139,7 +139,7 @@ requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR'
       from daily_scene_stats
       where scene_disambiguation_uuid = '#{params[:uuid]}'
       order by date desc
-      limit 91"
+      limit 90"
     ].all.reverse.to_json
   end
 
