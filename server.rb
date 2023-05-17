@@ -113,7 +113,7 @@ requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR'
   get '/scenes/:uuid/history' do
     offset = params[:offset] || 0
     limit = params[:limit] || 30
-    failure(400, "Max limit is 30 scenes") if limit > 30
+    failure(400, "Max limit is 30 days") if limit > 30
 
     basic_data_only = params[:basic_data_only] || false
     data = basic_data_only ? Models::DailySceneStats.basic_data : Models::DailySceneStats
