@@ -77,6 +77,34 @@ namespace :compute do
       result += "\n"
     end
 
+    result += "Client API usage:\n\n"
+
+    external_api_users = FAT_BOY_DATABASE[
+      "select count(id), key, date_trunc('day', created_at) as day
+      from api_key_access_logs
+      where created_at::date = '#{(Date.today - 1).to_s}'
+      group by day, key
+      order by 1 DESC"
+    ].all
+
+    external_api_users.each do |api_user|
+      result += "#{api_user[:count]} API calls from #{api_user[:key]}\n"
+    end
+
+    external_api_responses = FAT_BOY_DATABASE[
+      "select count(response), response, date_trunc('day', created_at) as day
+      from api_key_access_logs
+      where created_at::date = '#{(Date.today - 1).to_s}'
+      group by day, response
+      order by 1 DESC"
+    ].all
+
+    result += "\nClient API responses:\n\n"
+
+    external_api_responses.each do |api_user|
+      result += "#{api_user[:count]} x #{api_user[:response]}\n"
+    end
+
     Services::TelegramOperator.notify(
       level: :info,
       message: result
