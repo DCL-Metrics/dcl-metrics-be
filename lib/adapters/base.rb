@@ -5,19 +5,20 @@ module Adapters
     JSON_FORMAT = 'json'
     CSV_FORMAT = 'csv'
 
-    def self.get(url, params = {})
-      new(url, params).get
+    def self.get(url, params = {}, headers = {})
+      new(url, params, headers).get
     end
 
-    def initialize(url, params)
+    def initialize(url, params, headers)
       @url = url
       @params = params
+      @headers = headers
       @format = params.fetch(:response_format) { JSON_FORMAT }
     end
 
     def get
       begin
-        response = Faraday.get(url, params)
+        response = Faraday.get(url, params, headers)
 
         Services::RequestLogger.call(status: response.status, url: url, params: params)
         return Failure('request was not successful') unless response.status == 200
@@ -40,6 +41,6 @@ module Adapters
     end
 
     private
-    attr_reader :url, :params, :format
+    attr_reader :url, :params, :headers, :format
   end
 end
