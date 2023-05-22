@@ -316,7 +316,7 @@ class Server < Sinatra::Application
 
     log_params = {
       endpoint: endpoint,
-      ip_address: ip_address,
+      ip_address: requesting_ip,
       key: key,
       query_params_json: params.to_json
     }
