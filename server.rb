@@ -5,7 +5,9 @@ class Server < Sinatra::Application
   before do
     # don't limit endpoints unless they are on production
     return unless ENV['RACK_ENV'] == 'production'
-    return if valid_api_key?
+
+    requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR']
+    return if valid_api_key?(requesting_ip)
 
     # block anyone without access
     failure(403, "I'm afraid I can't let you do that, #{requesting_ip}")
@@ -305,7 +307,7 @@ class Server < Sinatra::Application
     Services::TelegramOperator.notify(level: lvl, message: msg)
   end
 
-  def valid_api_key?
+  def valid_api_key?(ip_address)
     key = request.env["HTTP_API_KEY"]
     return unless key
 
@@ -313,11 +315,10 @@ class Server < Sinatra::Application
     return unless api_key
 
     endpoint = request.env["REQUEST_PATH"]
-    requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR']
 
     log_params = {
       endpoint: endpoint,
-      ip_address: requesting_ip,
+      ip_address: ip_address,
       key: key,
       query_params_json: params.to_json
     }
