@@ -13,10 +13,6 @@ requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR'
     api_key = fetch_valid_api_key(request.env, requesting_ip)
     return if api_key
 
-    # TODO: are reports being used anymore? Can this be removed?
-    # don't limit the reports namespace
-    return if request.env["REQUEST_PATH"].split('/')[1] == 'reports'
-
     # handle IP based blocking
     unless ALLOWED_ACCESS_IP.include?(requesting_ip)
       failure(403, "I'm afraid I can't let you do that, #{requesting_ip}")
@@ -287,44 +283,7 @@ requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR'
     # but for now just use yesterday's data
     date = Date.today - 1
 
-    # TODO: we'll exclude all "internal" calls later directly in the model
-    api_responses = Models::ApiResponseStatus.
-      where(date: date).
-      exclude(url: 'api.dcl-metrics.com/reports').
-      all
-
     Serializers::PeerStatus.serialize(api_responses).to_json
-  end
-
-  get '/reports/:uuid' do
-    scenes = Models::DailySceneStats.
-      where(scene_disambiguation_uuid: params[:uuid]).
-      order(:date).
-      select(:date, :unique_addresses, :avg_time_spent, :avg_time_spent_afk)
-
-    reporting_params = { url: "api.dcl-metrics.com/reports", params: params }
-    scene_name = params[:scene_name] || scenes.last&.name || 'unknown scene'
-
-    if scenes.empty?
-      Services::RequestLogger.call(**reporting_params.merge(status: 404))
-      failure(404, "Can't find data about '#{scene_name}'")
-    end
-
-    data = scenes.
-      last(30).
-      map { |x| [x.date.to_s, x.unique_addresses, x.avg_time_spent] }.
-      prepend(%w[date visitors avg_time_spent_in_seconds avg_time_spent_afk_in_seconds])
-
-    filename = "#{scene_name}.csv"
-    file = Tempfile.new(filename)
-    file.write(data)
-    file.rewind
-
-    Services::RequestLogger.call(**reporting_params.merge(status: 200))
-    send_file file, filename: filename, type: 'text/csv', disposition: 'attachment'
-
-    file.close
-    file.unlink
   end
 
   private
