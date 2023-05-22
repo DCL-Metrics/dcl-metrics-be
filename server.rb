@@ -46,6 +46,14 @@ requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR'
     Serializers::Global::Users.serialize.to_json
   end
 
+  get '/rentals/summary' do
+    dcl_property_rentals_api('/dcl_rentals/summary')
+  end
+
+  get '/rentals/closed' do
+    dcl_property_rentals_api('/dcl_rentals/closed', params)
+  end
+
   get '/scenes/top' do
     scenes = Models::DailySceneStats.
       basic_data.
@@ -287,6 +295,14 @@ requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR'
   end
 
   private
+
+  def dcl_property_rentals_api(endpoint, params = {})
+    url = "https://www.dcl-property.rentals/api/#{endpoint}"
+    response = Adapters::Base.get(url, params)
+
+    halt(500, response.failure) if response.failure?
+    response.success.to_json
+  end
 
   def failure(status_code, msg)
     halt [status_code, { msg: msg}.to_json]
