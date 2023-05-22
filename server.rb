@@ -1,22 +1,14 @@
 require 'sinatra'
 
 class Server < Sinatra::Application
-  # TODO: check with JW if this can be removed - are we using api keys
-  # everywhere now?
-  ALLOWED_ACCESS_IP = %w[99.80.183.117 99.81.135.32 95.90.237.179]
-
-  # Extremely sophisticated access management
+  # access management
   before do
     # don't limit endpoints unless they are on production
     return unless ENV['RACK_ENV'] == 'production'
-requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR']
-    api_key = fetch_valid_api_key(request.env, requesting_ip)
-    return if api_key
+    return if valid_api_key?
 
-    # handle IP based blocking
-    unless ALLOWED_ACCESS_IP.include?(requesting_ip)
-      failure(403, "I'm afraid I can't let you do that, #{requesting_ip}")
-    end
+    # block anyone without access
+    failure(403, "I'm afraid I can't let you do that, #{requesting_ip}")
   end
 
   # Notify on all errors
@@ -47,11 +39,11 @@ requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR'
   end
 
   get '/rentals/summary' do
-    dcl_property_rentals_api('/dcl_rentals/summary')
+    dcl_property_rentals_api('summary')
   end
 
   get '/rentals/closed' do
-    dcl_property_rentals_api('/dcl_rentals/closed', params)
+    dcl_property_rentals_api('closed', params)
   end
 
   get '/scenes/top' do
@@ -297,7 +289,7 @@ requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR'
   private
 
   def dcl_property_rentals_api(endpoint, params = {})
-    url = "https://www.dcl-property.rentals/api/#{endpoint}"
+    url = "https://www.dcl-property.rentals/api/dcl_rentals/#{endpoint}"
     response = Adapters::Base.get(url, params)
 
     halt(500, response.failure) if response.failure?
@@ -312,14 +304,16 @@ requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR'
     Services::TelegramOperator.notify(level: lvl, message: msg)
   end
 
-  def fetch_valid_api_key(env, ip_address)
-    key = env["HTTP_API_KEY"]
+  def valid_api_key?
+    key = request.env["HTTP_API_KEY"]
     return unless key
 
     api_key = Models::ApiKey.find(key: key)
     return unless api_key
 
-    endpoint = env["REQUEST_PATH"]
+    endpoint = request.env["REQUEST_PATH"]
+    requesting_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.env['REMOTE_ADDR']
+
     log_params = {
       endpoint: endpoint,
       ip_address: ip_address,
