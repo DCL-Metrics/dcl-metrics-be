@@ -293,7 +293,8 @@ class Server < Sinatra::Application
 
   def dcl_property_rentals_api(endpoint, params = {})
     url = "https://www.dcl-property.rentals/api/dcl_rentals/#{endpoint}"
-    response = Adapters::Base.get(url, params)
+    headers = { API_KEY: ENV['DCL_PROPERTY_RENTALS_API_KEY'] }
+    response = Adapters::Base.get(url, params, headers)
 
     halt(500, response.failure) if response.failure?
     response.success.to_json
@@ -309,10 +310,10 @@ class Server < Sinatra::Application
 
   def valid_api_key?(ip_address)
     key = request.env["HTTP_API_KEY"]
-    return unless key
+    return false unless key
 
     api_key = Models::ApiKey.find(key: key)
-    return unless api_key
+    return false unless api_key
 
     endpoint = request.env["REQUEST_PATH"]
 
