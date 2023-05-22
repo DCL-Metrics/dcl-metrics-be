@@ -282,6 +282,7 @@ class Server < Sinatra::Application
     # NOTE: maybe we want to provide more dates later
     # but for now just use yesterday's data
     date = Date.today - 1
+    api_responses = Models::ApiResponseStatus.where(date: date).all
 
     Serializers::PeerStatus.serialize(api_responses).to_json
   end
