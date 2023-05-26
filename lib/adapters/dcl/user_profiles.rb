@@ -12,7 +12,7 @@ module Adapters
       end
 
       def call
-        response = Adapters::Base.get(URL, { id: addresses })
+        response = Adapters::Base.post(URL, { ids: addresses })
         return [] if response.failure?
 
         response.success.compact.map do |user_data|
