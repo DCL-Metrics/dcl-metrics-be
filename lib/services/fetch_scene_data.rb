@@ -13,7 +13,7 @@ module Services
     end
 
     def call
-      Adapters::Dcl::Scenes.call(coordinates: c).each do |scene|
+      Adapters::Dcl::Scenes.call(coordinates: coordinates).each do |scene|
         next if scene.nil?
         next if scene.empty?
         next if scenes.detect { |s| s.cid == scene['id'] } # don't process dups
