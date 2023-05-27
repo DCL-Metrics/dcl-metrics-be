@@ -7,25 +7,19 @@ module Services
     end
 
     def initialize(coordinates)
-      @coordinates = coordinates.uniq
+      @coordinates = coordinates.uniq.sort
       @current_time = Time.now.utc
       @scenes = []
     end
 
     def call
-      coordinates.sort.each do |c|
-        # check if coordinates are part of an existing scene
-        existing_coordinates = scenes.flat_map { |x| x.coordinates.split(';') }.uniq
-        next if existing_coordinates.include?(c)
+      Adapters::Dcl::Scenes.call(coordinates: coordinates).each do |scene|
+        next if scene.nil?
+        next if scene.empty?
+        next if scenes.detect { |s| s.cid == scene['id'] } # don't process dups
 
-        Adapters::Dcl::Scenes.call(coordinates: c).each do |scene|
-          next if scene.nil?
-          next if scene.empty?
-          next if scenes.detect { |s| s.cid == scene['id'] }
-
-          # create scene if unknown and add to result collection
-          find_or_create_scene(scene)
-        end
+        # create scene if unknown and add to result collection
+        find_or_create_scene(scene)
       end
 
       scenes

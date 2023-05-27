@@ -1,7 +1,7 @@
 module Adapters
   module Dcl
     class Scenes
-      URL = 'https://peer.decentraland.org/content/entities/scene'
+      URL = 'https://peer.decentraland.org/content/entities/active'
 
       def self.call(coordinates:)
         new(coordinates).call
@@ -12,7 +12,7 @@ module Adapters
       end
 
       def call
-        response = Adapters::Base.get(URL, { pointer: coordinates })
+        response = Adapters::Base.post(URL, { pointers: coordinates })
         return [] if response.failure?
 
         response.success.compact
