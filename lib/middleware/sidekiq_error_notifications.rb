@@ -1,7 +1,15 @@
 module Middleware
   class SidekiqErrorNotifications
-    IGNORABLE_ERRORS = [Sequel::PoolTimeout, Sequel::ValidationFailed]
+    IGNORABLE_ERRORS = [
+      Sequel::PoolTimeout,
+      Sequel::ValidationFailed
+    ]
     NON_RETRY_ERRORS = [Sequel::ValidationFailed]
+    IGNORABLE_UNIQUE_CONSTRAINT = %w[
+      Jobs::ProcessUser
+      Jobs::FetchPeerStats
+      Jobs::ProcessUserNfts
+    ]
 
     def call(worker, job, queue)
       begin
@@ -17,6 +25,8 @@ module Middleware
 
     def send_error_to_telegram(e, job)
       return if IGNORABLE_ERRORS.include?(e.class)
+      return if IGNORABLE_UNIQUE_CONSTRAINT.include?(job['class']) &&
+                e.class == Sequel::UniqueConstraintViolation
 
       Services::TelegramOperator.notify(
         level: :error,
