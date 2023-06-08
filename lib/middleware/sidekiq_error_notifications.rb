@@ -9,6 +9,7 @@ module Middleware
       Jobs::ProcessUser
       Jobs::FetchPeerStats
       Jobs::ProcessUserNfts
+      Jobs::ProcessDaoActivity
     ]
 
     def call(worker, job, queue)
