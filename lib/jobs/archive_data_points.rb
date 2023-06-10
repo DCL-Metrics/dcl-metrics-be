@@ -25,7 +25,7 @@ module Jobs
             scene_cid
           ]
 
-          data_points.each_slice(1000) do |batch|
+          data_points.lazy.each_slice(1000) do |batch|
             batch.each do |row|
               csv << row.values.values.tap do |x|
                 x[0] = nil  # id

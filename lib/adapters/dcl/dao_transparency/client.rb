@@ -21,7 +21,7 @@ module Adapters
           addresses = collect_addresses(data)
 
           # if the address doesn't exist in users table then create it
-          addresses.each_slice(40) do |address_batch|
+          addresses.lazy.each_slice(40) do |address_batch|
             # final parameter is "only_create"
             Jobs::ProcessUsersByAddressBatch.
               perform_async(address_batch, Date.today.to_s, true)

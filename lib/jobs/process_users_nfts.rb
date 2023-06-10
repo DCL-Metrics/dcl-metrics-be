@@ -32,6 +32,7 @@ module Jobs
       ].
       flatten.
       uniq.
+      lazy.
       each_slice(1000) do |addresses|
         addresses.each { |address| Jobs::ProcessUserNfts.perform_async(address) }
       end
