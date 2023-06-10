@@ -152,6 +152,28 @@ class Server < Sinatra::Application
     Models::SerializedDailyParcelStats.find(date: date)&.data_json
   end
 
+  get '/users/search/' do
+    query = "select id
+            from users
+            where name LIKE '%#{params['name']}%'
+            order by (name = '#{params['name']}') desc, length(name)"
+    ids = FAT_BOY_DATABASE[query].first(10).map(&:values).flatten
+
+
+    Models::User.where(id: ids).map do |user|
+      {
+        address: user.address,
+        name: user.name,
+        avatar_url: user.avatar_url,
+        first_seen: user.first_seen.to_s,
+        last_seen: user.last_seen.to_s,
+        guest: user.guest?,
+        verified: user.verified?,
+        dao_member: user.dao_member?
+      }
+    end.to_json
+  end
+
   get '/users/:address' do
     user = Models::User.find(address: params[:address].downcase)
     failure(404, "Can't find user with address #{params[:address]}") if user.nil?
