@@ -166,7 +166,7 @@ namespace :data_preservation do
 
     require './lib/main'
 
-    parsed_parcel_traffic = DATABASE_CONNECTION[
+    parsed_parcel_traffic = FAT_BOY_DATABASE[
       "select date_trunc('day', date) as day,
       count(id)
       from parcel_traffic

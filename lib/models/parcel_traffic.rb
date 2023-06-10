@@ -15,7 +15,7 @@
 # add_index :parcel_traffic, [:coordinates, :date, :scene_cid], unique: true
 
 module Models
-  class ParcelTraffic < Sequel::Model(:parcel_traffic)
+  class ParcelTraffic < Sequel::Model(FAT_BOY_DATABASE[:parcel_traffic])
     def addresses
       @addresses ||= JSON.parse(addresses_json)
     end
