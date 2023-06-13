@@ -152,7 +152,7 @@ class Server < Sinatra::Application
     Models::SerializedDailyParcelStats.find(date: date)&.data_json
   end
 
-  get '/users/search/' do
+  get '/users/search' do
     query = "select id
             from users
             where name LIKE '%#{params['name']}%'
