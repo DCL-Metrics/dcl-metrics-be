@@ -152,16 +152,21 @@ class Server < Sinatra::Application
     Models::SerializedDailyParcelStats.find(date: date)&.data_json
   end
 
+  # NOTE: i'm making a result and then pushing each serialized model *in order*
+  # into that result rather than just mapping the results. This was a pain to
+  # understand, but calling User.where(id: ids).map doesn't preserve the order
+  # of the query since where introduces a default sort order
   get '/users/search' do
+    result = []
     query = "select id
             from users
-            where name LIKE '%#{params['name']}%'
+            where UPPER(name) LIKE UPPER('%#{params['name']}%')
             order by (name = '#{params['name']}') desc, length(name)"
     ids = FAT_BOY_DATABASE[query].first(10).map(&:values).flatten
 
-
-    Models::User.where(id: ids).map do |user|
-      {
+    ids.each do |id|
+      user = Models::User[id]
+      result.push({
         address: user.address,
         name: user.name,
         avatar_url: user.avatar_url,
@@ -170,8 +175,10 @@ class Server < Sinatra::Application
         guest: user.guest?,
         verified: user.verified?,
         dao_member: user.dao_member?
-      }
-    end.to_json
+      })
+    end
+
+    result.to_json
   end
 
   get '/users/:address' do
