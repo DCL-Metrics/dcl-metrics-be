@@ -84,11 +84,11 @@ class Server < Sinatra::Application
 
       case
       when params['coordinates'] && params['name']
-        query += " where coordinates LIKE '%#{params['coordinates']}%' and name LIKE '%#{params['name']}%'"
+        query += " where coordinates LIKE '%#{params['coordinates']}%' and UPPER(name) LIKE UPPER('%#{params['name']}%')"
       when params['coordinates']
         query += " where coordinates LIKE '%#{params['coordinates']}%'"
       when params['name']
-        query += " where name LIKE '%#{params['name']}%'"
+        query += " where UPPER(name) LIKE UPPER('%#{params['name']}%')"
       end
 
     DATABASE_CONNECTION[query].first(10).to_json
