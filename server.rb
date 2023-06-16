@@ -61,37 +61,32 @@ class Server < Sinatra::Application
   # TODO: select the first date when there are multiple results (so lose distinct)
   # if the first result for first_seen_at is nil, find the first daily_scene model?
   get '/scenes/search' do
-    query = "select distinct on (name)
-              coordinates,
-              first_seen_at,
-              name,
-              scene_disambiguation_uuid as uuid
-            from scenes"
+    result = []
+    query = "select distinct scene_disambiguation_uuid as uuid from scenes"
 
-    # NOTE: for some reason there is different behavior between dev environments
-    # and prod when using "Sequel.like" - in dev environments (and on prod
-    # console...wtf) the query is formatted as SQL as expected. based on logs,
-    # in prod this is *not* happening, and instead it renders a
-    # "QualifiedIdentifier" class
-    #
-    # example:
-    #
-    # dev: WHERE (\"coordinates\" LIKE '%-70,-124%')">
-    # prod: WHERE (\"coordinates\" LIKE '%#<Sequel::SQL::QualifiedIdentifier:0x..>%')"
-    #
-    # calling #qualify on the resulting dataset doesn't make a difference, so
-    # for now will just write the sql directly
+    case
+    when params['coordinates'] && params['name']
+      query += " where coordinates LIKE '%#{params['coordinates']}%' and UPPER(name) LIKE UPPER('%#{params['name']}%')"
+    when params['coordinates']
+      query += " where coordinates LIKE '%#{params['coordinates']}%'"
+    when params['name']
+      query += " where UPPER(name) LIKE UPPER('%#{params['name']}%')"
+    end
 
-      case
-      when params['coordinates'] && params['name']
-        query += " where coordinates LIKE '%#{params['coordinates']}%' and UPPER(name) LIKE UPPER('%#{params['name']}%')"
-      when params['coordinates']
-        query += " where coordinates LIKE '%#{params['coordinates']}%'"
-      when params['name']
-        query += " where UPPER(name) LIKE UPPER('%#{params['name']}%')"
-      end
+    ids = FAT_BOY_DATABASE[query].first(10).map(&:values).flatten
 
-    DATABASE_CONNECTION[query].first(10).to_json
+    # this is to preserve order, see /users/search
+    ids.each do |id|
+      scene = Models::Scene.find(scene_disambiguation_uuid: id)
+      result.push({
+        name: scene.name,
+        coordinates: scene.coordinates,
+        first_seen_at: scene.first_seen_at,
+        uuid: scene.scene_disambiguation_uuid
+      })
+    end
+
+    result.to_json
   end
 
   get '/scenes/:uuid' do
