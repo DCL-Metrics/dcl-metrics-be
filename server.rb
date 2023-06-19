@@ -61,7 +61,6 @@ class Server < Sinatra::Application
   # TODO: select the first date when there are multiple results (so lose distinct)
   # if the first result for first_seen_at is nil, find the first daily_scene model?
   get '/scenes/search' do
-    result = []
     query = "select distinct scene_disambiguation_uuid as uuid from scenes"
 
     case
@@ -75,19 +74,18 @@ class Server < Sinatra::Application
 
     ids = FAT_BOY_DATABASE[query].first(10).map(&:values).flatten
 
-    # this is to preserve order, see /users/search
-    ids.each do |id|
-      scene = Models::Scene.find(scene_disambiguation_uuid: id)
-      result.push({
-        name: scene.name,
-        coordinates: scene.coordinates,
-        first_seen_at: scene.first_seen_at.to_s,
-        uuid: scene.scene_disambiguation_uuid,
-        map_url: scene.map_url
-      })
-    end
-
-    result.to_json
+    Models::Scene.
+      where(scene_disambiguation_uuid: ids).
+      sort_by { |scene| scene.first_seen_at.to_s }.
+      map do |scene|
+        {
+          name: scene.name,
+          coordinates: scene.coordinates,
+          first_seen_at: scene.first_seen_at.to_s,
+          uuid: scene.scene_disambiguation_uuid,
+          map_url: scene.map_url
+        }
+      end.to_json
   end
 
   get '/scenes/:uuid' do
