@@ -74,18 +74,30 @@ class Server < Sinatra::Application
 
     ids = FAT_BOY_DATABASE[query].first(10).map(&:values).flatten
 
+    # TODO: first_seen_at should really be renamed to "deployed_at"
+    # TODO: there is likely a way to do more of this in pure SQL and it will be
+    # a lot faster
     Models::Scene.
       where(scene_disambiguation_uuid: ids).
-      sort_by { |scene| scene.first_seen_at.to_s }.
-      map do |scene|
+      all.
+      group_by(&:scene_disambiguation_uuid).
+      map do |uuid, scenes|
+        first_deployed_at = scenes.min_by { |s| s.first_seen_at.to_s }.first_seen_at.to_s
+        last_deployed_at = scenes.max_by { |s| s.first_seen_at.to_s }.first_seen_at.to_s
+
         {
-          name: scene.name,
-          coordinates: scene.coordinates,
-          first_seen_at: scene.first_seen_at.to_s,
-          uuid: scene.scene_disambiguation_uuid,
-          map_url: scene.map_url
+          name: scenes[0].name,
+          coordinates: scenes[0].coordinates,
+          first_deployed_at: (first_deployed_at.empty? ? nil : first_deployed_at),
+          last_deployed_at: (last_deployed_at.empty? ? nil : last_deployed_at),
+          uuid: uuid,
+          map_url: scenes[0].map_url,
+          deploy_count: scenes.count
         }
-      end.to_json
+      end.
+      sort_by { |scene| scene[:last_deployed_at].to_s }.
+      reverse.
+      to_json
   end
 
   get '/scenes/:uuid' do
