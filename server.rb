@@ -81,8 +81,9 @@ class Server < Sinatra::Application
       result.push({
         name: scene.name,
         coordinates: scene.coordinates,
-        first_seen_at: scene.first_seen_at,
-        uuid: scene.scene_disambiguation_uuid
+        first_seen_at: scene.first_seen_at.to_s,
+        uuid: scene.scene_disambiguation_uuid,
+        map_url: scene.map_url
       })
     end
 

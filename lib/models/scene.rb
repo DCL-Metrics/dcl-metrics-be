@@ -20,6 +20,14 @@ module Models
       Models::SceneDisambiguation.find(uuid: scene_disambiguation_uuid)
     end
 
+    # TODO: extract this to helper
+    def map_url
+      center = coordinates.split(';').first
+      selected = coordinates
+
+      "https://api.decentraland.org/v2/map.png?center=#{center}&selected=#{selected}"
+    end
+
     def public_road?
       coordinates.split(';').any? { |parcel| PUBLIC_ROADS.include?(parcel) }
     end
