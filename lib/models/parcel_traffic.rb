@@ -19,5 +19,9 @@ module Models
     def addresses
       @addresses ||= JSON.parse(addresses_json)
     end
+
+    def scene
+      @scene ||= Models::Scene.find(cid: scene_cid)
+    end
   end
 end
