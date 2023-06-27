@@ -5,21 +5,21 @@ module Services
     end
 
     def initialize(date)
-      @addresses= FAT_BOY_DATABASE[
-        "select distinct address from data_points where date = '#{date}'"
-      ].all.flat_map(&:values)
       @date = date
     end
 
     def call
-      addresses.each do |address|
-        next if address.nil?
+      Models::DataPoint.where(date: date).select(:address).distinct.lazy.each_slice(500) do |batch|
+        batch.each do |data_point|
+          address = data_point.address
+          next if address.nil?
 
-        Jobs::ProcessDailyUserActivity.perform_async(address, date)
+          Jobs::ProcessDailyUserActivity.perform_async(address, date)
+        end
       end
     end
 
     private
-    attr_reader :addresses, :date
+    attr_reader :date
   end
 end
