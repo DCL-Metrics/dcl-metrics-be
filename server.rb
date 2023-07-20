@@ -48,6 +48,14 @@ class Server < Sinatra::Application
     dcl_property_rentals_api('closed', params)
   end
 
+  get '/worlds/current' do
+    Models::WorldsDump.order(:created_at).last.data_json
+  end
+
+  get '/worlds/user/:address' do
+    # TODO but maybe this is way easier by name?
+  end
+
   get '/scenes/top' do
     scenes = Models::DailySceneStats.
       basic_data.
