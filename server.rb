@@ -49,7 +49,23 @@ class Server < Sinatra::Application
   end
 
   get '/worlds/current' do
-    Models::WorldsDump.order(:created_at).last.data_json
+    dump = Models::WorldsDump.order(:created_at).last
+    data = dump.data
+    worlds = dump.data['data'].map do |world|
+      {
+        name: world['name'],
+        ens_token: world['name'].sub('.dcl.eth'),
+        scenes: world['scenes'].map { |scene| scene.except('pointers') }
+      }
+    end
+
+    {
+      timestamp: dump.created_at,
+      currently_occupied: data['total_rooms'],
+      current_users: data['total_user_count'],
+      total_count: data['world_count'],
+      data: worlds
+    }.to_json
   end
 
   get '/worlds/user/:address' do
