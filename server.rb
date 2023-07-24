@@ -55,7 +55,8 @@ class Server < Sinatra::Application
       {
         name: world['name'],
         ens_token: world['name'].sub('.dcl.eth', ''),
-        scenes: world['scenes'].map { |scene| scene.except('pointers') }
+        scenes: world['scenes'].map { |scene| scene.except('pointers') },
+        user_count: world['user_count']
       }
     end
 
