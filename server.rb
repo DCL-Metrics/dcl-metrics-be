@@ -54,7 +54,7 @@ class Server < Sinatra::Application
     worlds = dump.data['data'].map do |world|
       {
         name: world['name'],
-        ens_token: world['name'].sub('.dcl.eth'),
+        ens_token: world['name'].sub('.dcl.eth', ''),
         scenes: world['scenes'].map { |scene| scene.except('pointers') }
       }
     end
