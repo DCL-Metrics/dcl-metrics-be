@@ -60,7 +60,7 @@ class Server < Sinatra::Application
     end
 
     {
-      timestamp: dump.created_at,
+      timestamp: dump.created_at.to_i,
       currently_occupied: data['total_rooms'],
       current_users: data['total_user_count'],
       total_count: data['world_count'],
