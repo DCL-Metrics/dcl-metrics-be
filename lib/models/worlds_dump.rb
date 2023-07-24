@@ -8,7 +8,7 @@
 module Models
   class WorldsDump < Sequel::Model(:worlds_dump)
     def data
-      JSON.parse(data_json)
+      @data ||= JSON.parse(data_json)
     end
   end
 end
