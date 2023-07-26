@@ -52,11 +52,14 @@ class Server < Sinatra::Application
     dump = Models::WorldsDump.order(:created_at).last
     data = dump.data
     worlds = dump.data['data'].map do |world|
+      name = world['name']
+
       {
-        name: world['name'],
-        ens_token: world['name'].sub('.dcl.eth', ''),
-        scenes: world['scenes'].map { |scene| scene.except('pointers') },
-        user_count: world['user_count']
+        name: name,
+        ens_token: name.sub('.dcl.eth', ''),
+        url: "https://play.decentraland.org/?realm=#{name}",
+        user_count: world['user_count'],
+        scenes: world['scenes'].map { |scene| scene.except('pointers') }
       }
     end
 
