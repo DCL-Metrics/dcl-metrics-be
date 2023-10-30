@@ -67,7 +67,9 @@ class Server < Sinatra::Application
       timestamp: dump.created_at.to_i,
       currently_occupied: data['total_rooms'],
       current_users: data['total_user_count'],
-      total_count: data['world_count'],
+      dcl_worlds_count: data['world_count']['dcl'],
+      ens_worlds_count: data['world_count']['ens'],
+      total_count: data['world_count'].values.sum,
       data: worlds
     }.to_json
   end
