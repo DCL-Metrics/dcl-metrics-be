@@ -1,5 +1,5 @@
 module Jobs
-  class ArchiveUserActivites < Job
+  class ArchiveUserActivities < Job
     sidekiq_options queue: 'processing'
 
     AuthenticationError = Class.new(::StandardError)
