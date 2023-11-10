@@ -148,6 +148,19 @@ namespace :data_preservation do
     end
   end
 
+  desc "archive user activities after 3 days"
+  task :archive_user_activities, [:date] do |task, args|
+    require './lib/main'
+
+    date = args[:date] || Models::UserActivity.order(:date).first.date.to_s
+
+    if Date.today <= Date.parse(date) + 3
+      raise ArgumentError.new("Can't archive recent user activities")
+    else
+      Jobs::ArchiveUserActivities.perform_async(date)
+    end
+  end
+
   # ex: rake data_preservation:daily_parcel_traffic['2022-07-20']
   desc "save enriched peers dump data per day by parcel"
   task :daily_parcel_traffic, [:date] do |task, args|
