@@ -15,7 +15,7 @@ module Adapters
         response.
           success['data'].
           flat_map { |data| data['islands'] }.
-          compact
+          compact.
           flat_map { |island| island['peers'] }
       end
 
