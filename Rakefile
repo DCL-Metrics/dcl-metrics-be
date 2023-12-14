@@ -105,6 +105,22 @@ namespace :compute do
       result += "#{api_user[:count]} x #{api_user[:response]}\n"
     end
 
+    result += "\nInternal API responses for revalidation endpoints\n\n"
+
+    logs = FAT_BOY_DATABASE[
+      "select endpoint, response, count(response)
+      from api_key_access_logs
+      where created_at > '#{Time.now - 24 * 3600}'
+      and not endpoint like '/users/%'
+      and not endpoint like '/scenes/%'
+      group by response, endpoint
+      order by 1 DESC"
+    ].all
+
+    logs.each do |log|
+      result += "#{log[:endpoint]}: #{log[:count]}x #{log[:response]}\n"
+    end
+
     Services::TelegramOperator.notify(
       level: :info,
       message: result
