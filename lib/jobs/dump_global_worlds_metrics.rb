@@ -7,7 +7,7 @@ module Jobs
     B2_AUTH_URL = 'https://api.backblazeb2.com/b2api/v2/b2_authorize_account'
     BUCKET_NAME = 'global-stats'
 
-    def perform(data)
+    def perform
       filename = "worlds"
       existing_file_id = nil
 
@@ -118,39 +118,32 @@ module Jobs
     private
 
     def pull_data(after_timestamp = nil)
-      base_query = "select created_at as timestamp,
-                           (data_json ->> 'total_user_count')::int as total_user_count,
-                           (data_json ->> 'total_rooms')::int as occupied_worlds,
-                           (data_json ->> 'world_count') as world_count
-                   from worlds_dump "
+      base_query = "select cast(created_at as date) as date,
+                           max(total_user_count) as max_user_count,
+                           avg(total_user_count) as avg_user_count,
+                           max(occupied_worlds) as max_occupied_worlds,
+                           avg(occupied_worlds) as avg_occupied_worlds,
+                           max(total_world_count) as total_world_count,
+                           max(dcl_world_count) as dcl_world_count,
+                           max(ens_world_count) as ens_world_count
+                    from worlds_dump "
 
       base_query += "where created_at > '#{after_timestamp.to_s}' " if after_timestamp
 
-      DATABASE_CONNECTION[base_query + "order by created_at"][1..-1]
+      DATABASE_CONNECTION[base_query + "group by date order by date desc"].all
     end
 
     def serialize_data(data)
-      # TODO: this is still not working right
       data.map do |row|
-        world_count = JSON.parse(row[:world_count] || '{}')
-        dcl_count = world_count.is_a?(Hash) ? world_count['dcl'].to_i : 0
-        ens_count = world_count.is_a?(Hash) ? world_count['ens'].to_i : 0
-
-        total = if world_count.is_a?(Integer)
-                  world_count
-                else
-                  dcl_count + ens_count
-                end
-
         {
-          timestamp: row[:timestamp],
-          total_user_count: row[:total_user_count],
-          occupied_worlds: row[:occupied_worlds],
-          world_count: {
-            total: total,
-            dcl: dcl_count,
-            ens: ens_count
-          }
+          date: row[:date].to_s,
+          max_user_count: row[:max_user_count],
+          avg_user_count: row[:avg_user_count].to_f.round(1),
+          max_occupied_worlds: row[:max_occupied_worlds],
+          avg_occupied_worlds: row[:avg_occupied_worlds].to_f.round(1),
+          total_world_count: row[:total_world_count],
+          dcl_world_count: row[:dcl_world_count],
+          ens_world_count: row[:ens_world_count]
         }
       end
     end
