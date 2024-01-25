@@ -47,11 +47,11 @@ module Jobs
 
         result = if current.success? && !current.body.empty? # push new metrics
                    existing_data = JSON.parse(current.body)
-                   last_timestamp =  existing_data.last['timestamp']
-                   raw_data = pull_data(last_timestamp)
+                   last_entry =  existing_data.last['date']
+                   raw_data = pull_data(last_entry)
                    data = serialize_data(raw_data)
 
-                   existing_data.push(data)
+                   existing_data + data
                  else # create dumpfile if none exists
                    raw_data = pull_data
                    serialize_data(raw_data)
@@ -98,9 +98,9 @@ module Jobs
           if existing_file_id
             # delete previous dumpfile
             b2_delete_file_url = "#{auth['apiUrl']}/b2api/v3/b2_delete_file_version"
-            response = Faraday.post(b2_get_upload_url) do |request|
+            response = Faraday.post(b2_delete_file_url) do |request|
               request.headers['Authorization'] = auth['authorizationToken']
-              request.body = { field: existing_file_id }.to_json
+              request.body = { fileId: existing_file_id, fileName: filename }.to_json
             end
           end
         else
@@ -128,9 +128,9 @@ module Jobs
                            max(ens_world_count) as ens_world_count
                     from worlds_dump "
 
-      base_query += "where created_at > '#{after_timestamp.to_s}' " if after_timestamp
+      base_query += "where created_at::date > '#{after_timestamp.to_s}' " if after_timestamp
 
-      DATABASE_CONNECTION[base_query + "group by date order by date desc"].all
+      DATABASE_CONNECTION[base_query + "group by date order by date asc"].all
     end
 
     def serialize_data(data)
