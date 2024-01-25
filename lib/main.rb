@@ -67,6 +67,7 @@ require './lib/adapters/dcl/dao_transparency/proposals.rb'
 require './lib/adapters/dcl/dao_transparency/grants.rb'
 require './lib/adapters/dcl/dao_transparency/collections.rb'
 require './lib/adapters/dcl/dao_transparency/team.rb'
+require './lib/adapters/backblaze/read_file.rb'
 
 # require services
 require './lib/services/telegram_operator.rb'
@@ -149,3 +150,4 @@ require './lib/jobs/user_dao_activities/team.rb'
 require './lib/jobs/user_dao_activities/votes.rb'
 require './lib/jobs/archive_data_points.rb'
 require './lib/jobs/archive_user_activities.rb'
+require './lib/jobs/dump_global_worlds_metrics.rb'

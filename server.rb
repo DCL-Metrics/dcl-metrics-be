@@ -48,6 +48,16 @@ class Server < Sinatra::Application
     dcl_property_rentals_api('closed', params)
   end
 
+  get '/worlds/global' do
+    response = Adapters::Backblaze::ReadFile.call(bucket: 'global-stats', filename: 'worlds')
+
+    if response.success?
+      response.body
+    else
+      { error: 'something went wrong' }.to_json
+    end
+  end
+
   get '/worlds/current' do
     dump = Models::WorldsDump.order(:created_at).last
     data = dump.data
