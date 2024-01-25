@@ -54,7 +54,7 @@ class Server < Sinatra::Application
     if response.success?
       response.body
     else
-      { error: 'something went wrong' }.to_json
+      { error: 'something went wrong, please contact admin' }.to_json
     end
   end
 
