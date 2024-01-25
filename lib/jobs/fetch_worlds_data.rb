@@ -8,8 +8,8 @@ module Jobs
         occupied_worlds: data[:total_rooms],
         total_user_count: data[:total_user_count],
         total_world_count: data[:world_count].sum(&:last),
-        dcl_world_count: data[:world_count]['dcl']
-        ens_world_count: data[:world_count]['ens']
+        dcl_world_count: data[:world_count]['dcl'],
+        ens_world_count: data[:world_count]['ens'],
         data_json: data.to_json
       )
     end
