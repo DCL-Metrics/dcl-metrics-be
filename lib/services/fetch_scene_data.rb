@@ -31,7 +31,7 @@ module Services
 
     def find_or_create_scene(scene)
       begin
-        name = scene['metadata']['display']['title']
+        name = scene['metadata']['display']['title'].strip
         coordinates = scene['pointers'].sort.join(';')
         scene_disambiguation_uuid = find_or_create_scene_uuid(name, coordinates)
 

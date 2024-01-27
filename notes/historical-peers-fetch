@@ -1,0 +1,35 @@
+start_timestamp = DateTime.parse('2023-11-22 14:47:33.796313 UTC').to_time
+end_timestamp = start_timestamp + 60
+terminus_timestamp = DateTime.parse('2023-11-24 16:21 UTC').to_time
+# terminus_timestamp = start_timestamp + 600
+
+while end_timestamp < terminus_timestamp
+  response = Adapters::Base.get("https://dao-data.atlascorp.io/islands-history/#{start_timestamp.to_i}/#{end_timestamp.to_i}")
+
+
+  data = response.success['data'].flat_map { |data| data['islands'] }.compact.flat_map { |island| island['peers'] }
+
+  coordinates = data.map { |c| c['parcel']&.join(',') }.compact.uniq
+  scenes = Services::FetchSceneData.call(coordinates: coordinates)
+
+  # enrich peer data with scene cid
+  data.each do |d|
+    next unless d['parcel']
+    parcels = d['parcel'].join(',')
+
+    scene = scenes.detect { |s| s.coordinates.split(';').include?(parcels) }
+    next if scene.nil? # empty parcel
+    d['scene_cid'] = scene.cid
+  end
+
+  model = Models::PeersDump.create(created_at: end_timestamp, data_json: data.to_json)
+
+  Jobs::ProcessSnapshot.perform_async(model.id)
+
+  start_timestamp += 60
+  end_timestamp += 60
+
+  p start: start_timestamp
+  sleep 0.5
+end
+
