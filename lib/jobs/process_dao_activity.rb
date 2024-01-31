@@ -12,7 +12,7 @@ module Jobs
       if sheet_name == 'Votes'
         # NOTE: votes has a LOT more data than the other sheets,
         # so a different approach is needed
-        data.each { |v| Jobs::CreateDaoVote.perform_async(**v.values) }
+        data.each { |v| Jobs::CreateDaoVote.perform_async(*v.values) }
       else
         data = data.to_json
         governance = Models::DaoGovernance.last
