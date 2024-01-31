@@ -28,18 +28,6 @@ module Adapters
               beneficiary: row[12].downcase,
             }
 
-            if status == 'enacted'
-              proposal.merge!(
-                vesting_contract: row[14].downcase,
-                vesting_released: row[15].to_i,
-                done_updates: row[24].sub('$', '').to_i,
-                late_updates: row[25].sub('$', '').to_i,
-                missed_updates: row[26].sub('$', '').to_i,
-                remaining_updates: row[31].sub('$', '').to_i,
-                health: row[28]
-              )
-            end
-
             proposal
           end
         end

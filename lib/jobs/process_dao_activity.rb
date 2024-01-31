@@ -3,7 +3,11 @@ module Jobs
     sidekiq_options queue: 'processing'
 
     def perform(sheet_name)
-      data = Adapters::Dcl::DaoTransparency::Client.fetch_data(sheet_name)
+      data = if sheet_name == 'KPIs'
+               Adapters::Dcl::DaoTransparency::KpiClient.fetch_data
+             else
+               Adapters::Dcl::DaoTransparency::Client.fetch_data(sheet_name)
+             end
 
       if sheet_name == 'Votes'
         # NOTE: votes has a LOT more data than the other sheets,
@@ -21,6 +25,8 @@ module Jobs
         governance.update(update_params)
       end
 
+      return if sheet_name == 'KPIs'
+      Jobs::UserDaoActivities.const_get(sheet_name).perform_async
       nil
     end
 

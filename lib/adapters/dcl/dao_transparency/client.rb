@@ -2,15 +2,14 @@ module Adapters
   module Dcl
     module DaoTransparency
       class Client
-        SHEET_ID = '1FoV7TdMTVnqVOZoV4bvVdHWkeu4sMH5JEhp8L0Shjlo'
+        BASE_URL = 'https://raw.githubusercontent.com/Decentraland-DAO/transparency'
 
         def self.fetch_data(sheet_name)
           new(sheet_name).call
         end
 
         def initialize(sheet_name)
-          @url = "https://docs.google.com/spreadsheets/d/#{SHEET_ID}/gviz/tq"
-          @base_params = { tqx: 'out:csv', response_format: 'csv' }
+          @url = "#{BASE_URL}/gh-pages/#{sheet_name.downcase}.csv"
           @sheet_name = sheet_name
         end
 
@@ -31,15 +30,14 @@ module Adapters
         end
 
         private
-        attr_reader :url, :base_params, :sheet_name
+        attr_reader :url, :sheet_name
 
         def fetch_sheet_data(sheet_name)
-          params = base_params.merge(sheet: sheet_name)
-          response = Adapters::Base.get(url, params)
+          response = Adapters::Base.get(url, response_format: 'csv')
 
           if response.failure?
             notify_failure(sheet_name, response)
-            raise RuntimeError, "#{self.class.name} failed"
+            raise RuntimeError, "#{self.class.name} / #{sheet_name} failed"
           else
             adapter = Adapters::Dcl::DaoTransparency.const_get(sheet_name)
             adapter.call(data: response.success)
@@ -47,8 +45,6 @@ module Adapters
         end
 
         def collect_addresses(data)
-          return [] if sheet_name.downcase == 'kpis'
-
           [
             data.flat_map { |x| x[:address] },
             data.flat_map { |x| x[:beneficiary] },
