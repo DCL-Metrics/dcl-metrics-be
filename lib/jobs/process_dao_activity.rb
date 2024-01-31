@@ -14,13 +14,12 @@ module Jobs
         # so a different approach is needed
         data.each { |v| create_vote(v) }
       else
-        sheet_name.downcase!
         data = data.to_json
         governance = Models::DaoGovernance.last
-        existing_data = governance.public_send("#{sheet_name}_json")
+        existing_data = governance.public_send("#{sheet_name.downcase}_json")
 
-        update_params = { "#{sheet_name}_updated_at" => Time.now.utc }
-        update_params.merge!("#{sheet_name}_json" => data) if data != existing_data
+        update_params = { "#{sheet_name.downcase}_updated_at" => Time.now.utc }
+        update_params.merge!("#{sheet_name.downcase}_json" => data) if data != existing_data
 
         governance.update(update_params)
       end
