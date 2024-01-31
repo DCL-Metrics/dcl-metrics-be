@@ -32,14 +32,17 @@ module Jobs
     private
 
     def create_vote(vote)
-      Models::DaoVote.create(
+      query = {
         address: vote[:address],
         proposal_id: vote[:proposal_id],
-        title: vote[:title],
-        choice: vote[:choice],
-        vote_weight: vote[:vote_weight],
-        vp: vote[:vp],
         timestamp: vote[:timestamp]
+      }
+
+      Models::DaoVote.find_or_create(query) do |vote|
+        vote.title = vote[:title]
+        vote.choice = vote[:choice]
+        vote.vote_weight = vote[:vote_weight]
+        vote.vp = vote[:vp]
       )
     end
   end

@@ -12,7 +12,7 @@
 # Time  :updated_at, null: false
 #
 # add_index :dao_votes, :address
-# add_index :dao_votes, [:address, :proposal_id], unique: true
+# add_index :dao_votes, [:address, :proposal_id, :timestamp], unique: true
 
 module Models
   class DaoVote < Sequel::Model(FAT_BOY_DATABASE[:dao_votes])
