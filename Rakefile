@@ -228,7 +228,7 @@ namespace :data_preservation do
     Jobs::ProcessDailyParcelTraffic.perform_async(date)
   end
 
-  # temporary job
+  # TODO: remove this temporary job
   # ex: rake data_preservation:recompile_user_activities
   desc "recompile user_activities data from the most recent calculation date"
   task :recompile_user_activities do
