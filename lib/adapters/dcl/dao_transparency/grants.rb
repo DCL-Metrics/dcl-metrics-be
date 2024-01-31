@@ -12,14 +12,12 @@ module Adapters
 
         def call
           data[1..-1].map do |row|
-            status = row[4]
-
-            proposal = {
+            {
               proposal_id: row[0],
               snapshot_id: row[1],
               created_by: row[2].downcase,
               title: row[3],
-              status: status,
+              status: row[4],
               started_at: row[5],
               ended_at: row[6],
               category: row[9],
@@ -27,9 +25,6 @@ module Adapters
               amount: row[11].to_i,
               beneficiary: row[12].downcase,
             }
-
-            proposal.merge!(vesting_contract: row[14].downcase) if status == 'enacted'
-            proposal
           end
         end
 
