@@ -43,7 +43,7 @@ module Jobs
         vote.choice = vote[:choice]
         vote.vote_weight = vote[:vote_weight]
         vote.vp = vote[:vp]
-      )
+      end
     end
   end
 end
