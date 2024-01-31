@@ -28,6 +28,7 @@ module Adapters
               beneficiary: row[12].downcase,
             }
 
+            proposal.merge!(vesting_contract: row[14].downcase) if status == 'enacted'
             proposal
           end
         end
