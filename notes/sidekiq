@@ -1,0 +1,12 @@
+require 'sidekiq/api'
+queue = Sidekiq::Queue.new('processing')
+
+queue.map(&:klass).tally
+
+
+job_to_kill = "Jobs::XXX"
+queue.each do |job|
+    puts job.klass
+    job.delete if job.klass == job_to_kill
+end
+

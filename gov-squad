@@ -1,0 +1,10 @@
+For real active users
+
+active_voters = Models::UserDaoActivity.
+                where { latest_vote_cast_at >= Date.today - 30 }
+
+active_users  = Models::User.
+                where(address: active_voters.map(&:address)).
+                where { last_seen >= Date.today - 30 }
+
+
