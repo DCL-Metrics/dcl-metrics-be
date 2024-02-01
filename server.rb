@@ -206,7 +206,12 @@ class Server < Sinatra::Application
                     where(address: active_voters.map(&:address)).
                     where { last_seen >= Date.today - timeframe_in_days }
 
+    addresses = active_users.map(&:address)
 
+    {
+      total: addresses.count,
+      data: addresses
+    }.to_json
   end
 
   # NOTE: i'm making a result and then pushing each serialized model *in order*
