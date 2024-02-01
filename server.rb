@@ -199,8 +199,7 @@ class Server < Sinatra::Application
   end
 
   get '/users/hyperactive' do
-    p params
-    timeframe_in_days = 30 || params['timeframe_in_days']
+    timeframe_in_days = 30 || params['timeframe_in_days'].to_i
     active_voters = Models::UserDaoActivity.
                     where { latest_vote_cast_at >= Date.today - timeframe_in_days }
     active_users  = Models::User.
