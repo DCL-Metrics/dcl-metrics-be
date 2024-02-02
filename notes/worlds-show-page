@@ -1,0 +1,4 @@
+could use this for querying, but likely better to just make a new table with
+extract data by world
+
+https://sequel.jeremyevans.net/rdoc-plugins/files/lib/sequel/extensions/pg_json_ops_rb.html
