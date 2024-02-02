@@ -1,10 +1,11 @@
 module Adapters
   module Dcl
     module DaoTransparency
-      class KpiClient
+      class TeamClient
         FILE_ID = '1FoV7TdMTVnqVOZoV4bvVdHWkeu4sMH5JEhp8L0Shjlo'
-        SHEET_ID = '624625832'
+        SHEET_ID = '1411058697'
 
+        # TODO: this is just a one-to-one copy of KPI client, so they could be merged
         def self.fetch_data
           new.call
         end
@@ -25,10 +26,10 @@ module Adapters
           response = Adapters::Base.get(url, params)
 
           if response.failure?
-            notify_failure('KPI', response)
+            notify_failure('Team', response)
             raise RuntimeError, "#{self.class.name} failed"
           else
-            Adapters::Dcl::DaoTransparency::KPIs.call(data: response.success)
+            Adapters::Dcl::DaoTransparency::Team.call(data: response.success)
           end
         end
 

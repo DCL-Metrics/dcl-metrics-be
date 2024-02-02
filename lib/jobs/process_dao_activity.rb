@@ -3,8 +3,11 @@ module Jobs
     sidekiq_options queue: 'processing'
 
     def perform(sheet_name)
-      data = if sheet_name == 'KPIs'
+      data = case
+             when sheet_name == 'KPIs'
                Adapters::Dcl::DaoTransparency::KpiClient.fetch_data
+             when sheet_name == 'Team'
+               Adapters::Dcl::DaoTransparency::TeamClient.fetch_data
              else
                Adapters::Dcl::DaoTransparency::Client.fetch_data(sheet_name)
              end
