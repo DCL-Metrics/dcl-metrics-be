@@ -4,7 +4,7 @@ module Jobs
 
     SHEETS_TO_PULL = %w[
       Collections
-      Grants
+      Projects
       KPIs
       Members
       Proposals

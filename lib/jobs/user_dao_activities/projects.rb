@@ -1,6 +1,6 @@
 module Jobs
   module UserDaoActivities
-    class Grants < Job
+    class Projects < Job
       sidekiq_options queue: 'processing'
 
       def perform

@@ -1,0 +1,9 @@
+update name of sheet pulling from grants -> projects
+change models to reflect new naming
+
+add columns
+- check what is new, probably something about bids
+- rename grants -> projects in dao_governance
+- add bid columns in user_dao_activity
+
+populate any new columns
