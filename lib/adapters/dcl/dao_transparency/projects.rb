@@ -1,7 +1,7 @@
 module Adapters
   module Dcl
     module DaoTransparency
-      class Grants
+      class Projects
         def self.call(data:)
           new(data).call
         end
