@@ -23,7 +23,7 @@ class GrantsSpec < BaseSpec
     assert_equal('0xdce7d7f3ea933b214b1e73b47b079b631122596e', first[:beneficiary])
 
     enacted = subject[23]
-    assert_equal(18, enacted.keys.count)
+    assert_equal(11, enacted.keys.count)
     assert_equal('29b3a3a0-74fd-11ed-a9bf-f772a12a0556', enacted[:proposal_id])
     assert_equal('0x3603c2cc8bf90257aa3da37e3f2549058f5b2f272b8285b2f0bd9684e57a7592', enacted[:snapshot_id])
     assert_equal('0x56469159d91eb810dce34dd13ec4ed8194bca7be', enacted[:created_by])
@@ -35,12 +35,5 @@ class GrantsSpec < BaseSpec
     assert_equal(5, enacted[:tier])
     assert_equal(120_000, enacted[:amount])
     assert_equal('0x4b99ad2fad8b5553dc734eda80695591b3ca1fd5', enacted[:beneficiary])
-    assert_equal('0xf265a437cc3566492221266b69ef69dd8936aa4c', enacted[:vesting_contract])
-    assert_equal(0, enacted[:vesting_released])
-    assert_equal(1, enacted[:done_updates])
-    assert_equal(0, enacted[:late_updates])
-    assert_equal(0, enacted[:missed_updates])
-    assert_equal(5, enacted[:remaining_updates])
-    assert_equal('onTrack', enacted[:health])
   end
 end

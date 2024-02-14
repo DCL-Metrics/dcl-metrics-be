@@ -198,6 +198,22 @@ class Server < Sinatra::Application
     Models::SerializedDailyParcelStats.find(date: date)&.data_json
   end
 
+  get '/users/hyperactive' do
+    timeframe_in_days = (params['timeframe_in_days'] || 30).to_i
+    active_voters = Models::UserDaoActivity.
+                    where { latest_vote_cast_at >= Date.today - timeframe_in_days }
+    active_users  = Models::User.
+                    where(address: active_voters.map(&:address)).
+                    where { last_seen >= Date.today - timeframe_in_days }
+
+    addresses = active_users.map(&:address)
+
+    {
+      total: addresses.count,
+      data: addresses
+    }.to_json
+  end
+
   # NOTE: i'm making a result and then pushing each serialized model *in order*
   # into that result rather than just mapping the results. This was a pain to
   # understand, but calling User.where(id: ids).map doesn't preserve the order

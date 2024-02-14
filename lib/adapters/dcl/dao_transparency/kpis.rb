@@ -108,7 +108,8 @@ module Adapters
         end
 
         def fetch_following(string, count)
-          index = data.index(fetch(string))
+          current = fetch(string)
+          index = data.index(current)
           data[index + 1..index + count]
         end
       end

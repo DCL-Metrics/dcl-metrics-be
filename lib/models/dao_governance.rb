@@ -20,6 +20,17 @@
 
 module Models
   class DaoGovernance < Sequel::Model(FAT_BOY_DATABASE[:dao_governance])
+    def timestamps
+      {
+        collections: collections_updated_at,
+        grants: grants_updated_at,
+        kpis: kpis_updated_at,
+        members: members_updated_at,
+        proposals: proposals_updated_at,
+        team: team_updated_at
+      }
+    end
+
     def collections
       @collections ||= JSON.parse(collections_json)
     end

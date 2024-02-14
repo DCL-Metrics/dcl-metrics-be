@@ -3,9 +3,9 @@ module Jobs
     sidekiq_options queue: 'processing'
 
     SHEETS_TO_PULL = %w[
+      KPIs
       Collections
       Projects
-      KPIs
       Members
       Proposals
       Team
@@ -19,9 +19,6 @@ module Jobs
     def perform
       SHEETS_TO_PULL.each do |sheet|
         Jobs::ProcessDaoActivity.perform_async(sheet)
-        next if sheet == 'KPIs'
-
-        Jobs::UserDaoActivities.const_get(sheet).perform_in(300) # 5 minutes
       end
     end
   end
