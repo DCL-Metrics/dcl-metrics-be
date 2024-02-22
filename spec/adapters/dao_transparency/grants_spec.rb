@@ -1,7 +1,7 @@
 require './spec/spec_helper'
 
 class GrantsSpec < BaseSpec
-  subject { Adapters::Dcl::DaoTransparency::Grants.call(data: data) }
+  subject { Adapters::Dcl::DaoTransparency::Projects.call(data: data) }
 
   let(:data) { parse_csv_fixture('dao_transparency/grants.csv') }
 
