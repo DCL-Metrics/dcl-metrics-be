@@ -17,13 +17,14 @@ FAT_BOY_DATABASE = Sequel.connect(
   ENV['FAT_BOY_DATABASE_URL'],
   pool_timeout: ENV['DATABASE_POOL_TIMEOUT'].to_i)
 
-# global constants
-PUBLIC_ROADS = JSON.parse(File.read('./lib/static/roads.json'))
-
 # misc
 require 'csv'
+require 'json'
 require 'dry/monads'
 require './lib/monkey_patches.rb'
+
+# global constants
+PUBLIC_ROADS = JSON.parse(File.read('./lib/static/roads.json'))
 
 # require models
 require './lib/models/peers_dump.rb'
