@@ -1,5 +1,5 @@
 # there are a few branching paths that will determine data depth:
-# 1. upcoming vs live vs completed - full data is only available for completed events after april 2022
+# 1. upcoming vs live vs completed - full data is only available for completed events after 2022-08
 # 2. worlds vs genesis city - worlds has less data
 # 3. one_off vs recurrent - recurrent events have a slightly different structure
 # so have to understand how to correctly pull data related to them
@@ -18,8 +18,8 @@ class Event
     data['position'].join(',')
   end
 
-  def duration_minutes
-    data['duration'] / 1000 / 60
+  def duration_seconds
+    data['duration'] / 1000
   end
 
   def date
@@ -70,7 +70,8 @@ class Event
 end
 
 current_event_id = 'a5033b5f-fce5-4685-ada5-5d33081d6c10'
-past_event_id = '00cb4198-690a-4826-8127-192b60c8cc05'
+past_event_id = '00cb4198-690a-4826-8127-192b60c8cc05'  # before august 2022
+past_event_id = '97ab2d15-ddc7-4b49-b913-faf2ff89af79' # after august 2022
 
 e = Event.new(past_event_id)
 
@@ -80,11 +81,10 @@ e = Event.new(past_event_id)
 # cases, the final result should be serialized
 # TODO: will have to pull data points from backblaze to get precise data about
 # what users were part of an event and which were not
-# TODO: this should be find rather than where
-pt = Models::ParcelTraffic.where(coordinates: e.coordinates).last
+pt = Models::ParcelTraffic.find(coordinates: e.coordinates, date: e.date)
 
 # can be nil
-Models::DailySceneStats.where(scene_disambiguation_uuid: pt.scene_cid).first
+Models::DailySceneStats.find(scene_disambiguation_uuid: pt.scene.scene_disambiguation_uuid, date: e.date)
 
 # or get all other parcel traffic models
 Models::ParcelTraffic.where(date: pt.date, scene_cid: pt.scene_cid)
