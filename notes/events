@@ -83,9 +83,12 @@ e = Event.new(past_event_id)
 # what users were part of an event and which were not
 pt = Models::ParcelTraffic.find(coordinates: e.coordinates, date: e.date)
 
+# TODO: at the end it makes much more sense to fetch events which a given scene
+# or coordiante hosted, rather than finding events and then finding which scene
+# it happened on. not that this isn't a valid usecase, it's just a much more
+# limited one and one which doesn't necessarily make sense in the context of our app
 # can be nil
 Models::DailySceneStats.find(scene_disambiguation_uuid: pt.scene.scene_disambiguation_uuid, date: e.date)
 
 # or get all other parcel traffic models
 Models::ParcelTraffic.where(date: pt.date, scene_cid: pt.scene_cid)
-

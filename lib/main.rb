@@ -49,6 +49,7 @@ require './lib/models/user_nfts.rb'
 require './lib/models/scene_disambiguation.rb'
 require './lib/models/api_key.rb'
 require './lib/models/api_key_access_log.rb'
+require './lib/models/event.rb'
 
 # require adapters
 require 'faraday'

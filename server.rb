@@ -88,6 +88,10 @@ class Server < Sinatra::Application
     # TODO but maybe this is way easier by name?
   end
 
+  get '/events/:id' do
+    Models::Event.new(params[:id]).serialize.to_json
+  end
+
   get '/scenes/top' do
     scenes = Models::DailySceneStats.
       basic_data.
