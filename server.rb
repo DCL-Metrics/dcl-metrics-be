@@ -231,17 +231,7 @@ class Server < Sinatra::Application
     ids = FAT_BOY_DATABASE[query].first(10).map(&:values).flatten
 
     ids.each do |id|
-      user = Models::User[id]
-      result.push({
-        address: user.address,
-        name: user.name,
-        avatar_url: user.avatar_url,
-        first_seen: user.first_seen.to_s,
-        last_seen: user.last_seen.to_s,
-        guest: user.guest?,
-        verified: user.verified?,
-        dao_member: user.dao_member?
-      })
+      result.push(Serializers::User.serialize(Models::User[id]))
     end
 
     result.to_json
@@ -251,16 +241,7 @@ class Server < Sinatra::Application
     user = Models::User.find(address: params[:address].downcase)
     failure(404, "Can't find user with address #{params[:address]}") if user.nil?
 
-    {
-      address: params[:address],
-      name: user.name,
-      avatar_url: user.avatar_url,
-      first_seen: user.first_seen.to_s,
-      last_seen: user.last_seen.to_s,
-      guest: user.guest?,
-      verified: user.verified?,
-      dao_member: user.dao_member?
-    }.to_json
+    Serializers::User.serialize(user).to_json
   end
 
   get '/users/:address/activity/top_scenes' do
