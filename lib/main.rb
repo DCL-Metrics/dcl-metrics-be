@@ -96,6 +96,7 @@ require './lib/serializers/global/users.rb'
 require './lib/serializers/peer_status.rb'
 require './lib/serializers/parcels.rb'
 require './lib/serializers/scenes.rb'
+require './lib/serializers/user.rb'
 
 # sidekiq configuration
 require 'sidekiq'
