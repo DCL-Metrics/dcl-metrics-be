@@ -14,7 +14,7 @@ module Models
     def errors
       return [] unless data['errors']
 
-      data['errors'].map { |x| x['message'] }
+      data['messages']
     end
 
     def serialize
