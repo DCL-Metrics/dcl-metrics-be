@@ -89,7 +89,14 @@ class Server < Sinatra::Application
   end
 
   get '/events/:id' do
-    Models::Event.new(params[:id]).serialize.to_json
+    event = Models::Event.new(params[:id])
+
+    if event.errors.any?
+      status 400
+      { msg: event.errors.first }.to_json
+    else
+      event.serialize.to_json
+    end
   end
 
   get '/scenes/top' do

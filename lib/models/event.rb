@@ -11,6 +11,12 @@ module Models
       data
     end
 
+    def errors
+      return [] unless data['errors']
+
+      data['errors'].map { |x| x['message'] }
+    end
+
     def serialize
       {
         enriched_data_expected: enriched_data_expected?,
