@@ -93,10 +93,11 @@ class Server < Sinatra::Application
 
     if event.errors.any?
       status 400
-      { msg: event.errors.first }.to_json
-    else
-      event.serialize.to_json
+      return { msg: event.errors.first }.to_json
     end
+
+    return { scene_uuid: event.scene_disambiguation_uuid } if params['only_uuid']
+    event.serialize.to_json
   end
 
   get '/scenes/top' do
