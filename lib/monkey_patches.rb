@@ -41,3 +41,9 @@ class ::Hash
   end
 end
 
+class ::DateTime
+  def next_week(count = 1)
+    amount = 7 * 24 * 3600 * count
+    (self.to_time + amount).to_datetime
+  end
+end

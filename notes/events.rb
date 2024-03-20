@@ -92,3 +92,46 @@ Models::DailySceneStats.find(scene_disambiguation_uuid: pt.scene.scene_disambigu
 
 # or get all other parcel traffic models
 Models::ParcelTraffic.where(date: pt.date, scene_cid: pt.scene_cid)
+
+######################
+## recurrent events
+######################
+
+start_of_event_series = DateTime.parse(e.data['recurrent_dates'][0])
+end_of_event_series = DateTime.parse(e.data['recurrent_dates'][1])
+
+# TODO: based on recurrent interval and recurrent frequency, filter out dates
+# from the range until left with all the dates on which an event occurs.
+# then use "duration" to calcuate the start/end time for an event on a given day
+# logically it's something like "every #{interval} #{frequency}", like "every 3
+# days" or "every 1 week"
+
+occurrences = []
+occurrence = start_of_event_series
+
+while occurrence <= end_of_event_series do
+  occurrences << {
+    start_time: occurrence,
+    end_time: (occurrence.to_time + e.duration_seconds).to_datetime
+  }
+
+  frequency = {
+    'DAILY' => 'day',
+    'WEEKLY' => 'week',
+    'MONTHLY' => 'month',
+    'YEARLY' => 'year'
+  }[e.data['recurrent_frequency']]
+
+  occurrence = occurrence.send("next_#{frequency}".to_sym, e.data['recurrent_interval'])
+
+  print "#{occurrence}\n"
+end
+
+####
+
+id = "01cec170-01ef-4089-836a-07ac6467539d" # recurring every week for several weeks
+id = "c23d5a88-9e68-47d6-9b01-a45ca18b2731" # also recurring every week, but uses daily / 7 interval
+id = "0baffaa7-b9e5-4ada-9c98-f25d6e79c354" # recurring every day for several weeks
+
+e = Models::Event.new(id)
+
