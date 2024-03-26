@@ -191,10 +191,14 @@ class Server < Sinatra::Application
 
   get '/scenes/:uuid/visitor_history' do
     DATABASE_CONNECTION[
-      "select date, unique_visitors as visitors
-      from daily_scene_stats
-      where scene_disambiguation_uuid = '#{params[:uuid]}'
-      order by date desc
+      "select x.date, coalesce(dss.unique_visitors, 0) as visitors
+      from (
+        select generate_series(min(date), max(date), '1d')::date as date
+        from daily_scene_stats
+      ) x
+      left join daily_scene_stats dss
+      on dss.scene_disambiguation_uuid = '#{params[:uuid]}' and dss.date = x.date
+      order by x.date desc
       limit 90"
     ].all.reverse.to_json
   end
