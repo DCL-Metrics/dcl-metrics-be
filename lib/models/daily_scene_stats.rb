@@ -67,6 +67,34 @@ module Models
       )
     end
 
+    def self.null_object(date:, name:, coordinates:, cids:, uuid:)
+      new(
+        date: date,
+        name: name,
+        coordinates: coordinates,
+        cids: cids,
+        scene_disambiguation_uuid: uuid,
+        total_visitors: 0,
+        unique_visitors: 0,
+        unique_visitors_afk: 0,
+        unique_addresses: 0,
+        share_of_global_visitors: 0,
+        avg_time_spent: 0,
+        avg_time_spent_afk: 0,
+        percent_of_users_afk: 0,
+        total_logins: 0,
+        unique_logins: 0,
+        total_logouts: 0,
+        unique_logouts: 0,
+        complete_sessions: 0,
+        avg_complete_session_duration: 0,
+        visitors_by_total_time_spent_json: '{}',
+        visitors_total_time_spent_histogram_json: '{}',
+        visitors_by_hour_histogram_json: '{}',
+        parcels_heatmap_json: '{}'
+      )
+    end
+
     def marathon_users
       JSON.parse(visitors_by_total_time_spent_json).
         sort_by(&:last).
