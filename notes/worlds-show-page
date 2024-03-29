@@ -2,3 +2,34 @@ could use this for querying, but likely better to just make a new table with
 extract data by world
 
 https://sequel.jeremyevans.net/rdoc-plugins/files/lib/sequel/extensions/pg_json_ops_rb.html
+
+
+# for each days worth of rows in the worlds table
+date = x
+data = [] # smash all the data from that period together
+names = data.map { |x| x['name'] }.uniq
+
+names.each do |name|
+  world_data = data.select { |x| x['name'] }
+  last_instance = world_data.max_by { |x| x['scenes'][-1]['timestamp'] }['scenes'][-1]
+
+  Models::DailyWorldStats.create(
+    name: name,
+    date: date,
+    scene_size: last_instance['pointers'].count,
+    title: last_instance['title'],
+    thumbnail: last_instance['thumbnail'],
+    last_deploy: Time.at(last_instance['timestamp'].to_i/1000),
+    description: last_instance['description'],
+    user_count: world_data.map { |x| x['user_count'] }.max
+  )
+end
+
+# and then as a collection, there can be various metrics such as:
+
+lifespan # total time deployed
+deploy_count
+most_popular_day
+most_deploys_day
+# some chart of scene_size figures?
+unique_deploys # number of times description/scene_size changed
