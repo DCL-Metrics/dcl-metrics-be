@@ -46,12 +46,13 @@ module Jobs
         current = Adapters::Backblaze::ReadFile.call(bucket: BUCKET_NAME, filename: filename)
 
         result = if current.success? && !current.body.empty? # push new metrics
+                   data_cutoff_index = -3
                    existing_data = JSON.parse(current.body)
-                   last_entry =  existing_data.last['date']
+                   last_entry =  existing_data[data_cutoff_index]['date']
                    raw_data = pull_data(last_entry)
                    data = serialize_data(raw_data)
 
-                   existing_data + data
+                   existing_data[0..data_cutoff_index] + data
                  else # create dumpfile if none exists
                    raw_data = pull_data
                    serialize_data(raw_data)
@@ -138,9 +139,9 @@ module Jobs
         {
           date: row[:date].to_s,
           max_user_count: row[:max_user_count],
-          avg_user_count: row[:avg_user_count].to_f.round(1),
+          avg_user_count: row[:avg_user_count].to_f,
           max_occupied_worlds: row[:max_occupied_worlds],
-          avg_occupied_worlds: row[:avg_occupied_worlds].to_f.round(1),
+          avg_occupied_worlds: row[:avg_occupied_worlds],
           total_world_count: row[:total_world_count],
           dcl_world_count: row[:dcl_world_count],
           ens_world_count: row[:ens_world_count]
