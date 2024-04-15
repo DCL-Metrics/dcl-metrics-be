@@ -25,7 +25,13 @@ class Server < Sinatra::Application
   end
 
   get '/global/daily' do
-    Serializers::Global::DailyStats.serialize.to_json
+    response = Adapters::Backblaze::ReadFile.call(bucket: 'global-stats', filename: 'unique-daily')
+
+    if response.success?
+      response.body
+    else
+      { error: 'something went wrong, please contact admin' }.to_json
+    end
   end
 
   get '/global/parcels' do

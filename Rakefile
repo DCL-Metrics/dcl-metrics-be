@@ -158,6 +158,13 @@ namespace :data_preservation do
     Jobs::DumpGlobalWorldsMetrics.perform_async
   end
 
+  desc "refresh dumpfile of global unique daily metrics"
+  task :update_global_daily_metrics do
+    require './lib/main'
+
+    Jobs::DumpGlobalUniqueDailyMetrics.perform_async
+  end
+
   desc "archive data points after 3 days"
   task :archive_data_points, [:date] do |task, args|
     require './lib/main'
