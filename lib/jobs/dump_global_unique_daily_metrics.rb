@@ -47,16 +47,17 @@ module Jobs
 
         result = if current.success? && !current.body.empty? # push new metrics
                    data_cutoff_index = -3
+                   data_removal_index = -2
                    existing_data = JSON.parse(current.body)
                    last_entry_date =  existing_data.keys[data_cutoff_index]
                    data = pull_data(last_entry_date)
 
                    # remove the last x days of data from existing data
-                   existing_data.keys[data_cutoff_index..-1].each do |date|
+                   existing_data.keys[data_removal_index..-1].each do |date|
                      existing_data.delete(date)
                    end
 
-                   existing_data + data
+                   existing_data.merge(data)
                  else # create dumpfile if none exists
                    pull_data
                  end
