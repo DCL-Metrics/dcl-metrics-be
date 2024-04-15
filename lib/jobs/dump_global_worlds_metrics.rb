@@ -139,9 +139,9 @@ module Jobs
         {
           date: row[:date].to_s,
           max_user_count: row[:max_user_count],
-          avg_user_count: row[:avg_user_count].to_f,
+          avg_user_count: row[:avg_user_count].to_f.round(1),
           max_occupied_worlds: row[:max_occupied_worlds],
-          avg_occupied_worlds: row[:avg_occupied_worlds],
+          avg_occupied_worlds: row[:avg_occupied_worlds].to_f.round(1),
           total_world_count: row[:total_world_count],
           dcl_world_count: row[:dcl_world_count],
           ens_world_count: row[:ens_world_count]
