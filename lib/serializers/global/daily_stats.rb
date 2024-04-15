@@ -30,13 +30,13 @@ module Serializers
         {
           active_parcels: row[:total_active_parcels],
           active_scenes: row[:total_active_scenes],
-          degraded: Services::DailyDataAssessor.call(row[:date]),
           users: {
             guest_users: row[:guest_users],
             named_users: row[:named_users],
             new_users: row[:new_users],
             unique_users: row[:unique_users]
-          }
+          },
+          degraded: Services::DailyDataAssessor.call(row[:date])
         }
       end
     end
