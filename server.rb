@@ -47,11 +47,11 @@ class Server < Sinatra::Application
   end
 
   get '/rentals/summary' do
-    dcl_property_rentals_api('summary')
+    { message: 'sorry, this endpoint no longer exists' }.to_json
   end
 
   get '/rentals/closed' do
-    dcl_property_rentals_api('closed', params)
+    { message: 'sorry, this endpoint no longer exists' }.to_json
   end
 
   get '/worlds/global' do
@@ -390,15 +390,6 @@ class Server < Sinatra::Application
   end
 
   private
-
-  def dcl_property_rentals_api(endpoint, params = {})
-    url = "https://www.dcl-property.rentals/api/dcl_rentals/#{endpoint}"
-    headers = { API_KEY: ENV['DCL_PROPERTY_RENTALS_API_KEY'] }
-    response = Adapters::Base.get(url, params, headers)
-
-    halt(500, response.failure) if response.failure?
-    response.success.to_json
-  end
 
   def failure(status_code, msg)
     halt [status_code, { msg: msg}.to_json]
