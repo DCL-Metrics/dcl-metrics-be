@@ -4,6 +4,10 @@ module Serializers
       new(scenes, basic_data_only).call
     end
 
+    def self.serialize_for_csv(scenes)
+      new(scenes, true).for_csv
+    end
+
     def initialize(scenes, basic_data_only)
       @scenes = scenes
       @basic_data_only = basic_data_only
@@ -39,6 +43,20 @@ module Serializers
           parcels_heatmap: scene.parcels_heatmap
         })
       end
+    end
+
+    def for_csv
+      call.
+        map { |x| x.values.values_at(2,4,5,6,7,8,9) }.
+        prepend(%w[
+          date
+          unique_users
+          share_of_global_visitors
+          avg_time_spent
+          avg_time_spent_afk
+          total_logins
+          unique_logins
+        ])
     end
 
     private

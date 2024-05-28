@@ -195,6 +195,26 @@ class Server < Sinatra::Application
     }.to_json
   end
 
+  get '/scenes/:uuid/report' do
+    data = Models::DailySceneStats.
+      basic_data.
+      where(scene_disambiguation_uuid: params[:uuid]).
+      order(:date)
+
+    failure(404, "Can't find scene with uuid #{params[:uuid]}") if data.empty?
+
+    serialized = Serializers::Scenes.serialize_for_csv(data)
+    filename = "#{data.first.name.split.join('-')}_#{Date.today.to_s}.csv"
+    file = Tempfile.new(filename)
+    file.write(serialized)
+    file.rewind
+
+    send_file file, filename: filename, type: 'text/csv', disposition: 'attachment'
+
+    file.close
+    file.unlink
+  end
+
   get '/scenes/:uuid/visitor_history' do
     limit = 90
     limit = nil if params[:show_all]
