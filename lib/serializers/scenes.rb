@@ -46,9 +46,9 @@ module Serializers
     end
 
     def for_csv
-      call.
-        map { |x| x.values.values_at(2,4,5,6,7,8,9) }.
-        prepend(%w[
+      CSV.generate do |csv|
+        # add headers
+        csv << %w[
           date
           unique_users
           share_of_global_visitors
@@ -56,7 +56,11 @@ module Serializers
           avg_time_spent_afk
           total_logins
           unique_logins
-        ])
+        ]
+
+        # add data
+        call.each { |x| csv << x.values.values_at(2,4,5,6,7,8,9) }
+      end
     end
 
     private
