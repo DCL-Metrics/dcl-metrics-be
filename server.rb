@@ -116,6 +116,23 @@ class Server < Sinatra::Application
     Serializers::Scenes.serialize(scenes, basic_data_only: true).to_json
   end
 
+  get '/scenes/compare' do
+    range = params['range'] || 7
+
+    Models::DailySceneStats.
+      select(:name, :date, params['metric']).
+      where(scene_disambiguation_uuid: params['uuids']),
+      where { date >= Date.today - range }.
+      all.group_by(&:name).map do |name, data|
+        {
+          name: name,
+          values: data.map { |row| { date: row[:date], value: row[params['metric'].to_sym] } }
+        }
+      end
+
+
+  end
+
   # TODO: select the first date when there are multiple results (so lose distinct)
   # if the first result for first_seen_at is nil, find the first daily_scene model?
   get '/scenes/search' do
