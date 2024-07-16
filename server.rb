@@ -120,17 +120,15 @@ class Server < Sinatra::Application
     range = params['range'] || 7
 
     Models::DailySceneStats.
-      select(:name, :date, params['metric']).
-      where(scene_disambiguation_uuid: params['uuids']),
+      select(:name, :date, params['metric'].to_sym).
+      where(scene_disambiguation_uuid: params['uuids']).
       where { date >= Date.today - range }.
       all.group_by(&:name).map do |name, data|
         {
           name: name,
-          values: data.map { |row| { date: row[:date], value: row[params['metric'].to_sym] } }
+          values: data.map { |row| { date: row[:date].to_s, value: row[params['metric'].to_sym] } }
         }
-      end
-
-
+      end.to_json
   end
 
   # TODO: select the first date when there are multiple results (so lose distinct)
