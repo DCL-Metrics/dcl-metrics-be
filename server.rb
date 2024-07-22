@@ -117,8 +117,12 @@ class Server < Sinatra::Application
   end
 
   get '/scenes/compare' do
-    range = params['range'] || 7
+    range = params['range'].to_i || 7
     uuids = params['uuids'].split(',')
+
+    p "###############"
+    p uuids: uuids
+    p "###############"
 
     Models::DailySceneStats.
       select(:name, :date, params['metric'].to_sym).
