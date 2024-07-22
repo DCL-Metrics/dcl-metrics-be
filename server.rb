@@ -120,10 +120,6 @@ class Server < Sinatra::Application
     range = params['range'].to_i || 7
     uuids = params['uuids'].split(',')
 
-    p "###############"
-    p uuids: uuids
-    p "###############"
-
     Models::DailySceneStats.
       select(:name, :date, params['metric'].to_sym).
       where(scene_disambiguation_uuid: uuids).
