@@ -118,10 +118,11 @@ class Server < Sinatra::Application
 
   get '/scenes/compare' do
     range = params['range'] || 7
+    uuids = params['uuids'].split(',')
 
     Models::DailySceneStats.
       select(:name, :date, params['metric'].to_sym).
-      where(scene_disambiguation_uuid: params['uuids']).
+      where(scene_disambiguation_uuid: uuids).
       where { date >= Date.today - range }.
       all.group_by(&:name).map do |name, data|
         {
