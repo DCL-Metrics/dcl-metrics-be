@@ -195,8 +195,9 @@ namespace :data_preservation do
   task :archive_peers_dump, [:date] do |task, args|
     require './lib/main'
 
-    TEMP_DB = Sequel.connect(ENV['HEROKU_POSTGRESQL_PINK_URL'])
-    date = args[:date] || TEMP_DB[:peers_dump].order(:created_at).first[:created_at].to_date.to_s
+    date = args[:date] || Sequel.connect(ENV['HEROKU_POSTGRESQL_PINK_URL']) do |db|
+      db[:peers_dump].order(:created_at).first[:created_at].to_date.to_s
+    end
 
     if Date.today <= Date.parse(date) + 3
       raise ArgumentError.new("Can't archive recent peers dump")

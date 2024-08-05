@@ -10,14 +10,16 @@ module Jobs
       date = date.to_s
       # TODO: some peers dumps are in another db.
       # detect date and then selectively choose which db to pull from
-      model = if date.between?('2022-04-10', '2022-12-31')
-                TEMP_DB = Sequel.connect(ENV['HEROKU_POSTGRESQL_PINK_URL'])
-                TEMP_DB[:peers_dump]
-              else
-                Models::PeersDump
-              end
+      peers_dump =  if date.between?('2022-04-10', '2022-12-31')
+                      Sequel.connect(ENV['HEROKU_POSTGRESQL_PINK_URL']) do |db|
+                        db[:peers_dump].
+                          where(created_at: ("#{date} 00:00:00".."#{date} 23:59:59"))
+                      end
+                    else
+                      Models::PeersDump.
+                        where(created_at: ("#{date} 00:00:00".."#{date} 23:59:59"))
+                    end
 
-      peers_dump = model.where(created_at: ("#{date} 00:00:00".."#{date} 23:59:59"))
       return if peers_dump.count.zero?
 
       file_name = "#{date}_peers_dump"
