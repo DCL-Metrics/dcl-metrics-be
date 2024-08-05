@@ -191,6 +191,20 @@ namespace :data_preservation do
     end
   end
 
+  desc "archive peers dump after 3 days"
+  task :archive_peers_dump, [:date] do |task, args|
+    require './lib/main'
+
+    TEMP_DB = Sequel.connect(ENV['HEROKU_POSTGRESQL_PINK_URL'])
+    date = args[:date] || TEMP_DB[:peers_dump].order(:created_at).first[:created_at].to_date.to_s
+
+    if Date.today <= Date.parse(date) + 3
+      raise ArgumentError.new("Can't archive recent peers dump")
+    else
+      Jobs::ArchivePeersDump.perform_async(date)
+    end
+  end
+
   # ex: rake data_preservation:daily_parcel_traffic['2022-07-20']
   desc "save enriched peers dump data per day by parcel"
   task :daily_parcel_traffic, [:date] do |task, args|
