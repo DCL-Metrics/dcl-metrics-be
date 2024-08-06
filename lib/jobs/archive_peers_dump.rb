@@ -115,7 +115,7 @@ module Jobs
         end
 
         if response.success?
-          # peers_dump.delete
+          peers_dump.delete
         else
           raise FileUploadError, "Failed to upload #{tarfile}: #{response.body}"
         end
