@@ -1,0 +1,38 @@
+###############################################################################
+## count total land - static value
+###############################################################################
+
+TOTAL_LAND = 92_598
+
+###############################################################################
+## count total deployed
+###############################################################################
+
+# can use this? - https://places.decentraland.org/api/places
+# returns a total number of scenes & data about them
+
+response = Adapters::Base.get('https://places.decentraland.org/api/places')
+response.success['total'] # total number of scenes
+
+# note that this is for the given response only, there are many pages of responses
+# so to catch all of them they'd need to all be looped through - not so efficient
+response.success['data'].sum { |x| x['positions'].count }
+
+# could use tiles instead?
+response = Adapters::Base.get('https://api.decentraland.org/v2/tiles')
+
+grouped = response.success['data'].group_by { |k, v| v['estateId'] }
+
+# check all estate ids to see if they have something deployed to them
+# then check grouped[nil] and check each parcel there.
+
+# again this is really not efficient :/
+
+# there must be some way to see all active deployed parcels? / ie, ones which
+# are not loaded with a default grass content
+
+###############################################################################
+## count total active
+###############################################################################
+
+# daily active parcels + daily active scenes & sum parcels
