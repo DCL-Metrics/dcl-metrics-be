@@ -11,4 +11,3 @@ module Models
   class Parcel < Sequel::Model
   end
 end
-

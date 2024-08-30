@@ -21,15 +21,40 @@ response.success['data'].sum { |x| x['positions'].count }
 # could use tiles instead?
 response = Adapters::Base.get('https://api.decentraland.org/v2/tiles')
 
-grouped = response.success['data'].group_by { |k, v| v['estateId'] }
+# alternatively keep a static array of all tiles. it doesn't change
+response.success['data'].each do |tile| # idk this is right syntax or not
+  coordinates = tile['coordinates']
+  # result = curl 'https://places.decentraland.org/api/places?positions=x,y'
 
-# check all estate ids to see if they have something deployed to them
-# then check grouped[nil] and check each parcel there.
+  Models::Parcel.update_or_create(coordinates: coordinates) do |p|
+    p.scene_exists = !result['data'].empty?
+  end
+end
 
-# again this is really not efficient :/
 
-# there must be some way to see all active deployed parcels? / ie, ones which
-# are not loaded with a default grass content
+## Better way => create a Parcel model from every tile - just read tiles.json
+## once and then iterate through existing models after that
+
+result = ""
+conn = Faraday.new('https://api.decentraland.org/v2/tiles')
+conn.get do |req|
+  req.options.on_data = Proc.new do |chunk, size|
+    result << chunk.to_s.encode('UTF-8', invalidndef: :replace, replace: '?')
+  end
+end
+
+JSON.parse(result)['data'].each do |coordinates, tile|
+  x, y = coordinates.split
+
+  # send this to a job w/ the coordiates as arguments
+  place_data = Adapters::Base.get("https://places.decentraland.org/api/places?positions=#{x},#{y}")
+  Models::Parcel.update_or_create(x: x, y: y) do |p|
+    p.data_json = tile.to_json
+    # add this column to parcels table
+    p.active_deploy = !place_data.success['data'].empty?
+  end
+end
+
 
 ###############################################################################
 ## count total active
