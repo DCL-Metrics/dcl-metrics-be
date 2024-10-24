@@ -22,6 +22,7 @@ module Jobs
         owner = row['owner'].downcase
 
         Jobs::SaveSceneUtilization.perform_async(x, y, last_update_at, owner)
+        sleep 0.2 # testing this out
       end
 
       # notify telegram that all jobs were fired (temporary)
