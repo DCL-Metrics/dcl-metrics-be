@@ -9,7 +9,7 @@ module Jobs
       Models::Parcel.update_or_create(x: x, y: y) do |p|
         p.active_deploy = !place_data.success['data'].empty?
         p.owner = owner
-        p.last_update_at = last_update_at
+        p.last_update_at = Time.at(last_update_at / 1000)
       end
 
       nil

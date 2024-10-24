@@ -18,7 +18,7 @@ module Jobs
 
       data.values.each do |row|
         x, y = row['id'].split(',')
-        last_update_at = Time.parse(row['updatedAt'] / 1000)
+        last_update_at = row['updatedAt']
         owner = row['owner'].downcase
 
         Jobs::SaveSceneUtilization.perform_async(x, y, last_update_at, owner)
