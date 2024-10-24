@@ -25,7 +25,7 @@ module Jobs
       end
 
       # notify telegram that all jobs were fired (temporary)
-      Services::TelegramOperater.notify(level: :info, message: 'FetchSceneUtilization complete')
+      Services::TelegramOperator.notify(level: :info, message: 'FetchSceneUtilization complete')
 
       nil
     end
