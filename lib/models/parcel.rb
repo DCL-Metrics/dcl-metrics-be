@@ -2,7 +2,6 @@
 #
 # Integer   :x,             null: false
 # Integer   :y,             null: false
-# Jsonb     :data_json,     null: false
 # Time      :last_update_at
 # String,   :owner
 # TrueClass :active_deploy
