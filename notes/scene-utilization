@@ -36,22 +36,26 @@ end
 ## once and then iterate through existing models after that
 
 result = ""
-conn = Faraday.new('https://api.decentraland.org/v2/tiles')
+conn = Faraday.new('https://api.decentraland.org/v2/tiles?include=id,updatedAt,owner')
 conn.get do |req|
   req.options.on_data = Proc.new do |chunk, size|
     result << chunk.to_s.encode('UTF-8', invalidndef: :replace, replace: '?')
   end
 end
 
-JSON.parse(result)['data'].each do |coordinates, tile|
-  x, y = coordinates.split
+data = JSON.parse(result)['data']
+
+data.values.each do |row|
+  x, y = row['id'].split(',')
+  last_update_at = Time.parse(row['updatedAt'] / 1000)
+  owner = row['owner'].downcase
 
   # send this to a job w/ the coordiates as arguments
   place_data = Adapters::Base.get("https://places.decentraland.org/api/places?positions=#{x},#{y}")
   Models::Parcel.update_or_create(x: x, y: y) do |p|
-    p.data_json = tile.to_json
-    # add this column to parcels table
     p.active_deploy = !place_data.success['data'].empty?
+    p.owner = owner
+    p.last_update_at = last_update_at
   end
 end
 
