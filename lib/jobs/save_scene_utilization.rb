@@ -5,7 +5,8 @@ module Jobs
     WebError = Class.new(::StandardError)
 
     def perform(x, y, last_update_at, owner, count = 1)
-      return if count > 5
+      # return if count > 5
+      return 'stopping'
 
       begin
         url = "https://places.decentraland.org/api/places?positions=#{x},#{y}"
