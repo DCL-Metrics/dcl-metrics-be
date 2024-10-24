@@ -1,0 +1,24 @@
+month = '09'
+filename = "peer_stats_2024-#{month}.ndj"
+first_day = "2024-#{month}-01"
+last_day = Date.parse(first_day).next_month.prev_day.to_s
+
+Models::PeerStats.
+  where { date >= first_day }.
+  where { date <= last_day }.
+  each do |row|
+
+  File.open(filename, 'a+') do |f|
+    json_str = {
+      date: row.date.to_s,
+      data: row.data,
+      coordinates: row.coordinates,
+      scene_cid: row.scene_cid
+    }.to_json
+
+    f.write("#{json_str}\n")
+  end
+  print '.'
+end
+
+curl -F "file=@xxx" https://file.io
