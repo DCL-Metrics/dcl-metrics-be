@@ -13,7 +13,10 @@ module Jobs
         end
       end
 
-      JSON.parse(result)['data'].each do |row|
+      data = JSON.parse(result)['data']
+      return nil if data.empty?
+
+      data.values.each do |row|
         x, y = row['id'].split(',')
         last_update_at = Time.parse(row['updatedAt'] / 1000)
         owner = row['owner'].downcase
