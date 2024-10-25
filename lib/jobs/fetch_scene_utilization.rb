@@ -1,6 +1,6 @@
 module Jobs
   class FetchSceneUtilization < Job
-    sidekiq_options queue: 'processing'
+    sidekiq_options queue: 'processing', retry: false
 
     def perform
       result = ""
