@@ -2,14 +2,11 @@ module Jobs
   class SaveSceneUtilization < Job
     sidekiq_options queue: 'processing'
 
-    WebError = Class.new(::StandardError)
-
     def perform(x, y, last_update_at, owner, count = 1)
       return if count > 5
 
       url = "https://places.decentraland.org/api/places?positions=#{x},#{y}"
       place_data = Adapters::Base.get(url)
-      raise WebError unless place_data.success?
 
       if place_data.success?
         Models::Parcel.update_or_create(x: x, y: y) do |p|
