@@ -12,7 +12,7 @@ module Jobs
         next unless d['parcel']
 
         # track utilization for each parcel in data packet
-        Jobs::SaveSceneUtilization.peform_async(*d['parcel'])
+        Jobs::SaveSceneUtilization.perform_async(*d['parcel'])
         parcels = d['parcel'].join(',')
 
         scene = scenes.detect { |s| s.coordinates.split(';').include?(parcels) }
