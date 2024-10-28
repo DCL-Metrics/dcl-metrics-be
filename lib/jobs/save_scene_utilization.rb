@@ -12,6 +12,8 @@ module Jobs
       url = "https://places.decentraland.org/api/places?positions=#{x},#{y}"
       place_data = Adapters::Base.get(url)
 
+      p success: place_data.success?
+
       if place_data.success?
         Models::Parcel.update_or_create(x: x, y: y) do |p|
           p.active_deploy = !place_data.success['data'].empty?
