@@ -5,6 +5,8 @@ module Jobs
     PARTITION = 4000
 
     def perform
+      return
+
       Models::Parcel.
         order(:utilization_last_checked_at).
         first(PARTITION).
