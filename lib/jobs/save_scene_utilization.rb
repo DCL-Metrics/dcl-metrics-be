@@ -20,6 +20,11 @@ module Jobs
           p.utilization_last_checked_at = Time.now.utc
         end
       else
+        p '##################################################'
+        p '##################################################'
+        p place_data.failure
+        p '##################################################'
+        p '##################################################'
         Jobs::SaveSceneUtilization.perform_async(x, y, last_update_at, owner, count + 1)
       end
 
