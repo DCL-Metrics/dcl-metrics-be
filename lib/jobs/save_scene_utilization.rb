@@ -3,6 +3,7 @@ module Jobs
     sidekiq_options queue: 'processing'
 
     def perform(x, y, last_update_at = nil, owner = nil, count = 1)
+      return
       return if count > 5
 
       parcel = Models::Parcel.find(x: x, y: y)
@@ -11,8 +12,6 @@ module Jobs
 
       url = "https://places.decentraland.org/api/places?positions=#{x},#{y}"
       place_data = Adapters::Base.get(url)
-
-      p success: place_data.success?
 
       if place_data.success?
         Models::Parcel.update_or_create(x: x, y: y) do |p|

@@ -16,10 +16,6 @@ module Jobs
       data = JSON.parse(result)['data']
       return nil if data.empty?
 
-      p '#####################################################'
-      p "#{self.class.name}: Tiles pulled successfully"
-      p '#####################################################'
-
       data.values.each do |row|
         x, y = row['id'].split(',')
         last_update_at = row['updatedAt']
