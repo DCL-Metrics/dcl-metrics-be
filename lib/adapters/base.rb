@@ -25,11 +25,7 @@ module Adapters
         response = Faraday.get(url, params, headers)
 
         Services::RequestLogger.call(status: response.status, url: url, params: params)
-
-        # TEMP
-        p response if response.status != 200
-
-        return Failure('request was not successful') unless response.status == 200
+        return Failure("request was not successful: #{response.status}") unless response.status == 200
 
         data = case format
                when JSON_FORMAT
