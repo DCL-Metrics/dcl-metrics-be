@@ -3,7 +3,6 @@ module Jobs
     sidekiq_options queue: 'processing'
 
     def perform(x, y, count = 1)
-      return
       return if count > 3
 
       parcel = Models::Parcel.find_or_create(x: x, y: y)
