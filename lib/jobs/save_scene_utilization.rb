@@ -22,9 +22,10 @@ module Jobs
       else
         p '##################################################'
         p '##################################################'
-        p place_data.failure
+        p place_data
         p '##################################################'
         p '##################################################'
+        sleep 0.5
         Jobs::SaveSceneUtilization.perform_async(x, y, last_update_at, owner, count + 1)
       end
 
