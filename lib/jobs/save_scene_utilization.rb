@@ -3,7 +3,6 @@ module Jobs
     sidekiq_options queue: 'processing'
 
     def perform(x, y, last_update_at = nil, owner = nil, count = 1)
-      return
       return if count > 3
 
       parcel = Models::Parcel.find(x: x, y: y)
