@@ -16,13 +16,16 @@ module Jobs
       data = JSON.parse(result)['data']
       return nil if data.empty?
 
+      p '#####################################################'
+      p "#{self.class.name}: Tiles pulled successfully"
+      p '#####################################################'
+
       data.values.each do |row|
         x, y = row['id'].split(',')
         last_update_at = row['updatedAt']
         owner = row['owner'].downcase
 
         Jobs::SaveSceneUtilization.perform_async(x, y, last_update_at, owner)
-        sleep 0.2 # testing this out
       end
 
       nil
