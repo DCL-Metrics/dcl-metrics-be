@@ -3,7 +3,7 @@ module Jobs
     sidekiq_options queue: 'processing'
 
     def perform(x, y, last_update_at = nil, owner = nil, count = 1)
-      return if count > 5
+      return if count > 3
 
       parcel = Models::Parcel.find(x: x, y: y)
       # don't check more than once a day
@@ -25,7 +25,7 @@ module Jobs
         p [x, y] => place_data.failure
         p '##################################################'
         p '##################################################'
-        sleep 0.5
+        sleep 2
         Jobs::SaveSceneUtilization.perform_async(x, y, last_update_at, owner, count + 1)
       end
 

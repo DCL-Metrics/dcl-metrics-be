@@ -21,6 +21,7 @@ module Jobs
         last_update_at = row['updatedAt']
         owner = row['owner'].downcase
 
+        sleep 0.3
         Jobs::SaveSceneUtilization.perform_async(x, y, last_update_at, owner)
       end
 
