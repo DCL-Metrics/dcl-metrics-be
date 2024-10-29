@@ -21,10 +21,20 @@ module Jobs
       place_data = Adapters::Base.get(url)
 
       if place_data.success?
-        parcel.update(
-          active_deploy: !place_data.success['data'].empty?,
-          utilization_last_checked_at: Time.now.utc
-        )
+        update_params = { utilization_last_checked_at: Time.now.utc }
+
+        if place_data.success['data'].empty?
+          update_params[:active_deploy] = false
+          parcel.update(update_params)
+        else
+          place_data.success['data'][0]['positions'].each do |coordinates|
+            x,y = coordinates.split(',')
+            parcel = Models::Parcel.find(x: x, y: y)
+
+            update_params[:active_deploy] = true
+            parcel.update(update_params)
+          end
+        end
       else
         p '##################################################'
         p '##################################################'
@@ -32,7 +42,7 @@ module Jobs
         p '##################################################'
         p '##################################################'
 
-        # TODO: if place_data.failure.last(3) == 429
+        # maybe TODO: if place_data.failure.last(3) == 429
         #         retry_in between 45s - 60s
         # sleep 2 * count * Random.rand(30..60)
 
