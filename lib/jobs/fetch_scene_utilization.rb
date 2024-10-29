@@ -2,7 +2,7 @@ module Jobs
   class FetchSceneUtilization < Job
     sidekiq_options queue: 'processing', retry: false
 
-    PARTITION = 1500
+    PARTITION = 1000
 
     def perform
       Models::Parcel.
