@@ -15,7 +15,7 @@ module Jobs
       # if we get to this point, wait a moment
       sleep 1
 
-      url = "https://places.decentraland.org/api/places?positions=#{x},#{y}"
+      url = 'https://places.decentraland.org/api/places'
       place_data = Adapters::Base.get(url, { positions: "#{x},#{y}" })
 
       if place_data.success?
