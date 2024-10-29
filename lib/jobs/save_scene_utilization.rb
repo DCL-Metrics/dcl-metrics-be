@@ -1,10 +1,8 @@
 module Jobs
   class SaveSceneUtilization < Job
-    sidekiq_options queue: 'processing'
+    sidekiq_options queue: 'processing', retry: false
 
-    def perform(x, y, count = 1)
-      return if count > 3
-
+    def perform(x, y)
       parcel = Models::Parcel.find(x: x, y: y)
 
       # non-existant / out-of-bounds parcel
@@ -41,13 +39,6 @@ module Jobs
         p [x, y] => place_data.failure
         p '##################################################'
         p '##################################################'
-
-        # maybe TODO: if place_data.failure.last(3) == 429
-        #         retry_in between 45s - 60s
-        # sleep 2 * count * Random.rand(30..60)
-
-        sleep 2 * count
-        Jobs::SaveSceneUtilization.perform_async(x, y, count + 1)
       end
     end
   end
