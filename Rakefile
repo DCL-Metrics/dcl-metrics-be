@@ -346,6 +346,13 @@ namespace :dcl do
 
     Jobs::FetchWorldsData.perform_async
   end
+
+  desc "fetch scene utilization data"
+  task :fetch_scene_utilization do
+    require './lib/main'
+
+    Jobs::FetchSceneUtilization.perform_async
+  end
 end
 
 namespace :db do
