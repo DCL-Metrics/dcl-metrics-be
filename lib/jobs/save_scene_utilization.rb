@@ -13,6 +13,10 @@ module Jobs
       # don't check more than once a day
       return if parcel.utilization_last_checked_at > Time.now.utc - 60 * 60 * 24
 
+      # rate limiting for this endpoint is very aggressive
+      # if we get to this point, wait a moment
+      sleep 0.5
+
       url = "https://places.decentraland.org/api/places?positions=#{x},#{y}"
       place_data = Adapters::Base.get(url)
 
