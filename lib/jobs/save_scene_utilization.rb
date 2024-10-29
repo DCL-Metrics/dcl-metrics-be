@@ -5,7 +5,11 @@ module Jobs
     def perform(x, y, count = 1)
       return if count > 3
 
-      parcel = Models::Parcel.find_or_create(x: x, y: y)
+      parcel = Models::Parcel.find(x: x, y: y)
+
+      # non-existant / out-of-bounds parcel
+      return if parcel.nil?
+
       # don't check more than once a day
       return if parcel.utilization_last_checked_at > Time.now.utc - 60 * 60 * 24
 
@@ -24,7 +28,11 @@ module Jobs
         p '##################################################'
         p '##################################################'
 
-        sleep 2
+        # TODO: if place_data.failure.last(3) == 429
+        #         retry_in between 45s - 60s
+        # sleep 2 * count * Random.rand(30..60)
+
+        sleep 2 * count
         Jobs::SaveSceneUtilization.perform_async(x, y, count + 1)
       end
     end
