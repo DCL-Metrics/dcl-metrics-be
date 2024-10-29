@@ -46,6 +46,18 @@ class Server < Sinatra::Application
     Serializers::Global::Users.serialize.to_json
   end
 
+  get '/utilization' do
+    data = DATABASE_CONNECTION["
+        select active_deploy, count(*) / sum(count(*)) over () as percentage
+        from parcels
+        group by active_deploy"
+      ].all
+
+    result = data.detect { |x| x[:active_deploy] == true }[:percentage].round(4).to_f * 100
+
+    { global_utilization: result }.to_json
+  end
+
   get '/rentals/summary' do
     { message: 'sorry, this endpoint no longer exists' }.to_json
   end
