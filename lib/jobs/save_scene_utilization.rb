@@ -15,7 +15,7 @@ module Jobs
 
       # rate limiting for this endpoint is very aggressive
       # if we get to this point, wait a moment
-      sleep 0.5
+      sleep 1
 
       url = "https://places.decentraland.org/api/places?positions=#{x},#{y}"
       place_data = Adapters::Base.get(url)
