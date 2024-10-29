@@ -5,8 +5,6 @@ module Jobs
     PARTITION = 4000
 
     def perform
-      return
-
       Models::Parcel.
         order(:utilization_last_checked_at).
         first(PARTITION).
@@ -14,8 +12,6 @@ module Jobs
           sleep 0.3
           Jobs::SaveSceneUtilization.perform_async(parcel.x, parcel.y)
         end
-
-      nil
     end
   end
 end

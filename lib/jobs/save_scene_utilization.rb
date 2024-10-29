@@ -27,8 +27,6 @@ module Jobs
         sleep 2
         Jobs::SaveSceneUtilization.perform_async(x, y, count + 1)
       end
-
-      nil
     end
   end
 end
