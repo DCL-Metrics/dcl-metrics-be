@@ -16,7 +16,7 @@ module Jobs
       sleep 1
 
       url = "https://places.decentraland.org/api/places?positions=#{x},#{y}"
-      place_data = Adapters::Base.get(url)
+      place_data = Adapters::Base.get(url, { positions: "#{x},#{y}" })
 
       if place_data.success?
         update_params = { utilization_last_checked_at: Time.now.utc }
