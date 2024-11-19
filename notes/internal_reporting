@@ -1,2 +1,2 @@
 # print count of all tables in db
-Models.constants.each { |m| p m => Models.const_get(m).count }
+Models.constants.each { |m| p m => Models.const_get(m).count };nil

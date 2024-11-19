@@ -1,5 +1,9 @@
 module Models
   class Event
+    def self.count
+      # implemented to not break syntax of normal model
+    end
+
     # TODO: so in theory this is acting as a model with an api as the storage
     # method rather than a database. however, the "database fetching" mechanism
     # - in this case pulling with Faraday - should be abstracted to an adapter
