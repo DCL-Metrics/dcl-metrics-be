@@ -131,7 +131,7 @@ module Jobs
 
       base_query += "where created_at::date > '#{after_timestamp.to_s}' " if after_timestamp
 
-      DATABASE_CONNECTION[base_query + "group by date order by date asc"].all
+      FAT_BOY_DATABASE[base_query + "group by date order by date asc"].all
     end
 
     def serialize_data(data)

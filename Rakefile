@@ -163,7 +163,7 @@ namespace :data_preservation do
     require './lib/main'
 
     (Date.today - 7).upto(Date.today - 3) do |date|
-      daily = DATABASE_CONNECTION[
+      daily = FAT_BOY_DATABASE[
         "select * from worlds_dump where created_at::date = '#{date}' order by created_at"
       ].all
 

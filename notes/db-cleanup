@@ -35,3 +35,10 @@ db = FAT_BOY_DATABASE
 :user_dao_activities, {:size=>"9264 kB", :count=>7188}          => OK
 :api_keys, {:size=>"80 kB", :count=>9}                          => OK
 :dao_governance, {:size=>"3560 kB", :count=>1}                  => OK
+
+
+# example
+table = :worlds_dump
+DATABASE_CONNECTION[table].each do |row|
+  FAT_BOY_DATABASE[table].insert(row.except(:id))
+end
