@@ -49,7 +49,7 @@ module Serializers
         operation = operation_mapping[type]
         date = calculate_start_of_period(period)
 
-        result = DATABASE_CONNECTION[
+        result = FAT_BOY_DATABASE[
           "select coordinates, #{operation}(#{attribute}) as #{attribute}
           from daily_parcel_stats
           where date >= '#{date}'

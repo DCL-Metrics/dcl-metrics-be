@@ -8,9 +8,9 @@ counts.sort_by { |x| x.last[:count].to_i }.reverse
 
 db = DATABASE_CONNECTION
 
-:peers_dump, {:size=>"13 GB", :count=>372031}                   => dumping now
-:worlds_dump, {:size=>"3209 MB", :count=>17952}                 => should be archived, low priority
-:daily_parcel_stats, {:size=>"656 MB", :count=>4003044}         => OK
+:peers_dump, {:size=>"13 GB", :count=>372031}                   => moved to FB
+:worlds_dump, {:size=>"3209 MB", :count=>17952}                 => moved to FB
+:daily_parcel_stats, {:size=>"656 MB", :count=>4003044}         => moved to FB
 :daily_scene_stats, {:size=>"797 MB", :count=>832469}           => OK
 :parcels, {:size=>"29 MB", :count=>92598}                       => OK
 :user_events, {:size=>"15 MB", :count=>50430}                   => OK
@@ -43,9 +43,13 @@ DATABASE_CONNECTION[table].each do |row|
   FAT_BOY_DATABASE[table].insert(row.except(:id))
 end
 
-table = :peers_dump
-DATABASE_CONNECTION[table].each_slice(5) do |rows|
-  rows.each do |row|
+
+
+table = :daily_parcel_stats
+start_date = DATABASE_CONNECTION[table].order(:date).first[:date]
+
+start_date.upto(Date.today) do |date|
+  DATABASE_CONNECTION[table].where(date: date).each do |row|
     FAT_BOY_DATABASE[table].insert(row.except(:id))
   end
 end

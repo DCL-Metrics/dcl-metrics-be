@@ -17,7 +17,7 @@
 # add_index :daily_parcel_stats, [:coordinates]
 
 module Models
-  class DailyParcelStats < Sequel::Model
+  class DailyParcelStats < Sequel::Model(FAT_BOY_DATABASE[:daily_parcel_stats])
     def self.yesterday
       previous_x_days(1)
     end
