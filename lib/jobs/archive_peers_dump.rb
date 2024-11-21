@@ -8,25 +8,12 @@ module Jobs
 
     def perform(date)
       date = date.to_s
-      # TODO: some peers dumps are in another db.
-      # detect date and then selectively choose which db to pull from
-      peers_dump =  if date.between?('2022-04-10', '2022-12-31')
-                      Sequel.connect(ENV['HEROKU_POSTGRESQL_PINK_URL']) do |db|
-                        db[:peers_dump].
-                          where(created_at: ("#{date} 00:00:00".."#{date} 23:59:59"))
-                      end
-                    else
-                      Models::PeersDump.
-                        where(created_at: ("#{date} 00:00:00".."#{date} 23:59:59"))
-                    end
-
+      peers_dump = Models::PeersDump.where(created_at: ("#{date} 00:00:00".."#{date} 23:59:59"))
       return if peers_dump.count.zero?
 
       file_name = "#{date}_peers_dump"
       csv_dumpfile = "#{file_name}.csv"
       tarfile = "#{file_name}.tar.gz"
-
-      # split by hour or something?
 
       begin
         # stream data into CSV file

@@ -6,7 +6,7 @@ module Services
     end
 
     def initialize(date)
-      @snapshot_ids= DATABASE_CONNECTION[
+      @snapshot_ids= FAT_BOY_DATABASE[
         "select id from peers_dump where created_at :: date = '#{date}'"
       ].all.flat_map(&:values).compact
     end

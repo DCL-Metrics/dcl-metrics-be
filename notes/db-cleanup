@@ -42,3 +42,8 @@ table = :worlds_dump
 DATABASE_CONNECTION[table].each do |row|
   FAT_BOY_DATABASE[table].insert(row.except(:id))
 end
+
+table = :peers_dump
+DATABASE_CONNECTION[table].each do |row|
+  FAT_BOY_DATABASE[table].insert(row.except(:id))
+end
