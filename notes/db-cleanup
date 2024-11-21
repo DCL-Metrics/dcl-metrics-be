@@ -44,6 +44,8 @@ DATABASE_CONNECTION[table].each do |row|
 end
 
 table = :peers_dump
-DATABASE_CONNECTION[table].each do |row|
-  FAT_BOY_DATABASE[table].insert(row.except(:id))
+DATABASE_CONNECTION[table].each_slice(5) do |rows|
+  rows.each do |row|
+    FAT_BOY_DATABASE[table].insert(row.except(:id))
+  end
 end
