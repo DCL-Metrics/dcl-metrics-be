@@ -158,11 +158,21 @@ namespace :data_preservation do
     Jobs::DumpGlobalWorldsMetrics.perform_async
   end
 
-  desc "refresh dumpfile of global unique daily metrics"
-  task :update_global_daily_metrics do
+  desc "save one worlds dump record per day"
+  task :remove_extraneous_worlds_dump_records do
     require './lib/main'
 
-    Jobs::DumpGlobalUniqueDailyMetrics.perform_async
+    (Date.today - 7).upto(Date.today - 3) do |date|
+      daily = DATABASE_CONNECTION[
+        "select * from worlds_dump where created_at::date = '#{date}' order by created_at"
+      ].all
+
+      to_save = daily.last
+      to_delete = daily - [to_save]
+      ids = to_delete.map { |x| x[:id] }
+
+      Models::WorldsDump.where(id: ids).delete
+    end
   end
 
   desc "archive data points after 3 days"
