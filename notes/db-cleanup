@@ -1,0 +1,37 @@
+counts = {}
+db.tables.each do |t|
+  query = "SELECT pg_size_pretty( pg_total_relation_size('#{t}') ), count(*) from #{t};"
+  counts[t] = db[query].all[0]
+end;nil
+counts.sort_by { |x| x.last[:count].to_i }.reverse
+
+
+db = DATABASE_CONNECTION
+
+:peers_dump, {:size=>"13 GB", :count=>372031}                   => dumping now
+:worlds_dump, {:size=>"3209 MB", :count=>17952}                 => should be archived, low priority
+:daily_parcel_stats, {:size=>"656 MB", :count=>4003044}         => OK
+:daily_scene_stats, {:size=>"797 MB", :count=>832469}           => OK
+:parcels, {:size=>"29 MB", :count=>92598}                       => OK
+:user_events, {:size=>"15 MB", :count=>50430}                   => OK
+:scene_disambiguations, {:size=>"8680 kB", :count=>32413}       => OK
+:peer_stats, {:size=>"1426 MB", :count=>18736}                  => OK
+:api_response_statuses, {:size=>"116 MB", :count=>17525}        => OK
+:daily_stats, {:size=>"168 kB", :count=>960}                    => OK
+
+
+db = FAT_BOY_DATABASE
+
+:data_points, {:size=>"23 GB", :count=>849085}                  => not being deleted properly
+:user_activities, {:size=>"22 GB", :count=>4041643}             => dumping now
+:daily_user_stats, {:size=>"807 MB", :count=>4779010}           => OK consider archiving
+:parcel_traffic, {:size=>"3539 MB", :count=>4362186}            => OK consider archiving
+:serialized_daily_parcel_stats, {:size=>"925 MB", :count=>715}  => OK consider archiving
+:users, {:size=>"245 MB", :count=>896497}                       => OK
+:api_key_access_logs, {:size=>"74 MB", :count=>342236}          => OK
+:user_nfts, {:size=>"56 MB", :count=>225713}                    => OK
+:dao_votes, {:size=>"46 MB", :count=>97950}                     => OK
+:scenes, {:size=>"43 MB", :count=>84310}                        => OK
+:user_dao_activities, {:size=>"9264 kB", :count=>7188}          => OK
+:api_keys, {:size=>"80 kB", :count=>9}                          => OK
+:dao_governance, {:size=>"3560 kB", :count=>1}                  => OK
