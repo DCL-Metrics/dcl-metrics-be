@@ -17,7 +17,7 @@ db = DATABASE_CONNECTION
 :scene_disambiguations, {:size=>"8680 kB", :count=>32413}       => OK
 :peer_stats, {:size=>"1426 MB", :count=>18736}                  => OK
 :api_response_statuses, {:size=>"116 MB", :count=>17525}        => OK
-:daily_stats, {:size=>"168 kB", :count=>960}                    => OK
+:daily_stats, {:size=>"168 kB", :count=>960}                    => moved to FB
 
 
 db = FAT_BOY_DATABASE

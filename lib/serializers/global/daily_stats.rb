@@ -14,7 +14,7 @@ module Serializers
         query += " where date > '#{after_date}'" unless after_date.nil?
         query += " order by date"
 
-        data = DATABASE_CONNECTION[query].all
+        data = FAT_BOY_DATABASE[query].all
 
         data.inject({}) do |result, row|
           data = serialize(row)

@@ -13,7 +13,7 @@
 # add_index :daily_stats, [:date]
 
 module Models
-  class DailyStats < Sequel::Model
+  class DailyStats < Sequel::Model(FAT_BOY_DATABASE[:daily_stats])
     def self.last_month
       previous_x_days(30)
     end
