@@ -15,6 +15,6 @@
 
 
 module Models
-  class UserEvent < Sequel::Model
+  class UserEvent < Sequel::Model(FAT_BOY_DATABASE[:user_events])
   end
 end
