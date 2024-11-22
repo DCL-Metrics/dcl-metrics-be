@@ -46,7 +46,7 @@ module Serializers
         operation = operation_mapping[type]
         date = calculate_start_of_period(period)
 
-        result = DATABASE_CONNECTION[
+        result = FAT_BOY_DATABASE[
           "select name,
                   coordinates,
                   scene_disambiguation_uuid as uuid,

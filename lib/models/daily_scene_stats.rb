@@ -31,7 +31,7 @@
 # add_index :daily_scene_stats, [:coordinates]
 
 module Models
-  class DailySceneStats < Sequel::Model
+  class DailySceneStats < Sequel::Model(FAT_BOY_DATABASE[:daily_scene_stats])
     def self.yesterday
       previous_x_days(1)
     end

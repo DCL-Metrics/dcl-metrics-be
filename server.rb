@@ -260,7 +260,7 @@ class Server < Sinatra::Application
 
     # NOTE: formatting is "wrong" cause it's a ruby date,
     # but transforming to json fixes it so whatever
-    DATABASE_CONNECTION[query].all.reverse.to_json
+    FAT_BOY_DATABASE[query].all.reverse.to_json
   end
 
   get '/parcels/all' do
