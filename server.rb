@@ -47,7 +47,7 @@ class Server < Sinatra::Application
   end
 
   get '/utilization' do
-    data = DATABASE_CONNECTION["
+    data = FAT_BOY_DATABASE["
         select active_deploy, count(*) / sum(count(*)) over () as percentage
         from parcels
         group by active_deploy"

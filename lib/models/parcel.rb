@@ -10,6 +10,6 @@
 # add_index :parcels, [:x, :y], unique: true
 
 module Models
-  class Parcel < Sequel::Model
+  class Parcel < Sequel::Model(FAT_BOY_DATABASE([:parcels])
   end
 end
