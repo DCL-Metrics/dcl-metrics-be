@@ -12,7 +12,7 @@
 # add_index :peer_stats, [:date]
 
 module Models
-  class PeerStats < Sequel::Model(:peer_stats)
+  class PeerStats < Sequel::Model(FAT_BOY_DATABASE[:peer_stats])
     def data
       JSON.parse(data_json)
     end

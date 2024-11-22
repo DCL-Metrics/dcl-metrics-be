@@ -13,7 +13,7 @@
 # add_index :api_response_statuses, [:date, :url], unique: true
 
 module Models
-  class ApiResponseStatus < Sequel::Model(:api_response_statuses)
+  class ApiResponseStatus < Sequel::Model(FAT_BOY_DATABASE[:api_response_statuses])
     def self.daily_failure_rates(date)
       where(date: date).
         all.

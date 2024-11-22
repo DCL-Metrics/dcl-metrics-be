@@ -52,4 +52,5 @@ start_date.upto(Date.today) do |date|
   DATABASE_CONNECTION[table].where(date: date).each do |row|
     FAT_BOY_DATABASE[table].insert(row.except(:id))
   end
+  print '.'
 end
