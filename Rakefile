@@ -22,7 +22,7 @@ end
 namespace :heroku do
   desc "run tasks on application release"
   task :release do
-    `bundle exec rake db:migrate[#{ENV['DATABASE_URL']}]`
+    # `bundle exec rake db:migrate[#{ENV['DATABASE_URL']}]`
     `bundle exec rake db:migrate[#{ENV['FAT_BOY_DATABASE_URL']}]`
   end
 
