@@ -36,7 +36,7 @@ end
 
 # TODO: would be nice to show "recently deployed scenes"
 # scenes updated yesterday
-# cids = DATABASE_CONNECTION[
+# cids = FAT_BOY_DATABASE[
 #   "select cid
 #   from scenes
 #   where first_seen_on = '#{Date.today - 1}'"
