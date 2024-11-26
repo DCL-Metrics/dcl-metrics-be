@@ -9,10 +9,12 @@ Sequel::Model.plugin :timestamps, update_on_create: true
 Sequel::Model.plugin :update_or_create
 Sequel::Model.plugin :validation_helpers
 
-# NOTE: unused currently
-# DATABASE_CONNECTION = Sequel.connect(
-#   ENV['DATABASE_URL'],
-#   pool_timeout: ENV['DATABASE_POOL_TIMEOUT'].to_i)
+# NOTE: unused currently but for tests
+if ENV['RACK_ENV'] == 'test'
+  DATABASE_CONNECTION = Sequel.connect(
+    ENV['DATABASE_URL'],
+    pool_timeout: ENV['DATABASE_POOL_TIMEOUT'].to_i)
+end
 
 FAT_BOY_DATABASE = Sequel.connect(
   ENV['FAT_BOY_DATABASE_URL'],
