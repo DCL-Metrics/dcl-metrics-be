@@ -54,7 +54,12 @@ module Models
 
       @occurrences = []
       start_of_event_series = DateTime.parse(data['recurrent_dates'][0])
-      end_of_event_series = DateTime.parse(data['recurrent_dates'][1])
+
+      # NOTE: fixing a bug where a recurring event has no end date.
+      # how unlike the DCL devs to introduce interface breaking changes
+      end_of_event_series_date = data['recurrent_dates'][1]
+      infinite_duration = !!!end_of_event_series_date
+
       occurrence = start_of_event_series
       frequency = {
         'DAILY' => 'day',
@@ -63,13 +68,26 @@ module Models
         'YEARLY' => 'year'
       }[data['recurrent_frequency']]
 
-      while occurrence <= end_of_event_series do
-        @occurrences << {
-          start_time: occurrence,
-          end_time: (occurrence.to_time + duration_seconds).to_datetime
-        }
+      if infinite_duration
+        3.times do
+          @occurrences << {
+            start_time: occurrence,
+            end_time: (occurrence.to_time + duration_seconds).to_datetime
+          }
 
-        occurrence = occurrence.send("next_#{frequency}".to_sym, data['recurrent_interval'])
+          occurrence = occurrence.send("next_#{frequency}".to_sym, data['recurrent_interval'])
+        end
+      else
+        end_of_event_series = DateTime.parse(end_of_event_series_date)
+
+        while occurrence <= end_of_event_series do
+          @occurrences << {
+            start_time: occurrence,
+            end_time: (occurrence.to_time + duration_seconds).to_datetime
+          }
+
+          occurrence = occurrence.send("next_#{frequency}".to_sym, data['recurrent_interval'])
+        end
       end
 
       @occurrences
