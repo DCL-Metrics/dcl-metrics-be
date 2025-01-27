@@ -8,14 +8,15 @@ module Adapters
         # "https://peer-ec1.decentraland.org",
         # "https://peer-ec2.decentraland.org",
         # "https://peer-wc1.decentraland.org",
-        "https://peer-eu1.decentraland.org",
+        # "https://peer-eu1.decentraland.org",
         # "https://peer-ap1.decentraland.org",
         # "https://interconnected.online",
-        "https://peer.decentral.io",
+        # "https://peer.decentral.io",
         # "https://peer.melonwave.com",
         "https://peer.kyllian.me",
-        "https://peer.uadevops.com",
+        # "https://peer.uadevops.com",
         # "https://peer.dclnodes.io"
+        "https://archipelago-ea-stats.decentraland.org/peers"
       ]
 
       def self.fetch_snapshot

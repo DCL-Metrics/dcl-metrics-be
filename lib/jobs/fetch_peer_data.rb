@@ -3,7 +3,7 @@ module Jobs
     sidekiq_options queue: 'scraping', retry: false
 
     def perform
-      data = Adapters::AtlasCorp::Peers.fetch_snapshot
+      data = Adapters::Dcl::Peers.fetch_snapshot
 
       coordinates = data.map { |c| c['parcel']&.join(',') }.compact.uniq
       scenes = Services::FetchSceneData.call(coordinates: coordinates)
